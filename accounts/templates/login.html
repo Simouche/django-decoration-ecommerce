@@ -1,0 +1,151 @@
+<!doctype html>
+
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Samy Deco</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '1x/logo.png' %}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/progressbar_barfiller.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lightslider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/price_rangs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gijgo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<!-- ? Preloader Start -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="preloader-circle"></div>
+            <div class="preloader-img pere-text">
+                <img src="% static '1x/logo.png' %" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Preloader Start-->
+
+<main class="login-bg">
+    <!-- login Area Start -->
+    <div class="login-form-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-7 col-lg-8">
+                    <form class="form" action="{% url 'accounts:login' %}" method="post" role="form">
+                        {% csrf_token %}
+
+                        {% if messages %}
+                        <div class="form-group row">
+                            <div class="col">
+                                {% for message in messages %}
+                                <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
+                                     role="alert">
+                                    {{ message }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="login-form">
+                            <!-- Login Header -->
+                            <div class="login-heading">
+                                <span>{% trans "Login" %}</span>
+                                <p>{% trans "Enter Login details to get access"%}</p>
+                            </div>
+
+                            {% if login_form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {% for error in login_form.non_field_errors %}
+                                {{ error }}
+                                {% endfor %}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endif %}
+
+                            <!-- Single Input Fields -->
+                            <div class="input-box">
+                                <div class="single-input-fields form-group">
+                                    <label>{% trans "Username, Email Address or Phone number" %}</label>
+                                    {% if login_form.is_bound %}
+                                    {% if login_form.username.errors %}
+                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                    {% for error in login_form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                    {% endif %}
+                                    {% else %}
+                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Password" %}</label>
+                                    {% if login_form.is_bound %}
+                                    {% if login_form.password.errors %}
+                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                    {% for error in login_form.password.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                    {% endif %}
+                                    {% else %}
+                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields login-check">
+<!--                                    <input type="checkbox" id="fruit1" name="keep-log">-->
+<!--                                    <label for="fruit1">Keep me logged in</label>-->
+                                    <a href="#" class="f-right">{% trans "Forgot Password?" %}</a>
+                                </div>
+                            </div>
+                            <!-- form Footer -->
+                            <div class="login-footer">
+                                <p>{% trans "Don’t have an account?" %} <a href="{% url 'accounts:register' %}">{% trans "Sign Up"%}</a> {% trans "here" %}</p>
+                                <button type="submit" class="submit-btn3">{% trans "LOGIN" %}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- login Area End -->
+</main>
+
+
+</body>
+</html>

@@ -76,6 +76,15 @@ class Order(DeletableModel):
     def total_sum(self):
         return 0
 
+    @property
+    def lines(self):
+        return self.lines.filter(visible=True)
+
+    @staticmethod
+    def generate_number():
+        from random import randint
+        return randint(11111, 99999)
+
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
@@ -121,7 +130,7 @@ class CartLine(DeletableModel):
 
 
 class Cart(DeletableModel):
-    profile = models.ForeignKey('accounts.Profile', related_name='carts', on_delete=do_nothing)
+    profile = models.OneToOneField('accounts.Profile', related_name='carts', on_delete=do_nothing)
 
     @property
     def products_count(self):

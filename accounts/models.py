@@ -84,11 +84,11 @@ class Profile(DeletableModel):
         blank=True,
         null=True
     )
-    address = models.CharField(_("Address"), max_length=255)
+    address = models.CharField(_("Address"), max_length=255, null=True)
     city = models.ForeignKey('City', on_delete=do_nothing, null=True, blank=True, related_name='profiles',
                              verbose_name=_('City'))
     birth_date = models.DateField(_('Birth Date'), blank=True, null=True)
-    gender = models.CharField(choices=GENDERS, max_length=1, default='M', verbose_name=_('Gender'))
+    gender = models.CharField(choices=GENDERS, max_length=1, default='M', verbose_name=_('Gender'), null=True)
 
     class Meta:
         verbose_name = _('Profile')

@@ -22,6 +22,10 @@ class DeletableModel(BaseModel):
     """
     visible = models.BooleanField(default=True)
 
+    def delete(self, using=None, keep_parents=False):
+        self.visible = False
+        self.save()
+
     class Meta:
         abstract = True
 

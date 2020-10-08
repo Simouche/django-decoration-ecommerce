@@ -1,0 +1,8 @@
+background color dark : #061b45
+background color light : #324e85
+
+font color gold : #e1ab18
+font color brown : #DEB887
+
+main buttons color : #BA55D3
+secondary buttons color : #D8BFD8

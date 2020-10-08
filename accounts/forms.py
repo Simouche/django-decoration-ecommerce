@@ -9,7 +9,7 @@ class LoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                'placeholder': _("Username") + "/" + _("Phone") + "/" + _("Email")
+                'placeholder': str(_("Username")) + "/" + str(_("Phone")) + "/" + str(_("Email"))
             }
         )
     )

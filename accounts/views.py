@@ -1,11 +1,13 @@
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, DetailView, UpdateView, DeleteView, ListView
 
 from accounts.forms import LoginForm, RegistrationForm
+from accounts.models import Profile, User
 from base_backend import _
 
 
@@ -13,7 +15,7 @@ from base_backend import _
 
 
 class RegisterView(FormView):
-    template_name = ""
+    template_name = "register.html"
     success_url = "accounts:login"
     form_class = RegistrationForm
     initial = {'user_type': 'C'}
@@ -27,12 +29,12 @@ class RegisterView(FormView):
         return redirect(self.get_success_url())
 
 
-class Login(View):
-    template_name = ""
+class LoginView(View):
+    template_name = "login.html"
 
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('restaurants:home')  # todo redirect to the index page
+            return redirect('restaurants:home')
 
         login_form = LoginForm()
         context = dict(login_form=login_form)
@@ -41,7 +43,7 @@ class Login(View):
     def post(self, request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
-            user = authenticate(username=login_form.cleaned_data.get('username'),
+            user = authenticate(request, username=login_form.cleaned_data.get('username'),
                                 password=login_form.cleaned_data.get('password'))
             if user:
                 login(request, user)
@@ -61,12 +63,38 @@ class LogoutView(View):
         return redirect('restaurants:home')
 
 
-class Profile(View):
-    def get(self, request):
-        pass
+@method_decorator(login_required, name='dispatch')
+class ProfileDetailsView(DetailView):
+    model = Profile
+    context_object_name = 'profile'
+    queryset = Profile.objects.filter(visible=True)
+    template_name = ""
 
-    def post(self, request):
-        pass
+    def get_queryset(self):
+        self.queryset = self.queryset.filter(user=self.request.user)
+        return super(ProfileDetailsView, self).get_queryset()
+
+
+@method_decorator(login_required, name='dispatch')
+class ProfileUpdateView(UpdateView):
+    model = Profile
+    fields = ['photo', 'address', 'city', 'birth_date', 'gender']
+    template_name = ""
+    success_url = ""
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class UserDeleteView(DeleteView):
+    model = User
+    template_name = ""
+    success_url = ""
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class UserListView(ListView):
+    model = User
+    template_name = ""
+    queryset = User.objects.filter()
 
 
 class ForgotPassword(View):
