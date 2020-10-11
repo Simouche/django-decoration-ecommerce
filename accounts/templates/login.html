@@ -12,7 +12,6 @@
     <title>Samy Deco</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="{% static '1x/logo.png' %}">
 
     <!-- CSS here -->
@@ -40,7 +39,7 @@
         <div class="preloader-inner position-relative">
             <div class="preloader-circle"></div>
             <div class="preloader-img pere-text">
-                <img src="% static '1x/logo.png' %" alt="">
+                <img src="{% static 'img/logo/logo_black.png' %}" alt="">
             </div>
         </div>
     </div>
@@ -57,37 +56,37 @@
                         {% csrf_token %}
 
                         {% if messages %}
-                        <div class="form-group row">
-                            <div class="col">
-                                {% for message in messages %}
-                                <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
-                                     role="alert">
-                                    {{ message }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                            <div class="form-group row">
+                                <div class="col">
+                                    {% for message in messages %}
+                                        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
+                                             role="alert">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
-                        </div>
                         {% endif %}
 
                         <div class="login-form">
                             <!-- Login Header -->
                             <div class="login-heading">
                                 <span>{% trans "Login" %}</span>
-                                <p>{% trans "Enter Login details to get access"%}</p>
+                                <p>{% trans "Enter Login details to get access" %}</p>
                             </div>
 
                             {% if login_form.non_field_errors %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {% for error in login_form.non_field_errors %}
-                                {{ error }}
-                                {% endfor %}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {% for error in login_form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                             {% endif %}
 
                             <!-- Single Input Fields -->
@@ -95,46 +94,48 @@
                                 <div class="single-input-fields form-group">
                                     <label>{% trans "Username, Email Address or Phone number" %}</label>
                                     {% if login_form.is_bound %}
-                                    {% if login_form.username.errors %}
-                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
-                                    {% for error in login_form.username.errors %}
-                                    <div class="invalid-feedback">
-                                        {{ error }}
-                                    </div>
-                                    {% endfor %}
+                                        {% if login_form.username.errors %}
+                                            {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                            {% for error in login_form.username.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                        {% endif %}
                                     {% else %}
-                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
-                                    {% endif %}
-                                    {% else %}
-                                    {% render_field login_form.username class="form-control browser-default" id="username" %}
+                                        {% render_field login_form.username class="form-control browser-default" id="username" %}
                                     {% endif %}
                                 </div>
                                 <div class="single-input-fields">
                                     <label>{% trans "Password" %}</label>
                                     {% if login_form.is_bound %}
-                                    {% if login_form.password.errors %}
-                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
-                                    {% for error in login_form.password.errors %}
-                                    <div class="invalid-feedback">
-                                        {{ error }}
-                                    </div>
-                                    {% endfor %}
+                                        {% if login_form.password.errors %}
+                                            {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                            {% for error in login_form.password.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                        {% endif %}
                                     {% else %}
-                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
-                                    {% endif %}
-                                    {% else %}
-                                    {% render_field login_form.password class="form-control browser-default" id="password" %}
+                                        {% render_field login_form.password class="form-control browser-default" id="password" %}
                                     {% endif %}
                                 </div>
                                 <div class="single-input-fields login-check">
-<!--                                    <input type="checkbox" id="fruit1" name="keep-log">-->
-<!--                                    <label for="fruit1">Keep me logged in</label>-->
+                                    <!--                                    <input type="checkbox" id="fruit1" name="keep-log">-->
+                                    <!--                                    <label for="fruit1">Keep me logged in</label>-->
                                     <a href="#" class="f-right">{% trans "Forgot Password?" %}</a>
                                 </div>
                             </div>
                             <!-- form Footer -->
                             <div class="login-footer">
-                                <p>{% trans "Don’t have an account?" %} <a href="{% url 'accounts:register' %}">{% trans "Sign Up"%}</a> {% trans "here" %}</p>
+                                <p>{% trans "Don’t have an account?" %} <a
+                                        href="{% url 'accounts:register' %}">{% trans "Sign Up" %}</a> {% trans "here" %}
+                                </p>
                                 <button type="submit" class="submit-btn3">{% trans "LOGIN" %}</button>
                             </div>
                         </div>
@@ -145,6 +146,49 @@
     </div>
     <!-- login Area End -->
 </main>
+
+
+<!-- JS here -->
+<!-- Jquery, Popper, Bootstrap -->
+<script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- Slick-slider , Owl-Carousel ,slick-nav -->
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.min.js' %}"></script>
+
+<!-- One Page, Animated-HeadLin, Date Picker , price, light-slider -->
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script src="{% static 'js/animated.headline.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.js' %}"></script>
+<script src="{% static 'js/gijgo.min.js' %}"></script>
+<script src="{% static 'js/lightslider.min.js' %}"></script>
+<script src="{% static 'js/price_rangs.js' %}"></script>
+
+<!-- Nice-select, sticky,Progress -->
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/jquery.barfiller.js' %}"></script>
+
+<!-- counter , waypoint,Hover Direction -->
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'js/waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/hover-direction-snake.min.js' %}"></script>
+
+<!-- contact js -->
+<script src="{% static 'js/contact.js' %}"></script>
+<script src="{% static 'js/jquery.form.js' %}"></script>
+<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+<script src="{% static  'js/mail-script.js' %}"></script>
+<script src="{% static  'js/jquery.ajaxchimp.min.js' %}"></script>
+
+<!-- Jquery Plugins, main Jquery -->
+<script src="{% static  'js/plugins.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 
 </body>

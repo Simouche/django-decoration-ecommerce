@@ -1,3 +1,3 @@
-from django.contrib import admin
+from base_backend.admin import register_app_models
 
-# Register your models here.
+register_app_models("accounts")

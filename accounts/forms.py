@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import Group
 from django.contrib.postgres.forms import SimpleArrayField
 
 from accounts.models import User, Profile, City
@@ -54,12 +55,12 @@ class RegistrationForm(forms.ModelForm):
             }
         )
     )
-    phone = SimpleArrayField(forms.CharField(
+    phones = SimpleArrayField(forms.CharField(
         widget=forms.TextInput(
             attrs={
                 'placeholder': _("Phone Number")
             }
-        )
+        ), help_text=_("if you have multiple phones, enter them separated by a coma.")
     ))
     password = forms.CharField(
         widget=forms.PasswordInput(
@@ -83,10 +84,29 @@ class RegistrationForm(forms.ModelForm):
             }
         )
     )
+    user_type = forms.ChoiceField(widget=forms.HiddenInput,
+                                  choices=(('C', _('Client')), ('S', _('Staff')), ('A', _('Admin'))))
 
     class Meta:
         model = User
-        fields = ['username', "first_name", "last_name", 'user_type', 'phone', 'email']
+        fields = ['username', "first_name", "last_name", 'user_type', 'phones', 'email']
+
+    def clean(self):
+        super(RegistrationForm, self).clean()
+        if not self.cleaned_data.get('password') == self.cleaned_data.get('c_password'):
+            raise forms.ValidationError(_("Un-matching passwords!"))
+
+    def save(self, commit=True):
+        user = super(RegistrationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        user.save()
+
+        user_type = self.cleaned_data['user_type']
+        if user_type == 'C':
+            user.groups.add(Group.objects.get(name='clients'))
+
+        user.save()
+        return user
 
 
 class ProfileForm(forms.ModelForm):

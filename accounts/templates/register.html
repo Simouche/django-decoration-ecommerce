@@ -13,26 +13,25 @@
     <title>Samy Deco</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '1x/logo.png' %}">
 
     <!-- CSS here -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="assets/css/slicknav.css">
-    <link rel="stylesheet" href="assets/css/flaticon.css">
-    <link rel="stylesheet" href="assets/css/progressbar_barfiller.css">
-    <link rel="stylesheet" href="assets/css/lightslider.min.css">
-    <link rel="stylesheet" href="assets/css/price_rangs.css">
-    <link rel="stylesheet" href="assets/css/gijgo.css">
-    <link rel="stylesheet" href="assets/css/animate.min.css">
-    <link rel="stylesheet" href="assets/css/animated-headline.css">
-    <link rel="stylesheet" href="assets/css/magnific-popup.css">
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="assets/css/themify-icons.css">
-    <link rel="stylesheet" href="assets/css/slick.css">
-    <link rel="stylesheet" href="assets/css/nice-select.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/progressbar_barfiller.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lightslider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/price_rangs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gijgo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <!-- ? Preloader Start -->
@@ -41,7 +40,7 @@
         <div class="preloader-inner position-relative">
             <div class="preloader-circle"></div>
             <div class="preloader-img pere-text">
-                <img src="assets/img/logo/loder.png" alt="">
+                <img src="{% static 'img/logo/logo_black.png' %}" alt="">
             </div>
         </div>
     </div>
@@ -54,85 +53,220 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-6 col-lg-8">
-                    <div class="register-form text-center">
-                        <!-- Login Heading -->
-                        <div class="register-heading">
-                            <span>Sign Up</span>
-                            <p>Create your account to get full access</p>
+                    <form class="form" action="{% url 'accounts:register' %}" method="post" role="form">
+                        {% csrf_token %}
+                        {% if messages %}
+                            <div class="form-group row">
+                                <div class="col">
+                                    {% for message in messages %}
+                                        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} alert-dismissible fade show"
+                                             role="alert">
+                                            {{ message }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="register-form text-center">
+                            <!-- Register Header -->
+                            <div class="register-heading">
+                                <span>{% trans "Sign Up" %}</span>
+                                <p>{% trans "Create your account to get full access" %}</p>
+                            </div>
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            {% endif %}
+
+
+                            {% render_field form.user_type class="form-control browser-default" id="user_type" type="hidden" %}
+                            <!-- Single Input Fields -->
+                            <div class="input-box">
+                                <div class="single-input-fields">
+                                    <label>{% trans "Username" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.username.errors %}
+                                            {% render_field form.username class="form-control browser-default" id="username" %}
+                                            {% for error in form.username.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.username class="form-control browser-default" id="username" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.username class="form-control browser-default" id="username" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "First Name" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.first_name.errors %}
+                                            {% render_field form.first_name class="form-control browser-default" id="first_name" %}
+                                            {% for error in form.first_name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.first_name class="form-control browser-default" id="first_name" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.first_name class="form-control browser-default" id="first_name" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Last Name" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.last_name.errors %}
+                                            {% render_field form.last_name class="form-control browser-default" id="last_name" %}
+                                            {% for error in form.last_name.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.last_name class="form-control browser-default" id="last_name" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.last_name class="form-control browser-default" id="last_name" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Phone number" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.phones.errors %}
+                                            {% render_field form.phones class="form-control browser-default" id="phones" placeholder="Phones" %}
+                                            {% for error in form.phones.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.phones class="form-control browser-default" id="phones" placeholder="Phones" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.phones class="form-control browser-default" id="phones" placeholder="Phones" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Email Address" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.email.errors %}
+                                            {% render_field form.email class="form-control browser-default" id="email" %}
+                                            {% for error in form.email.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.email class="form-control browser-default" id="email" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.email class="form-control browser-default" id="email" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Password" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.password.errors %}
+                                            {% render_field form.password class="form-control browser-default" id="password" %}
+                                            {% for error in form.password.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.password class="form-control browser-default" id="password" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.password class="form-control browser-default" id="password" %}
+                                    {% endif %}
+                                </div>
+                                <div class="single-input-fields">
+                                    <label>{% trans "Confirm Password" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.c_password.errors %}
+                                            {% render_field form.c_password class="form-control browser-default" id="c_password" %}
+                                            {% for error in form.c_password.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.c_password class="form-control browser-default" id="c_password" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.c_password class="form-control browser-default" id="c_password" %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <!-- form Footer -->
+                            <div class="register-footer">
+                                <p> {% trans "Already have an account? " %}<a
+                                        href="{% url 'accounts:login' %}"> {% trans "Login" %}</a>
+                                    {% trans "here" %}</p>
+                                <button type="submit" class="submit-btn3">{% trans "Sign Up" %}</button>
+                            </div>
                         </div>
-                        <!-- Single Input Fields -->
-                        <div class="input-box">
-                            <div class="single-input-fields">
-                                <label>Full name</label>
-                                <input type="text" placeholder="Enter full name">
-                            </div>
-                            <div class="single-input-fields">
-                                <label>Email Address</label>
-                                <input type="email" placeholder="Enter email address">
-                            </div>
-                            <div class="single-input-fields">
-                                <label>Password</label>
-                                <input type="password" placeholder="Enter Password">
-                            </div>
-                            <div class="single-input-fields">
-                                <label>Confirm Password</label>
-                                <input type="password" placeholder="Confirm Password">
-                            </div>
-                        </div>
-                        <!-- form Footer -->
-                        <div class="register-footer">
-                            <p> Already have an account? <a href="login.html"> Login</a> here</p>
-                            <button class="submit-btn3">Sign Up</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     <!-- Register Area End -->
 </main>
-
 <!-- JS here -->
 <!-- Jquery, Popper, Bootstrap -->
-<script src="./assets/js/vendor/modernizr-3.5.0.min.js"></script>
-<script src="./assets/js/vendor/jquery-1.12.4.min.js"></script>
-<script src="./assets/js/popper.min.js"></script>
-<script src="./assets/js/bootstrap.min.js"></script>
+<script src="{% static 'js/vendor/modernizr-3.5.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
 <!-- Slick-slider , Owl-Carousel ,slick-nav -->
-<script src="./assets/js/owl.carousel.min.js"></script>
-<script src="./assets/js/slick.min.js"></script>
-<script src="./assets/js/jquery.slicknav.min.js"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script src="{% static 'js/jquery.slicknav.min.js' %}"></script>
 
 <!-- One Page, Animated-HeadLin, Date Picker , price, light-slider -->
-<script src="./assets/js/wow.min.js"></script>
-<script src="./assets/js/animated.headline.js"></script>
-<script src="./assets/js/jquery.magnific-popup.js"></script>
-<script src="./assets/js/gijgo.min.js"></script>
-<script src="./assets/js/lightslider.min.js"></script>
-<script src="./assets/js/price_rangs.js"></script>
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script src="{% static 'js/animated.headline.js' %}"></script>
+<script src="{% static 'js/jquery.magnific-popup.js' %}"></script>
+<script src="{% static 'js/gijgo.min.js' %}"></script>
+<script src="{% static 'js/lightslider.min.js' %}"></script>
+<script src="{% static 'js/price_rangs.js' %}"></script>
 
 <!-- Nice-select, sticky,Progress -->
-<script src="./assets/js/jquery.nice-select.min.js"></script>
-<script src="./assets/js/jquery.sticky.js"></script>
-<script src="./assets/js/jquery.barfiller.js"></script>
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/jquery.barfiller.js' %}"></script>
 
 <!-- counter , waypoint,Hover Direction -->
-<script src="./assets/js/jquery.counterup.min.js"></script>
-<script src="./assets/js/waypoints.min.js"></script>
-<script src="./assets/js/jquery.countdown.min.js"></script>
-<script src="./assets/js/hover-direction-snake.min.js"></script>
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'js/waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<script src="{% static 'js/hover-direction-snake.min.js' %}"></script>
 
 <!-- contact js -->
-<script src="./assets/js/contact.js"></script>
-<script src="./assets/js/jquery.form.js"></script>
-<script src="./assets/js/jquery.validate.min.js"></script>
-<script src="./assets/js/mail-script.js"></script>
-<script src="./assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="{% static 'js/contact.js' %}"></script>
+<script src="{% static 'js/jquery.form.js' %}"></script>
+<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+<script src="{% static  'js/mail-script.js' %}"></script>
+<script src="{% static  'js/jquery.ajaxchimp.min.js' %}"></script>
 
 <!-- Jquery Plugins, main Jquery -->
-<script src="./assets/js/plugins.js"></script>
-<script src="./assets/js/main.js"></script>
+<script src="{% static  'js/plugins.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 
 </body>
