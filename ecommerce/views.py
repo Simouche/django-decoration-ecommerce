@@ -22,6 +22,10 @@ class DashBoard(View):
         pass
 
 
+class Dash(TemplateView):
+    template_name = "dashboard/dashboard.html"
+
+
 class Index(TemplateView):
     template_name = "index.html"
 

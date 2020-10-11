@@ -6,6 +6,7 @@ app_name = "ecommerce"
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
+    path('dashboard/', views.Dash.as_view(), name='dashboard'),
     path('about/', views.Index.as_view(), name='about'),
     path('contact/', views.Index.as_view(), name='contact'),
     path('dashboard/', views.DashBoard.as_view(), name='dashboard'),
