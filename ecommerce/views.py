@@ -13,21 +13,20 @@ from ecommerce.forms import OrderWithLinesFormSet, CreateOrderLineForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine
 
 
-@method_decorator(staff_member_required, name='dispatch')
-class DashBoard(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
+class Index(TemplateView):
+    template_name = "index.html"
 
 
-class Dash(TemplateView):
+# @method_decorator(staff_member_required, name='dispatch')
+class Dashboard(TemplateView):
     template_name = "dashboard/dashboard.html"
 
 
-class Index(TemplateView):
-    template_name = "index.html"
+class DashboardProductsListView(ListView):
+    template_name = "dashboard/products_list.html"
+    queryset = Product.objects.all()
+    model = Product
+    context_object_name = "products"
 
 
 class ViewProductDetailsView(DetailView):

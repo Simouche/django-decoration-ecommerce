@@ -6,10 +6,10 @@ app_name = "ecommerce"
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
-    path('dashboard/', views.Dash.as_view(), name='dashboard'),
+    path('dashboard/', views.Dashboard.as_view(), name='dashboard'),
+    path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
     path('about/', views.Index.as_view(), name='about'),
     path('contact/', views.Index.as_view(), name='contact'),
-    path('dashboard/', views.DashBoard.as_view(), name='dashboard'),
     path('products/list/', views.ProductsListView.as_view(), name='products-list'),
     path('products/details/<int:pk>/', views.ViewProductDetailsView.as_view(), name='products-product-details'),
     path('products/create/', views.CreateProduct.as_view(), name='products-product-create'),
@@ -22,12 +22,11 @@ urlpatterns = [
     path('orders/history/', views.OrdersHistory.as_view(), name='orders-history'),
     path('orders/create/', views.OrderCreateView.as_view(), name='orders-create'),
     path('cart/cashout/', views.CartCashOutToOrder.as_view(), name='cart-cash-out'),
-    path('orders/<int:pk>/update', views.OrderUpdateView.as_view(), name='orders-order-update'),
-    path('orders/<int:pk>/delete', views.OrderDeleteView.as_view(), name='orders-order-delete'),
-    path('orders/<int:pk>/details', views.OrderDetails.as_view(), name='orders-order-details'),
-    path('orders/lines/<int:pk>/update', views.OrderLineUpdateView.as_view(), name='orderlines-line-details'),
-    path('orders/lines/<int:pk>/delete', views.OrderLineDeleteView.as_view(), name='orderlines-line-delete'),
+    path('orders/<int:pk>/update/', views.OrderUpdateView.as_view(), name='orders-order-update'),
+    path('orders/<int:pk>/delete/', views.OrderDeleteView.as_view(), name='orders-order-delete'),
+    path('orders/<int:pk>/details/', views.OrderDetails.as_view(), name='orders-order-details'),
+    path('orders/lines/<int:pk>/update/', views.OrderLineUpdateView.as_view(), name='orderlines-line-details'),
+    path('orders/lines/<int:pk>/delete/', views.OrderLineDeleteView.as_view(), name='orderlines-line-delete'),
     path('favorite/add/', views.FavoriteCreateView.as_view(), name='favorite-add'),
     path('favorite/list/', views.FavoriteListView.as_view(), name='favorite-list'),
-
 ]
