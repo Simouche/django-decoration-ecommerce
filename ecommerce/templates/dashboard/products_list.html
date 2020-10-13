@@ -10,16 +10,19 @@
             <div class="rs-select2--light rs-select2--md">
                 <select class="js-select2" name="property">
                     <option selected="selected">{% trans "Categories" %}</option>
-                    <option value="">cat 1</option>
-                    <option value="">cat 2</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>
             <div class="rs-select2--light rs-select2--md">
                 <select class="js-select2" name="time">
                     <option selected="selected">{% trans "Sub-Categories" %}</option>
-                    <option value="">sub-cat 1</option>
-                    <option value="">sub-cat 2</option>
+                    {% for sub_category in categories.0.sub_categories.all %}
+                        <option value="{{ sub_category.id }}">{{ sub_category.name }}</option>
+                    {% endfor %}
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>
@@ -30,11 +33,11 @@
             </button>
             <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
 
-                    <select class="js-select2" name="type">
-                        <option selected="selected">{% trans "Export" %}</option>
-                        <option value="">PDF</option>
-                        <option value="">EXCEL</option>
-                    </select>
+                <select class="js-select2" name="type">
+                    <option selected="selected">{% trans "Export" %}</option>
+                    <option value="">PDF</option>
+                    <option value="">EXCEL</option>
+                </select>
 
                 <div class="dropDownSelect2"></div>
             </div>
@@ -56,135 +59,63 @@
             <tbody>
 
             <tr class="tr-shadow">
-                <td>
-                    <img src="{% static 'img/icon/product.png' %}" alt="" width="36px">
-                </td>
-                <td>Lori Lynch</td>
-                <td>
-                    <span class="block-email">lori@example.com</span>
-                </td>
-                <td class="desc">Samsung S8 Black</td>
-                <td>2018-09-27 02:12</td>
-                <td></td>
-                <td></td>
-                <td>
-                    <div class="table-data-feature">
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="zmdi zmdi-edit"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            <tr class="spacer"></tr>
-            <tr class="tr-shadow">
-                <td>
-                    <label class="au-checkbox">
-                        <input type="checkbox">
-                        <span class="au-checkmark"></span>
-                    </label>
-                </td>
-                <td>Lori Lynch</td>
-                <td>
-                    <span class="block-email">john@example.com</span>
-                </td>
-                <td class="desc">iPhone X 64Gb Grey</td>
-                <td>2018-09-29 05:57</td>
-                <td>
-                    <span class="status--process">Processed</span>
-                </td>
-                <td>$999.00</td>
-                <td>
-                    <div class="table-data-feature">
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Send">
-                            <i class="zmdi zmdi-mail-send"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="zmdi zmdi-edit"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="More">
-                            <i class="zmdi zmdi-more"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            <tr class="spacer"></tr>
-            <tr class="tr-shadow">
-                <td>
-                    <label class="au-checkbox">
-                        <input type="checkbox">
-                        <span class="au-checkmark"></span>
-                    </label>
-                </td>
-                <td>Lori Lynch</td>
-                <td>
-                    <span class="block-email">lyn@example.com</span>
-                </td>
-                <td class="desc">iPhone X 256Gb Black</td>
-                <td>2018-09-25 19:03</td>
-                <td>
-                    <span class="status--denied">Denied</span>
-                </td>
-                <td>$1199.00</td>
-                <td>
-                    <div class="table-data-feature">
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Send">
-                            <i class="zmdi zmdi-mail-send"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="zmdi zmdi-edit"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="More">
-                            <i class="zmdi zmdi-more"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            <tr class="spacer"></tr>
-            <tr class="tr-shadow">
-                <td>
-                    <label class="au-checkbox">
-                        <input type="checkbox">
-                        <span class="au-checkmark"></span>
-                    </label>
-                </td>
-                <td>Lori Lynch</td>
-                <td>
-                    <span class="block-email">doe@example.com</span>
-                </td>
-                <td class="desc">Camera C430W 4k</td>
-                <td>2018-09-24 19:10</td>
-                <td>
-                    <span class="status--process">Processed</span>
-                </td>
-                <td>$699.00</td>
-                <td>
-                    <div class="table-data-feature">
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Send">
-                            <i class="zmdi zmdi-mail-send"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                            <i class="zmdi zmdi-edit"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="Delete">
-                            <i class="zmdi zmdi-delete"></i>
-                        </button>
-                        <button class="item" data-toggle="tooltip" data-placement="top" title="More">
-                            <i class="zmdi zmdi-more"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                {% for product in products %}
+                    <td>
+                        <img src="{% static 'img/icon/product.png' %}" alt="" width="36px">
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        <span class="desc"> {{ product.description }}</span>
+                    </td>
+                    <td class="price_value"> {{ product.price }} {% trans 'DZD' %}</td>
+                    <td>{{ product.stock }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="table-data-feature">
+                            <a href="{% url 'ecommerce:products-product-update' product.id %}">
+                                <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+                            </a>
+                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
+                    </td>
+                    </tr>
+                    <tr class="spacer"></tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
+
+{% block modals %}
+    <!-- modal small -->
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">{% trans 'Attention!' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% trans 'Delete Product ?' %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                    <button type="button" class="btn btn-delete">{% trans 'Delete' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal small -->
+{% endblock modals %}

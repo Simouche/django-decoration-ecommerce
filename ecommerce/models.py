@@ -45,6 +45,8 @@ class Product(DeletableModel):
     colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'))
     dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'))
     stock = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
+                                 verbose_name=_('Category'), null=True)
 
     class Meta:
         verbose_name = _('Product')

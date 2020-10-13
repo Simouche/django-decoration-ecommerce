@@ -10,7 +10,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 # Create your views here.
 from ecommerce.forms import OrderWithLinesFormSet, CreateOrderLineForm
-from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine
+from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category
 
 
 class Index(TemplateView):
@@ -27,6 +27,11 @@ class DashboardProductsListView(ListView):
     queryset = Product.objects.all()
     model = Product
     context_object_name = "products"
+    extra_context = {'categories': Category.objects.all()}
+    page_kwarg = 'page'
+    paginate_by = 25
+    allow_empty = False
+    ordering = 'created_at'
 
 
 class ViewProductDetailsView(DetailView):
