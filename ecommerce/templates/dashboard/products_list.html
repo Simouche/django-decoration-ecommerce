@@ -28,7 +28,8 @@
             </div>
         </div>
         <div class="table-data__tool-right">
-            <button class="au-btn au-btn-icon au-btn--green au-btn--small">
+            <button id="create-product" type="button" name="button"
+                    class="au-btn au-btn-icon au-btn--green au-btn--small">
                 <i class="zmdi zmdi-plus"></i>{% trans "add item" %}
             </button>
             <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
@@ -44,7 +45,7 @@
         </div>
     </div>
     <div class="table-responsive table-responsive-data2">
-        <table class="table table-data2">
+        <table class="table table-data2" id="products-table">
             <thead>
             <tr>
                 <th>
@@ -54,12 +55,13 @@
                 <th>{% trans "description" %}</th>
                 <th>{% trans "price" %}</th>
                 <th>{% trans "stock" %}</th>
+                <th>{% trans "status" %}</th>
             </tr>
             </thead>
             <tbody>
 
-            <tr class="tr-shadow">
-                {% for product in products %}
+            {% for product in products %}
+                <tr class="tr-shadow">
                     <td>
                         <img src="{% static 'img/icon/product.png' %}" alt="" width="36px">
                     </td>
@@ -67,9 +69,10 @@
                     <td>
                         <span class="desc"> {{ product.description }}</span>
                     </td>
-                    <td class="price_value"> {{ product.price }} {% trans 'DZD' %}</td>
+                    <td> {{ product.price }} {% trans 'DZD' %}</td>
                     <td>{{ product.stock }}</td>
-                    <td></td>
+                    <td>{% if product.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
+                        <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
                     <td></td>
                     <td>
                         <div class="table-data-feature">
@@ -79,14 +82,15 @@
                                 </button>
                             </a>
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal">
+                                    title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
                                 <i class="zmdi zmdi-delete"></i>
                             </button>
                         </div>
                     </td>
-                    </tr>
-                    <tr class="spacer"></tr>
-                {% endfor %}
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -112,10 +116,48 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
-                    <button type="button" class="btn btn-delete">{% trans 'Delete' %}</button>
+                    <a href="" id="deleteProductLink">
+                        <button type="button" class="btn btn-delete">{% trans 'Delete' %}</button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
     <!-- end modal small -->
+
+    {# create product modal#}
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-product-modal" role="dialog"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
 {% endblock modals %}
+
+{% block scripts %}
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+    {# delete product script #}
+    <script type="text/javascript">
+        $('#deletemodal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget)
+                const id = button.data('id')
+                document.getElementById(" deleteProductLink").setAttribute("href", `/products/${id}/delete/`)
+            }
+        )
+
+        $(function () {
+            $("#create-product").modalForm({
+                modalID: "#create-product-modal",
+                formURL: "{% url 'ecommerce:products-product-create' %}",
+                asyncUpdate: true,
+                asyncSettings: {
+                    closeOnSubmit: false,
+                    dataUrl: "{% url "ecommerce:dashboard-products" %}",
+                    dataElementId: '#products-table',
+                    dataKey: "products",
+                }
+            })
+        })
+    </script>
+{% endblock scripts %}

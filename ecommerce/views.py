@@ -2,15 +2,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-
 from django.views import View
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
+    RedirectView
 
 # Create your views here.
-from ecommerce.forms import OrderWithLinesFormSet, CreateOrderLineForm
+from ecommerce.forms import CreateOrderLineForm, CreateProductForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category
+from base_backend import _
 
 
 class Index(TemplateView):
@@ -46,17 +48,20 @@ class ProductsListView(ListView):
     context_object_name = 'products'
     queryset = Product.objects.filter(visible=True)
     template_name = ""
-    pass
-
+    
 
 @method_decorator(staff_member_required, name='dispatch')
 class CreateProduct(CreateView):
     model = Product
     context_object_name = 'product'
-    fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price', 'main_image',
-              'slider', 'discount_price', 'colors', 'dimensions']
-    success_url = ""
-    template_name = ""
+    success_url = reverse_lazy("ecommerce:dashboard-products")
+    template_name = "dashboard/create_product.html"
+    success_message = _("Product Created Successfully")
+    form_class = CreateProductForm
+    
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(CreateProduct, self).form_invalid(form=form)
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -71,11 +76,14 @@ class UpdateProduct(UpdateView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
-class DeleteProduct(DeleteView):
-    model = Product
-    template_name = ""
-    success_url = ""
-    queryset = Product.objects.filter(visible=True)
+class DeleteProduct(RedirectView):
+    permanent = True
+    pattern_name = "ecommerce:dashboard-products"
+
+    def get_redirect_url(self, *args, **kwargs):
+        product = get_object_or_404(Product, pk=kwargs['pk'])
+        product.delete()
+        return reverse("ecommerce:dashboard-products")
 
 
 # cart

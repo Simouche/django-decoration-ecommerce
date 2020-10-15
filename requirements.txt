@@ -6,3 +6,4 @@ django-axes
 psycopg2 # sudo apt install python3-dev libpq-dev for linux
 pillow
 firebase_admin
+django-bootstrap-modal-forms

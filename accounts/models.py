@@ -46,26 +46,12 @@ class User(AbstractUser):
         return super().get_full_name()
 
     @property
-    def get_age(self) -> int:
-        today = date.today()
-        dob = self.birth_date
-        before_dob = (today.month, today.day) < (dob.month, dob.day)
-        return today.year - self.birth_date.year - before_dob
-
-    @property
     def confirmed_phone(self) -> bool:
         return False
 
     @property
     def confirmed_email(self) -> bool:
         return False
-
-    @property
-    def get_photo(self):
-        try:
-            return self.photo.url
-        except ValueError:
-            return ""
 
     def __str__(self):
         return self.full_name
@@ -89,6 +75,26 @@ class Profile(DeletableModel):
                              verbose_name=_('City'))
     birth_date = models.DateField(_('Birth Date'), blank=True, null=True)
     gender = models.CharField(choices=GENDERS, max_length=1, default='M', verbose_name=_('Gender'), null=True)
+
+    @property
+    def get_age(self) -> int:
+        today = date.today()
+        dob = self.birth_date
+        before_dob = (today.month, today.day) < (dob.month, dob.day)
+        return today.year - self.birth_date.year - before_dob
+
+    @property
+    def get_photo(self):
+        try:
+            return self.photo.url
+        except ValueError:
+            return ""
+
+    @property
+    def orders_count(self):
+        # print("tessssssssssssssssstt")
+        # return self.orders.filter(visible=True).count() or 0
+        return '0'
 
     class Meta:
         verbose_name = _('Profile')

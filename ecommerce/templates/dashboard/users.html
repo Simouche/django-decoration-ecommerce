@@ -1,0 +1,100 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block content %}
+    <!-- DATA TABLE -->
+    <h3 class="title-5 m-b-35">{% trans "Users" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+            <div class="rs-select2--light rs-select2--md">
+                <select class="js-select2" name="property">
+                    <option selected="selected">{% trans "Groups" %}</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+        </div>
+        <div class="table-data__tool-right">
+            <button id="create-user" type="button" name="button"
+                    class="au-btn au-btn-icon au-btn--green au-btn--small">
+                <i class="zmdi zmdi-plus"></i>{% trans "add user" %}
+            </button>
+            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+
+                <select class="js-select2" name="type">
+                    <option selected="selected">{% trans "Export" %}</option>
+                    <option value="">PDF</option>
+                    <option value="">EXCEL</option>
+                </select>
+
+                <div class="dropDownSelect2"></div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive table-responsive-data2">
+        <table class="table table-data2" id="products-table">
+            <thead>
+            <tr>
+                <th>{% trans "picture" %}</th>
+                <th>{% trans "full name" %}</th>
+                <th>{% trans "email" %}</th>
+                <th>{% trans "phone" %}</th>
+                <th>{% trans "date joined" %}</th>
+                <th>{% trans "role" %}</th>
+                <th>{% trans "orders count" %}</th>
+                <th>{% trans "approved" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for user in users %}
+                <tr class="tr-shadow">
+                    <td>
+                        <img src="{{ user.profile.get_photo }}" alt="" width="36px">
+                    </td>
+                    <td>{{ user.full_name }}</td>
+
+                    <td>
+                        <span class="email {% if user.confirmed_email %} status--process {% else %} status--denied {% endif %}"> {{ user.email }}</span>
+                    </td>
+
+                    <td><span
+                            class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phones.first }}</span>
+                    </td>
+
+                    <td>{{ user.date_joined }}</td>
+
+                    <td>{{ user.get_user_type_display }}</td>
+
+                    <td>{{ user.orders_count }}</td>
+
+                    <td>{{ user.is_active }}</td>
+{% comment %}                    <td>{% if user.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
+                        <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
+                    <td></td>{% endcomment %}
+                    <td>
+                        <div class="table-data-feature">
+{#                            <a href="{% url 'ecommerce:products-product-update' product.id %}">#}
+                                <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="zmdi zmdi-edit"></i>
+                                </button>
+{#                            </a>#}
+                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- END DATA TABLE -->
+
+{% endblock content %}

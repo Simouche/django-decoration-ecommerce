@@ -98,8 +98,9 @@ class UserDeleteView(DeleteView):
 @method_decorator(staff_member_required, name='dispatch')
 class UserListView(ListView):
     model = User
-    template_name = ""
-    queryset = User.objects.filter()
+    template_name = "dashboard/users.html"
+    queryset = User.objects.all()
+    context_object_name = 'users'
 
 
 class ForgotPassword(View):

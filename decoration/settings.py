@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'requests',
     'django_seed',
+    'bootstrap_modal_forms',
 ]
 
 MIDDLEWARE = [
