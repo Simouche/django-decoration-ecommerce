@@ -14,6 +14,8 @@ from django.db.models import Q, Func
 from django.shortcuts import get_object_or_404
 
 from base_backend import get_password_reset_table, get_otp_verification_table
+
+
 # from restaurant.settings import EMAIL_HOST_USER
 
 
@@ -225,6 +227,11 @@ def send_email(subject: str, email: str, message: str) -> int:
         # from_email=EMAIL_HOST_USER,
         recipient_list=email if isinstance(email, list) else [email]
     )
+
+
+def get_current_week():
+    from datetime import date
+    return date.today().isocalendar()[1]
 
 
 class Month(Func):

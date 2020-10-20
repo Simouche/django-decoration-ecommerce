@@ -113,15 +113,15 @@
         <div class="menu-sidebar__content js-scrollbar1">
             <nav class="navbar-sidebar">
                 <ul class="list-unstyled navbar__list">
-                    <li class="active">
+                    <li {% if "main" in request.path %} class="active" {% endif %} >
                         <a class="js-arrow" href="{% url 'ecommerce:dashboard' %}">
                             <i class="fas fa-tachometer-alt"></i>{% trans "Dashboard" %}</a>
                     </li>
-                    <li>
+                    <li {% if "products" in request.path %} class="active" {% endif %} >
                         <a href="{% url 'ecommerce:dashboard-products' %}">
                             <i class="fas fa-barcode"></i>{% trans "Products" %}</a>
                     </li>
-                    <li>
+                    <li {% if "users" in request.path %} class="active" {% endif %}>
                         <a href="{% url 'accounts:users-list' %}">
                             <i class="fas fa-users"></i>{% trans "Users" %}</a>
                     </li>

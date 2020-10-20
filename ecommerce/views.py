@@ -1,5 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, F, Count
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -10,6 +11,8 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
     RedirectView
 
 # Create your views here.
+from accounts.models import User, State
+from base_backend.utils import get_current_week
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category
 from base_backend import _
@@ -18,10 +21,30 @@ from base_backend import _
 class Index(TemplateView):
     template_name = "index.html"
 
+    def get_context_data(self, **kwargs):
+        m_kwargs = super(Index, self).get_context_data(**kwargs)
+        m_kwargs['popular_cats'] = Category.objects.filter(visible=True)
+        m_kwargs['random_products'] = Product.objects.filter(visible=True).order_by('?')[:3]
+        m_kwargs['top_pick'] = Product.objects.filter(visible=True).annotate(pick_count=Count('orders_lines')).order_by(
+            '-pick_count')[:3]
+        return m_kwargs
 
-# @method_decorator(staff_member_required, name='dispatch')
+
+@method_decorator(staff_member_required, name='dispatch')
 class Dashboard(TemplateView):
     template_name = "dashboard/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        m_kwargs = super(Dashboard, self).get_context_data(**kwargs)
+        m_kwargs["total_users"] = User.objects.filter(user_type="C").count()
+        m_kwargs["items_sold"] = OrderLine.objects.filter(visible=True).aggregate(count=Sum('quantity')) \
+                                     .get('count', 0) or 0
+        m_kwargs["items_sold_week"] = OrderLine.objects.filter(visible=True, created_at__week=get_current_week()) \
+                                          .aggregate(count=Sum('quantity')).get('count', 0) or 0
+        m_kwargs["earnings"] = OrderLine.objects.filter(visible=True) \
+            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('total', 0)
+        m_kwargs["states"] = State.objects.all()[:10]
+        return m_kwargs
 
 
 class DashboardProductsListView(ListView):
@@ -48,7 +71,7 @@ class ProductsListView(ListView):
     context_object_name = 'products'
     queryset = Product.objects.filter(visible=True)
     template_name = ""
-    
+
 
 @method_decorator(staff_member_required, name='dispatch')
 class CreateProduct(CreateView):
@@ -58,7 +81,7 @@ class CreateProduct(CreateView):
     template_name = "dashboard/create_product.html"
     success_message = _("Product Created Successfully")
     form_class = CreateProductForm
-    
+
     def form_invalid(self, form):
         print(form.errors)
         return super(CreateProduct, self).form_invalid(form=form)

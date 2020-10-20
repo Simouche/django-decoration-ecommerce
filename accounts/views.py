@@ -1,6 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -24,7 +25,7 @@ class RegisterView(FormView):
     def get_context_data(self, **kwargs):
         context = super(RegisterView, self).get_context_data(**kwargs)
         return context
-    
+
     def form_invalid(self, form):
         print(form.errors)
         return super(RegisterView, self).form_invalid(form)
@@ -101,6 +102,11 @@ class UserListView(ListView):
     template_name = "dashboard/users.html"
     queryset = User.objects.all()
     context_object_name = 'users'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UserListView, self).get_context_data(object_list=object_list, **kwargs)
+        context['groups'] = Group.objects.all()
+        return context
 
 
 class ForgotPassword(View):

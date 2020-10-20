@@ -1,6 +1,6 @@
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
-from django.db.models import Model
+from django.db.models import Model, Sum
 
 from base_backend.models import DeletableModel, do_nothing
 from base_backend import _
@@ -13,6 +13,9 @@ class Category(DeletableModel):
     name_ar = models.CharField(max_length=50, unique=True, verbose_name=_('Arabic Name'))
     name_en = models.CharField(max_length=50, unique=True, verbose_name=_('English Name'))
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
@@ -24,6 +27,9 @@ class SubCategory(DeletableModel):
     name_en = models.CharField(max_length=50, verbose_name=_('English Name'))
     category = models.ForeignKey('Category', related_name='sub_categories', verbose_name=_('Category'),
                                  on_delete=do_nothing)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         unique_together = (('name', 'category'),)
@@ -48,6 +54,9 @@ class Product(DeletableModel):
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
                                  verbose_name=_('Category'), null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
@@ -58,6 +67,13 @@ class OrderLine(DeletableModel):
     order = models.ForeignKey('Order', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
     on_discount = models.BooleanField(default=False, verbose_name=_('On Discount'))
+
+    def __str__(self):
+        return '{} {}'.format(self.quantity, self.product)
+
+    @property
+    def total(self):
+        return self.product.price * self.quantity
 
     class Meta:
         verbose_name = _('Order Line')
@@ -73,20 +89,26 @@ class Order(DeletableModel):
 
     @property
     def products_count(self):
-        return 0
+        return self.get_lines.aggregate(count=Sum('quantity')).get('count', 0)
 
     @property
     def total_sum(self):
-        return 0
+        total = 0
+        for line in self.get_lines:
+            total += line.total
+        return total
 
     @property
-    def lines(self):
+    def get_lines(self):
         return self.lines.filter(visible=True)
 
     @staticmethod
     def generate_number():
         from random import randint
         return randint(11111, 99999)
+
+    def __str__(self):
+        return '{}'.format(self.number)
 
     class Meta:
         verbose_name = _('Order')
