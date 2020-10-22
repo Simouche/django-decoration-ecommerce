@@ -17,8 +17,10 @@ urlpatterns = [
     path('products/<int:pk>/delete/', views.DeleteProduct.as_view(), name='products-product-delete'),
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
-    path('cart/details/', views.CartDetailsView.as_view(), name='cart-details'),
+    path('cart/details/', views.RedirectToCartDetailsView.as_view(), name='cart-details-redirect'),
+    path('cart/details/<int:pk>/', views.CartDetailsView.as_view(), name='cart-details'),
     path('cart/cashout/', views.CartCashOutToOrder.as_view(), name='cart-cash-out'),
+    path('cart/get-count/', views.get_cart_count, name='cart-cash-out'),
     path('orders/history/', views.OrdersHistory.as_view(), name='orders-history'),
     path('orders/create/', views.OrderCreateView.as_view(), name='orders-create'),
     path('cart/cashout/', views.CartCashOutToOrder.as_view(), name='cart-cash-out'),
@@ -29,4 +31,5 @@ urlpatterns = [
     path('orders/lines/<int:pk>/delete/', views.OrderLineDeleteView.as_view(), name='orderlines-line-delete'),
     path('favorite/add/', views.FavoriteCreateView.as_view(), name='favorite-add'),
     path('favorite/list/', views.FavoriteListView.as_view(), name='favorite-list'),
+    path('reviews/add/', views.FavoriteListView.as_view(), name='review-add'),
 ]

@@ -1,10 +1,30 @@
 function refreshCart() {
-    const xhttp = new XMLHttpRequest()
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("cart_count").innerHTML = this.responseText
+    $.ajax({
+        url: "/cart/get-count/",
+        type: "GET",
+        success: function (data, textStatus, jqXHR) {
+            document.getElementById("cart_count").innerHTML = data['count'] ?? 0
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown)
         }
-    }
-    xhttp.open("GET", "/get-cart-count/", true)
-    xhttp.send()
+    })
+}
+
+refreshCart()
+
+function addToCart(productID, quantity, cart, url, csrf) {
+    const formData = {product: productID, quantity: quantity, cart: cart, csrfmiddlewaretoken: csrf}
+    $.ajax({
+        url: url,
+        type: "POST",
+        data: formData,
+        success: function (data, textStatus, jqXHR) {
+            refreshCart()
+            alert("added to cart!")
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown)
+        }
+    })
 }

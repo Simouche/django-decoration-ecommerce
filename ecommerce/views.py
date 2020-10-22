@@ -2,7 +2,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Count
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -23,7 +23,7 @@ class Index(TemplateView):
 
     def get_context_data(self, **kwargs):
         m_kwargs = super(Index, self).get_context_data(**kwargs)
-        m_kwargs['popular_cats'] = Category.objects.filter(visible=True)
+        m_kwargs['popular_cats'] = Category.objects.category_with_3_products()[:3]
         m_kwargs['random_products'] = Product.objects.filter(visible=True).order_by('?')[:3]
         m_kwargs['top_pick'] = Product.objects.filter(visible=True).annotate(pick_count=Count('orders_lines')).order_by(
             '-pick_count')[:3]
@@ -63,7 +63,15 @@ class ViewProductDetailsView(DetailView):
     model = Product
     context_object_name = 'product'
     queryset = Product.objects.filter(visible=True)
-    template_name = ""
+    template_name = "product_details.html"
+
+    def get_context_data(self, **kwargs):
+        m_context = super(ViewProductDetailsView, self).get_context_data(**kwargs)
+        product = kwargs.get('product', kwargs.get('object', None))
+        if product and self.request.user.is_authenticated:
+            m_context['is_favorite'] = product.id in self.request.user.profile.favorites.all().values_list('product',
+                                                                                                           flat=True)
+        return m_context
 
 
 class ProductsListView(ListView):
@@ -119,9 +127,19 @@ class CartMixin:
 
 
 @method_decorator(login_required, name='dispatch')
+class RedirectToCartDetailsView(RedirectView):
+    permanent = True
+    pattern_name = 'ecommerce:cart-details'
+
+    def get_redirect_url(self, *args, **kwargs):
+        url = reverse(self.pattern_name, kwargs={'pk': self.request.user.profile.cart.id})
+        return url
+
+
+@method_decorator(login_required, name='dispatch')
 class CartDetailsView(DetailView, CartMixin):
     model = Cart
-    template_name = ""
+    template_name = "cart.html"
     context_object_name = "cart"
     queryset = Cart.objects.filter(visible=True)
 
@@ -133,14 +151,26 @@ class CartDetailsView(DetailView, CartMixin):
 @method_decorator(login_required, name='dispatch')
 class CartAddView(CreateView):
     model = CartLine
-    template_name = ""
     context_object_name = "cart_line"
     fields = ['product', 'cart', 'quantity']
+    template_name = "index.html"
+    success_url = reverse_lazy('ecommerce:index')
 
     def get_initial(self):
         initials = super(CartAddView, self).get_initial()
         initials['cart'] = self.request.user.profile.cart
         return initials
+
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(CartAddView, self).form_invalid(form=form)
+
+    def form_valid(self, form):
+        if self.request.is_ajax():
+            super(CartAddView, self).form_valid(form=form)
+            return JsonResponse({'status': 'Success'})
+        else:
+            return super(CartAddView, self).form_valid(form=form)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -171,6 +201,7 @@ class OrdersMixin:
         return queryset.filter(profile=self.request.user.profile)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrdersHistory(ListView, OrdersMixin):
     template_name = ""
     ordering = "-created_at"
@@ -191,6 +222,7 @@ class OrdersHistory(ListView, OrdersMixin):
         return context
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderCreateView(FormView):
     model = Order
     context_object_name = 'order'
@@ -214,6 +246,7 @@ class OrderCreateView(FormView):
         return HttpResponseRedirect(self.get_success_url(), pk=order.pk)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderUpdateView(UpdateView, OrdersMixin):
     model = Order
     context_object_name = 'order'
@@ -227,6 +260,7 @@ class OrderUpdateView(UpdateView, OrdersMixin):
         return self.my_get_queryset(queryset)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderDeleteView(DeleteView, OrdersMixin):
     model = Order
     template_name = ""
@@ -238,6 +272,7 @@ class OrderDeleteView(DeleteView, OrdersMixin):
         return self.my_get_queryset(queryset)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderDetails(DetailView, OrdersMixin):
     model = Order
     context_object_name = 'order'
@@ -256,10 +291,12 @@ class OrderLineMixin:
         return queryset.filter(order__profile=self.request.user.profile)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderLineCreateView(CreateView):
     pass
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderLineUpdateView(UpdateView):
     model = OrderLine
     context_object_name = 'order'
@@ -273,6 +310,7 @@ class OrderLineUpdateView(UpdateView):
         return self.my_get_queryset(queryset)
 
 
+@method_decorator(login_required, name='dispatch')
 class OrderLineDeleteView(DeleteView):
     model = OrderLine
     context_object_name = 'order'
@@ -285,16 +323,33 @@ class OrderLineDeleteView(DeleteView):
         return self.my_get_queryset(queryset)
 
 
+@method_decorator(login_required, name='dispatch')
 class FavoriteCreateView(CreateView):
     model = Favorite
     context_object_name = 'favorite'
+    fields = ['product', 'profile']
+    template_name = "index.html"
+    success_url = reverse_lazy('ecommerce:index')
 
     def get_initial(self):
         initials = super(FavoriteCreateView, self).get_initial()
         initials['profile'] = self.request.user.profile
         return initials
 
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(FavoriteCreateView, self).form_invalid(form=form)
 
+    def form_valid(self, form):
+        print("success?")
+        if self.request.is_ajax():
+            super(FavoriteCreateView, self).form_valid(form=form)
+            return JsonResponse({'status': 'Success'})
+        else:
+            return super(FavoriteCreateView, self).form_valid(form=form)
+
+
+@method_decorator(login_required, name='dispatch')
 class FavoriteListView(ListView):
     model = Favorite
     template_name = ""
@@ -304,3 +359,8 @@ class FavoriteListView(ListView):
     def get_queryset(self):
         queryset = super(FavoriteListView, self).get_queryset()
         return queryset.filter(profile=self.request.user.profile)
+
+
+@login_required()
+def get_cart_count(request):
+    return JsonResponse({'count': request.user.profile.cart.lines.count()})

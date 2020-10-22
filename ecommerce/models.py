@@ -1,17 +1,22 @@
+import decimal
+
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
-from django.db.models import Model, Sum
+from django.db.models import Model, Sum, Avg
 
 from base_backend.models import DeletableModel, do_nothing
 from base_backend import _
 
-
 # Create your models here.
+from ecommerce.managers import CustomCategoryManager
+
 
 class Category(DeletableModel):
     name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
     name_ar = models.CharField(max_length=50, unique=True, verbose_name=_('Arabic Name'))
     name_en = models.CharField(max_length=50, unique=True, verbose_name=_('English Name'))
+
+    objects = CustomCategoryManager()
 
     def __str__(self):
         return self.name
@@ -56,6 +61,22 @@ class Product(DeletableModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def overall(self):
+        return self.ratings.filter(visible=True).aggregate(overall=Avg('stars')).get('overall', 0) or 0
+
+    @property
+    def total_reviews_count(self):
+        return self.ratings.filter(visible=True).count()
+
+    @property
+    def reviews_count_based_on_stars(self):
+        return [self.ratings.filter(visible=True, stars__lte=1).count(),
+                self.ratings.filter(visible=True, stars__in=[1, 2.1]).count(),
+                self.ratings.filter(visible=True, stars__in=[2.1, 3.1]).count(),
+                self.ratings.filter(visible=True, stars__in=[3.1, 4]).count(),
+                self.ratings.filter(visible=True, stars__in=[4.1, 5.1]).count()]
 
     class Meta:
         verbose_name = _('Product')
@@ -134,6 +155,14 @@ class Rate(DeletableModel):
         verbose_name = _('Rating')
         verbose_name_plural = _('Ratings')
 
+    @property
+    def checked_stars_range(self):
+        return range(0, int(self.stars))
+
+    @property
+    def un_checked_stars_range(self):
+        return range(0, 5 - int(self.stars))
+
 
 class Like(DeletableModel):
     profile = models.ForeignKey('accounts.Profile', related_name='likes', on_delete=do_nothing)
@@ -149,13 +178,17 @@ class CartLine(DeletableModel):
     cart = models.ForeignKey('Cart', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
 
+    @property
+    def total_sum(self):
+        return self.product.price * self.quantity
+
     class Meta:
         verbose_name = _('Cart Line')
         verbose_name_plural = _('Cart Lines')
 
 
 class Cart(DeletableModel):
-    profile = models.OneToOneField('accounts.Profile', related_name='carts', on_delete=do_nothing)
+    profile = models.OneToOneField('accounts.Profile', related_name='cart', on_delete=do_nothing)
 
     @property
     def products_count(self):

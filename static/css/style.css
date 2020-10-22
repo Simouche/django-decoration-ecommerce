@@ -1,16 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 
 ::placeholder {
-  color: #e1ab18;
-  opacity: 1; /* Firefox */
+    color: #e1ab18;
+    opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
- color: #e1ab18;
+    color: #e1ab18;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
- color: #e1ab18;
+    color: #e1ab18;
 }
 
 .white-bg {
@@ -3603,7 +3603,7 @@ hr {
 }
 
 .visit-tailor-area .tailor-details h2 {
-    color:#fff;
+    color: #fff;
     font-size: 40px;
     display: block;
     font-weight: 700;
@@ -3772,7 +3772,7 @@ hr {
     display: block
 }
 
-.categories-area .single-cat .cat-cap{
+.categories-area .single-cat .cat-cap {
     text-align: center;
 }
 
@@ -3786,7 +3786,7 @@ hr {
     font-family: "Poppins", sans-serif
 }
 
-.categories-area .single-cat .cat-cap:hover h5{
+.categories-area .single-cat .cat-cap:hover h5 {
     color: white !important;
 }
 
@@ -3986,11 +3986,11 @@ hr {
 
 .footer-area {
     background: #DEB887;
-    padding-left:0px;
+    padding-left: 0px;
     padding-right: 100px
 }
 
-.footer-area .container{
+.footer-area .container {
     margin-left: 150px;
 }
 
@@ -5698,8 +5698,16 @@ hr {
     color: #797979
 }
 
-.product_description_area .tab-content .total_rate .rating_list .list li a i {
-    color: #fbd600
+/*.product_description_area .tab-content .total_rate .rating_list .list li a i {*/
+/*    color: #fbd600*/
+/*}*/
+
+.un-checked-star {
+    color: lightslategray;
+}
+
+.checked-star {
+    color: #fbd600;
 }
 
 .product_description_area .tab-content .total_rate .rating_list .list li:nth-child a i:last-child {
@@ -5831,7 +5839,7 @@ hr {
 }
 
 .review_box .form-control {
-    height: 50px;
+    /*height: 50px;*/
     border-radius: 0
 }
 
@@ -6830,7 +6838,8 @@ hr {
     text-align: center;
     display: inline-block;
     margin-left: 20px;
-    box-shadow: -14.142px 14.142px 20px 0px rgba(0, 0, 0, 0.1)
+    box-shadow: -14.142px 14.142px 20px 0px rgba(0, 0, 0, 0.1);
+    border-width: 0;
 }
 
 .s_product_text .like_us:hover {
@@ -9754,3 +9763,4 @@ b, sup, sub, u, del {
 .switch-wrap {
     margin-bottom: 10px
 }
+

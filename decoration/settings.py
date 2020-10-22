@@ -167,7 +167,7 @@ APP_NAME = "ECOMMERCE"
 # PHONE_VERIFICATION_OTP_TABLE = "restaurants.SmsVerification"
 # PASSWORD_RESET_TABLE = "restaurants.PasswordReset"
 
-# LOGIN_URL = 'restaurants:login'
+LOGIN_URL = 'accounts:login'
 
 
 # EMAIL_HOST = 'skylight-ds.com'
