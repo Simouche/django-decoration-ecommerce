@@ -23,12 +23,12 @@
 
     <div class="modal-body input-box">
         {% for field in form %}
-            <div class="single-input-fields form-group">
+            <div class="single-input-fields form-group {% if field.errors %} invalid {% endif %}">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {% render_field field class="form-control browser-default" %}
                 {% if field.errors %}
                     {% for error in field.errors %}
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback help-block">
                             {{ error }}
                         </div>
                     {% endfor %}

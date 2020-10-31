@@ -103,7 +103,8 @@ class RegistrationForm(forms.ModelForm):
 
         user_type = self.cleaned_data['user_type']
         if user_type == 'C':
-            user.groups.add(Group.objects.get(name='clients'))
+            group, created = Group.objects.get_or_create(name='clients')
+            user.groups.add(group)
 
         user.save()
         return user

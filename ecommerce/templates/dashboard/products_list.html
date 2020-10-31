@@ -126,7 +126,7 @@
     <!-- end modal small -->
 
     {# create product modal#}
-    <div class="modal fade" tabindex="-1" role="dialog" id="create-product-modal" role="dialog"
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-product-modal"
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content"></div>
@@ -142,7 +142,7 @@
         $('#deletemodal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget)
                 const id = button.data('id')
-                document.getElementById(" deleteProductLink").setAttribute("href", `/products/${id}/delete/`)
+                document.getElementById("deleteProductLink").setAttribute("href", `/products/${id}/delete/`)
             }
         )
 

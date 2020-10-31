@@ -15,6 +15,7 @@ urlpatterns = [
     path('products/create/', views.CreateProduct.as_view(), name='products-product-create'),
     path('products/<int:pk>/update/', views.UpdateProduct.as_view(), name='products-product-update'),
     path('products/<int:pk>/delete/', views.DeleteProduct.as_view(), name='products-product-delete'),
+    path('categories/list/', views.CategoriesListView.as_view(), name='categories-list'),
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
     path('cart/details/', views.RedirectToCartDetailsView.as_view(), name='cart-details-redirect'),

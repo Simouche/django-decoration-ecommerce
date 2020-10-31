@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <main>
+        <!--? slider Area Start-->
+        <div class="slider-area ">
+            <div class="slider-active">
+                <div class="single-slider hero-overly2  slider-height2 d-flex align-items-center slider-bg2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-8 col-md-8">
+                                <div class="hero__caption hero__caption2">
+                                    <h1 data-animation="fadeInUp" data-delay=".4s">{% trans 'Products' %}</h1>
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a
+                                                    href="{% url 'ecommerce:index' %}">{% trans 'Home' %}</a></li>
+                                            <li class="breadcrumb-item"><a href="#">{% trans 'Products' %}</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- slider Area End-->
+        <!--? Properties Start -->
+        <section class="properties new-arrival fix">
+            <div class="container">
+                <!-- Section tittle -->
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8 col-md-10">
+                        <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="1s"
+                             data-wow-delay=".2s">
+                            <h2>{% trans 'All Products' %}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Nav Card -->
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- card one -->
+                        <div class="tab-pane fade show active" id="nav-Sofa" role="tabpanel"
+                             aria-labelledby="nav-Sofa-tab">
+                            <div class="row">
+                                {% for product in products %}
+                                    <div class="col-lg-4 col-md-6 col-sm-6">
+                                        <div class="single-new-arrival mb-50 text-center">
+                                            <div class="popular-img">
+                                                <img src="{% static 'img/gallery/popular1.png' %}" alt="">
+                                            </div>
+                                            <div class="popular-caption">
+                                                <h3>
+                                                    <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
+                                                </h3>
+                                                <span>{{ product.price }} {% trans 'DZD' %}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Nav Card -->
+                </div>
+            </div>
+        </section>
+        <!-- Properties End -->
+    </main>
+    <footer>
+        {% include 'footer.html' %}
+    </footer>
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+{% endblock content %}

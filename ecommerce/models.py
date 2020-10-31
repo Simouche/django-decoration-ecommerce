@@ -2,7 +2,7 @@ import decimal
 
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
-from django.db.models import Model, Sum, Avg
+from django.db.models import Model, Sum, Avg, F
 
 from base_backend.models import DeletableModel, do_nothing
 from base_backend import _
@@ -178,9 +178,12 @@ class CartLine(DeletableModel):
     cart = models.ForeignKey('Cart', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
 
+    def _total_sum(self):
+        return self.product.price * self.quantity
+
     @property
     def total_sum(self):
-        return self.product.price * self.quantity
+        return self._total_sum().quantize(decimal.Decimal("0.01"))
 
     class Meta:
         verbose_name = _('Cart Line')
@@ -196,7 +199,8 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return 0
+        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0) \
+            .quantize(decimal.Decimal('0.01'))
 
     class Meta:
         verbose_name = _('Cart')

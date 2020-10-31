@@ -39,11 +39,11 @@
         <table class="table table-data2" id="products-table">
             <thead>
             <tr>
-                <th >{% trans "picture" %}</th>
-                <th >{% trans "full name" %}</th>
-                <th >{% trans "email" %}</th>
-                <th >{% trans "phone" %}</th>
-                <th >{% trans "date joined" %}</th>
+                <th>{% trans "picture" %}</th>
+                <th>{% trans "full name" %}</th>
+                <th>{% trans "email" %}</th>
+                <th>{% trans "phone" %}</th>
+                <th>{% trans "date joined" %}</th>
                 <th class="text-center">{% trans "role" %}</th>
                 <th class="text-center">{% trans "orders count" %}</th>
                 <th class="text-center">{% trans "approved" %}</th>
@@ -78,14 +78,16 @@
 
                     <td class="text-center">{{ user.orders_count|default:0 }}</td>
 
-                    <td class="text-center">{% if  user.is_active %}
-                        <span class="status--process">{% trans 'Yes' %}</span>
-                    {% else %}
-                        <button id="approve-user" type="button" name="button"
-                                class="au-btn au-btn-icon au-btn--green au-btn--small">
-                            {% trans "approve" %}
-                        </button>
-                    {% endif %} </td>
+                    <td class="text-center">
+                        {% if  user.is_active %}
+                            <span class="status--process">{% trans 'Yes' %}</span>
+                        {% else %}
+                            <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user" type="button"
+                               name="button"
+                               class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                {% trans "approve" %}
+                            </a>
+                        {% endif %} </td>
                     {% comment %}                    <td>{% if user.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
                         <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
                     <td></td>{% endcomment %}

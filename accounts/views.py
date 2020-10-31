@@ -2,7 +2,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -40,6 +41,8 @@ class LoginView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
+            if request.user.is_staff:
+                return redirect('ecommerce:dashboard')
             return redirect('ecommerce:index')
 
         login_form = LoginForm()
@@ -55,6 +58,8 @@ class LoginView(View):
                 login(request, user)
                 if request.GET.get('next', None):
                     return redirect(request.GET.get('next'))
+                if request.user.is_staff:
+                    return redirect('ecommerce:dashboard')
                 return redirect('ecommerce:index')
             else:
                 login_form.add_error(None, _('Invalid username/password'))
@@ -107,6 +112,15 @@ class UserListView(ListView):
         context = super(UserListView, self).get_context_data(object_list=object_list, **kwargs)
         context['groups'] = Group.objects.all()
         return context
+
+
+@staff_member_required()
+def activate_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.is_active = True
+    user.save()
+    print(user.is_active)
+    return redirect('accounts:users-list')
 
 
 class ForgotPassword(View):

@@ -1,3 +1,4 @@
+from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F, Count
@@ -14,7 +15,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 from accounts.models import User, State
 from base_backend.utils import get_current_week
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm
-from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category
+from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
 from base_backend import _
 
 
@@ -78,11 +79,14 @@ class ProductsListView(ListView):
     model = Product
     context_object_name = 'products'
     queryset = Product.objects.filter(visible=True)
-    template_name = ""
+    template_name = "products.html"
+    paginate_by = 21
+    page_kwarg = 'page'
+    paginate_orphans = True
 
 
 @method_decorator(staff_member_required, name='dispatch')
-class CreateProduct(CreateView):
+class CreateProduct(BSModalCreateView):
     model = Product
     context_object_name = 'product'
     success_url = reverse_lazy("ecommerce:dashboard-products")
@@ -363,4 +367,47 @@ class FavoriteListView(ListView):
 
 @login_required()
 def get_cart_count(request):
-    return JsonResponse({'count': request.user.profile.cart.lines.count()})
+    try:
+        return JsonResponse({'count': request.user.profile.cart.lines.count()})
+    except Exception:
+        return JsonResponse({'count': 0})
+
+
+class CategoriesListView(ListView):
+    model = Product
+    context_object_name = 'products'
+    queryset = Product.objects.filter(visible=True)
+    template_name = "categories.html"
+    paginate_by = 21
+    page_kwarg = 'page'
+    paginate_orphans = True
+    extra_context = {'categories': Category.objects.filter(visible=True),
+                     'sub_categories': SubCategory.objects.filter(visible=True)}
+    allow_empty = True
+    ordering = 'pk'
+
+    def search(self):
+        queries = self.request.GET
+        print('start', self.queryset)
+        if queries.get('category', None):
+            self.queryset = self.queryset.filter(category__category_id=queries.get('category'))
+            print('category', self.queryset)
+        if queries.get('sub_category', None):
+            self.queryset = self.queryset.filter(category_id=queries.get('sub_category'))
+            print('sub_category', self.queryset)
+        if queries.get('color', 'any') and not queries.get('color', 'any') == 'any':
+            self.queryset = self.queryset.filter(colors__contains=[queries.get('color')])
+            print('color', self.queryset)
+        if queries.get('from', 0):
+            self.queryset = self.queryset.filter(price__gte=queries.get('from', 0))
+            print('from', self.queryset)
+        if queries.get('to', 0):
+            self.queryset = self.queryset.filter(price__lte=queries.get('to', 0))
+            print('to', self.queryset)
+        if queries.get('period'):
+            integer = 0
+            # todo implement the cases for this
+
+    def get(self, request, *args, **kwargs):
+        self.search()
+        return super(CategoriesListView, self).get(request, *args, **kwargs)

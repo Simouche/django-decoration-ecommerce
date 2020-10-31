@@ -1,3 +1,4 @@
+import os
 import random
 import secrets
 from functools import wraps
@@ -242,3 +243,7 @@ class Month(Func):
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
+def is_app_ready():
+    return os.environ.get('RUN_MAIN', None) != 'true'
