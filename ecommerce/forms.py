@@ -47,7 +47,7 @@ class CreateProductForm(BSModalModelForm):
     description = forms.CharField(widget=forms.Textarea(
         attrs={
             'placeholder': _('French Description'),
-            'size':20
+            'size': 20
         }
     ), label=_('French Description'))
 

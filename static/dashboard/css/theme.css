@@ -14666,3 +14666,8 @@ section {
 .btn-delete.is-disabled {
     opacity: .5;
 }
+
+
+.invalid .invalid-feedback{
+    display: block;
+}

@@ -1,10 +1,14 @@
+import json
+
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum, F, Count
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -13,7 +17,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 # Create your views here.
 from accounts.models import User, State
-from base_backend.utils import get_current_week
+from base_backend.utils import get_current_week, is_ajax
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
 from base_backend import _
@@ -53,11 +57,23 @@ class DashboardProductsListView(ListView):
     queryset = Product.objects.all()
     model = Product
     context_object_name = "products"
-    extra_context = {'categories': Category.objects.all()}
+    extra_context = {'categories': json.dumps(Category.objects.with_sub_cats(), cls=DjangoJSONEncoder)}
     page_kwarg = 'page'
     paginate_by = 25
     allow_empty = False
-    ordering = 'created_at'
+    ordering = '-created_at'
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(DashboardProductsListView, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['products'] = render_to_string('dashboard/_products_table.html',
+                                                {'products': context.pop('products', None)},
+                                                request=request)
+            return JsonResponse(data)
+        else:
+            return super(DashboardProductsListView, self).get(request, *args, **kwargs)
 
 
 class ViewProductDetailsView(DetailView):
@@ -83,6 +99,7 @@ class ProductsListView(ListView):
     paginate_by = 21
     page_kwarg = 'page'
     paginate_orphans = True
+    ordering = ['-created_at']
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -97,6 +114,12 @@ class CreateProduct(BSModalCreateView):
     def form_invalid(self, form):
         print(form.errors)
         return super(CreateProduct, self).form_invalid(form=form)
+
+    def form_valid(self, form):
+        print("success")
+        print(form.cleaned_data)
+        form.save()
+        return super(CreateProduct, self).form_valid(form=form)
 
 
 @method_decorator(staff_member_required, name='dispatch')

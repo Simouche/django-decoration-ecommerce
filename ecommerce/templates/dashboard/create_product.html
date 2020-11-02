@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 {% load i18n %}
-<form method="post" action="">
+<form method="post" enctype="multipart/form-data" action="">
     {% csrf_token %}
 
     <div class="modal-header">
@@ -22,10 +22,19 @@
     {% endif %}
 
     <div class="modal-body input-box">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
         {% for field in form %}
             <div class="single-input-fields form-group {% if field.errors %} invalid {% endif %}">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% render_field field class="form-control browser-default" %}
+                {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                    {% render_field field class="form-control browser-default" %}
+                {% endwith %}
+
                 {% if field.errors %}
                     {% for error in field.errors %}
                         <div class="invalid-feedback help-block">
