@@ -1,6 +1,6 @@
 import json
 
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
@@ -57,11 +57,24 @@ class DashboardProductsListView(ListView):
     queryset = Product.objects.all()
     model = Product
     context_object_name = "products"
-    extra_context = {'categories': json.dumps(Category.objects.with_sub_cats(), cls=DjangoJSONEncoder)}
+    extra_context = {'categories_json': json.dumps(Category.objects.with_sub_cats()),
+                     'categories': Category.objects.filter(visible=True)}
     page_kwarg = 'page'
     paginate_by = 25
-    allow_empty = False
-    ordering = '-created_at'
+    allow_empty = True
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = super(DashboardProductsListView, self).get_queryset()
+        for item in queryset:
+            print(item.main_image.url)
+        if self.request.GET.get('category', None):
+            queryset = queryset.filter(
+                category__category_id=self.request.GET.get('category', None))
+        if self.request.GET.get('sub_category', None):
+            queryset = queryset.filter(
+                category_id=self.request.GET.get('sub_category', None))
+        return queryset
 
     def get(self, request, *args, **kwargs):
         if is_ajax(request):
@@ -123,13 +136,12 @@ class CreateProduct(BSModalCreateView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
-class UpdateProduct(UpdateView):
+class UpdateProduct(BSModalUpdateView):
     model = Product
     context_object_name = 'product'
-    fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price', 'main_image',
-              'slider', 'discount_price', 'colors', 'dimensions']
-    success_url = ""
-    template_name = ""
+    form_class = CreateProductForm
+    success_url = reverse_lazy("ecommerce:dashboard-products")
+    template_name = "dashboard/create_product.html"
     queryset = Product.objects.filter(visible=True)
 
 
