@@ -102,7 +102,11 @@ class OrderLine(DeletableModel):
 
 
 class Order(DeletableModel):
-    status_choices = (('P', _('Pending')), ('CO', _('Confirmed')), ('CA', _('Canceled')))
+    status_choices = (('P', _('Pending')),
+                      ('CO', _('Confirmed')),
+                      ('CA', _('Canceled')),
+                      ('OD', _('On Delivery')),
+                      ('D', _('Delivered')))
 
     profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))

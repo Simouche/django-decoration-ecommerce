@@ -1,0 +1,54 @@
+{% load widget_tweaks %}
+{% load i18n %}
+<form method="post" enctype="multipart/form-data" action="">
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Create New User' %}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+
+    <div class="modal-body input-box">
+        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+
+        {% for field in form %}
+            <div class="single-input-fields form-group {% if field.errors %} invalid {% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                    {% render_field field class="form-control browser-default" %}
+                {% endwith %}
+
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="invalid-feedback help-block">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
+    </div>
+
+</form>

@@ -14668,6 +14668,18 @@ section {
 }
 
 
-.invalid .invalid-feedback{
+.invalid .invalid-feedback {
     display: block;
+}
+
+.deleted {
+    background-color: #e37f7f25;
+}
+
+.au-btn--red {
+    background: #c76363;
+}
+
+.au-btn--red:hover {
+    background: #bd5959;
 }

@@ -17,6 +17,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
 
 # Create your views here.
 from accounts.models import User, State
+from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
@@ -35,7 +36,7 @@ class Index(TemplateView):
         return m_kwargs
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(super_user_required, name='dispatch')
 class Dashboard(TemplateView):
     template_name = "dashboard/dashboard.html"
 
@@ -52,6 +53,7 @@ class Dashboard(TemplateView):
         return m_kwargs
 
 
+@method_decorator(staff_member_required(), name='dispatch')
 class DashboardProductsListView(ListView):
     template_name = "dashboard/products_list.html"
     queryset = Product.objects.all()
@@ -66,14 +68,46 @@ class DashboardProductsListView(ListView):
 
     def get_queryset(self):
         queryset = super(DashboardProductsListView, self).get_queryset()
-        for item in queryset:
-            print(item.main_image.url)
         if self.request.GET.get('category', None):
             queryset = queryset.filter(
                 category__category_id=self.request.GET.get('category', None))
         if self.request.GET.get('sub_category', None):
             queryset = queryset.filter(
                 category_id=self.request.GET.get('sub_category', None))
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(DashboardProductsListView, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['products'] = render_to_string('dashboard/_products_table.html',
+                                                {'products': context.pop('products', None)},
+                                                request=request)
+            return JsonResponse(data)
+        else:
+            return super(DashboardProductsListView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(staff_member_required(), name='dispatch')
+class DashboardSalesListView(ListView):
+    template_name = "dashboard/sales_list.html"
+    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D'])
+    model = Order
+    context_object_name = "sales"
+    page_kwarg = 'page'
+    paginate_by = 25
+    allow_empty = True
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = super(DashboardSalesListView, self).get_queryset()
+        # if self.request.GET.get('category', None):
+        #     queryset = queryset.filter(
+        #         category__category_id=self.request.GET.get('category', None))
+        # if self.request.GET.get('sub_category', None):
+        #     queryset = queryset.filter(
+        #         category_id=self.request.GET.get('sub_category', None))
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -124,16 +158,6 @@ class CreateProduct(BSModalCreateView):
     success_message = _("Product Created Successfully")
     form_class = CreateProductForm
 
-    def form_invalid(self, form):
-        print(form.errors)
-        return super(CreateProduct, self).form_invalid(form=form)
-
-    def form_valid(self, form):
-        print("success")
-        print(form.cleaned_data)
-        form.save()
-        return super(CreateProduct, self).form_valid(form=form)
-
 
 @method_decorator(staff_member_required, name='dispatch')
 class UpdateProduct(BSModalUpdateView):
@@ -157,7 +181,6 @@ class DeleteProduct(RedirectView):
 
 
 # cart
-
 class CartMixin:
     def my_get_queryset(self, queryset):
         if self.request.user.is_staff:
@@ -236,16 +259,23 @@ class CartCashOutToOrder(View):
 class OrdersMixin:
     def my_get_queryset(self, queryset):
         if self.request.user.is_staff:
-            return queryset
+            return queryset.filter(status__in=['P', 'CA'])
         return queryset.filter(profile=self.request.user.profile)
 
 
 @method_decorator(login_required, name='dispatch')
 class OrdersHistory(ListView, OrdersMixin):
-    template_name = ""
     ordering = "-created_at"
     queryset = Order.objects.filter(visible=True)
     context_object_name = "orders"
+
+    def get_template_names(self):
+        names = []
+        if self.request.user.is_staff:
+            names.append("dashboard/orders_list.html")
+        else:
+            names.append("orders_list.html")
+        return names
 
     def get_queryset(self):
         queryset = super(OrdersHistory, self).get_queryset()

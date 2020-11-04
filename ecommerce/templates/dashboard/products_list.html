@@ -149,12 +149,6 @@
     <script src="{% static 'js/decorationjs/category.js' %}"></script>
     {# delete product script #}
     <script type="text/javascript">
-        let updateIdUrl = ""
-        $('#update-product').on('click', function (event) {
-            const button = $(event.relatedTarget)
-            updateIdUrl = button.data('url')
-        })
-
         $('#deletemodal').on('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget)
                 const id = button.data('id')
@@ -198,6 +192,8 @@
             })
         }
 
+        createProductForm()
+
         const asyncSuccessMessage2 =
             "<div " +
             "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' " +
@@ -210,8 +206,6 @@
             "<script>" +
             "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});" +
             "<\/script>"
-
-        createProductForm()
 
         {% for product in products %}
             function updateProductForm{{ product.id }}() {

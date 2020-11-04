@@ -113,10 +113,12 @@
         <div class="menu-sidebar__content js-scrollbar1">
             <nav class="navbar-sidebar">
                 <ul class="list-unstyled navbar__list">
-                    <li {% if "main" in request.path %} class="active" {% endif %} >
-                        <a class="js-arrow" href="{% url 'ecommerce:dashboard' %}">
-                            <i class="fas fa-tachometer-alt"></i>{% trans "Dashboard" %}</a>
-                    </li>
+                    {% if user.is_superuser %}
+                        <li {% if "main" in request.path %} class="active" {% endif %} >
+                            <a class="js-arrow" href="{% url 'ecommerce:dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i>{% trans "Dashboard" %}</a>
+                        </li>
+                    {% endif %}
                     <li {% if "products" in request.path %} class="active" {% endif %} >
                         <a href="{% url 'ecommerce:dashboard-products' %}">
                             <i class="fas fa-barcode"></i>{% trans "Products" %}</a>
@@ -126,9 +128,14 @@
                             <i class="fas fa-users"></i>{% trans "Users" %}</a>
                     </li>
                     <li>
-                        <a href="form.html">
+                        <a href="{% url 'ecommerce:orders-history' %}">
+                            <i class="far fa-credit-card"></i>{% trans "Orders" %}</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'ecommerce:dashboard-sales' %}">
                             <i class="far fa-credit-card"></i>{% trans "Sales" %}</a>
                     </li>
+
                 </ul>
             </nav>
         </div>
@@ -239,7 +246,7 @@
                                         <img src="{% static 'img/icon/avatar.jpg' %}" alt="John Doe"/>
                                     </div>
                                     <div class="content">
-                                        <a class="js-acc-btn" href="#">username</a>
+                                        <a class="js-acc-btn" href="#">{{ user.first_name }}</a>
                                     </div>
                                     <div class="account-dropdown js-dropdown">
                                         <div class="info clearfix">
@@ -251,14 +258,14 @@
                                             </div>
                                             <div class="content">
                                                 <h5 class="name">
-                                                    <a href="#">john doe</a>
+                                                    <a href="#">{{ user.full_name }}</a>
                                                 </h5>
-                                                <span class="email">johndoe@example.com</span>
+                                                <span class="email">{{ user.email }}</span>
                                             </div>
                                         </div>
                                         <div class="account-dropdown__body">
                                             <div class="account-dropdown__item">
-                                                <a href="#">
+                                                <a href="{% url 'accounts:profile-details' user.id %}">
                                                     <i class="zmdi zmdi-account"></i>{% trans "Account" %}</a>
                                             </div>
                                             <div class="account-dropdown__item">
@@ -267,7 +274,7 @@
                                             </div>
                                         </div>
                                         <div class="account-dropdown__footer">
-                                            <a href="#">
+                                            <a href="{% url 'accounts:logout' %}">
                                                 <i class="zmdi zmdi-power"></i>{% trans "Logout" %}</a>
                                         </div>
                                     </div>

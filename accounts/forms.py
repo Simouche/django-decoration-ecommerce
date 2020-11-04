@@ -1,6 +1,7 @@
+from bootstrap_modal_forms.forms import BSModalModelForm
 from django import forms
 from django.contrib.auth.models import Group
-from django.contrib.postgres.forms import SimpleArrayField
+from django.contrib.postgres.forms import SimpleArrayField, SplitArrayWidget
 
 from accounts.models import User, Profile, City
 from base_backend import _
@@ -74,7 +75,7 @@ class RegistrationForm(forms.ModelForm):
             attrs={
                 'placeholder': _("Confirm Password")
             }
-        )
+        ), label=_('Confirm Password')
     )
     email = forms.EmailField(
         required=False,
@@ -103,7 +104,7 @@ class RegistrationForm(forms.ModelForm):
 
         user_type = self.cleaned_data['user_type']
         if user_type == 'C':
-            group, created = Group.objects.get_or_create(name='clients')
+            group, created = Group.objects.get_or_create(name='Client')
             user.groups.add(group)
 
         user.save()
@@ -132,3 +133,81 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['user', 'photo', 'address', 'city', 'birth_date', 'gender']
+
+
+class CreateStaffForm(BSModalModelForm):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': _("Username")
+            }
+        )
+    )
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': _("First Name")
+            }
+        )
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': _("Last Name")
+            }
+        )
+    )
+    phones = SimpleArrayField(forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': _("Phone Number")
+            }
+        ), help_text=_("if you have multiple phones, enter them separated by a coma.")
+    ))
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': _("Password")
+            }
+        )
+    )
+    c_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': _("Confirm Password")
+            }
+        )
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(
+            attrs={
+                'placeholder': _("Email")
+            }
+        )
+    )
+    user_type = forms.ChoiceField(widget=forms.HiddenInput,
+                                  choices=(('C', _('Client')), ('S', _('Staff')), ('A', _('Admin'))))
+
+    class Meta:
+        model = User
+        fields = ['username', "first_name", "last_name", 'user_type', 'phones', 'email']
+
+    def clean(self):
+        super(CreateStaffForm, self).clean()
+        if not self.cleaned_data.get('password') == self.cleaned_data.get('c_password'):
+            raise forms.ValidationError(_("Un-matching passwords!"))
+
+    def save(self, commit=True):
+        user = super(CreateStaffForm, self).save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        user.is_staff = True
+        user.save()
+
+        user_type = self.cleaned_data['user_type']
+        if user_type == 'S':
+            group, created = Group.objects.get_or_create(name='Staff')
+            user.groups.add(group)
+
+        user.save()
+        return user

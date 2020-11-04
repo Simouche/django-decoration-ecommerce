@@ -38,6 +38,8 @@ class User(AbstractUser):
                     "Client, Staff or Admin."),
     )
 
+    visible = models.BooleanField(default=True)
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", 'user_type', 'phones', 'email']
 
@@ -52,6 +54,11 @@ class User(AbstractUser):
     @property
     def confirmed_email(self) -> bool:
         return False
+
+    def delete(self, using=None, keep_parents=False):
+        self.visible = False
+        self.is_active = False
+        self.save()
 
     def __str__(self):
         return self.full_name

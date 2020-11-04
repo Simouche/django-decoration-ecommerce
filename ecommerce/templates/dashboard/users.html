@@ -1,6 +1,7 @@
 {% extends 'dashboard/base_dashboard.html' %}
 {% load widget_tweaks %}
 {% load i18n %}
+{% load static %}
 
 {% block content %}
     <!-- DATA TABLE -->
@@ -8,8 +9,8 @@
     <div class="table-data__tool">
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
-                <select class="js-select2" name="property">
-                    <option selected="selected">{% trans "Groups" %}</option>
+                <select id="group-select" class="js-select2" name="group">
+                    <option value="" selected="selected">{% trans "Groups" %}</option>
                     {% for group in groups %}
                         <option value="{{ group.id }}">{{ group.name }}</option>
                     {% endfor %}
@@ -36,7 +37,7 @@
         </div>
     </div>
     <div class="table-responsive table-responsive-data2">
-        <table class="table table-data2" id="products-table">
+        <table class="table table-data2" id="users-table">
             <thead>
             <tr>
                 <th>{% trans "picture" %}</th>
@@ -46,13 +47,13 @@
                 <th>{% trans "date joined" %}</th>
                 <th class="text-center">{% trans "role" %}</th>
                 <th class="text-center">{% trans "orders count" %}</th>
-                <th class="text-center">{% trans "approved" %}</th>
+                <th class="text-center">{% trans "access" %}</th>
             </tr>
             </thead>
             <tbody>
 
             {% for user in users %}
-                <tr class="tr-shadow">
+                <tr class="tr-shadow {% if not user.visible %} deleted {% endif %}">
                     <td>
                         <img src="{{ user.profile.get_photo }}" alt="None" width="36px">
                     </td>
@@ -79,28 +80,37 @@
                     <td class="text-center">{{ user.orders_count|default:0 }}</td>
 
                     <td class="text-center">
-                        {% if  user.is_active %}
-                            <span class="status--process">{% trans 'Yes' %}</span>
+                        {% if  not user.visible %}
+                            <span class="status--denied">{% trans 'Deleted' %}</span>
                         {% else %}
-                            <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user" type="button"
-                               name="button"
-                               class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                {% trans "approve" %}
-                            </a>
-                        {% endif %} </td>
-                    {% comment %}                    <td>{% if user.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
-                        <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
-                    <td></td>{% endcomment %}
+                            {% if  user.is_active %}
+                                <a href="{% url 'accounts:users-deactivate-user' user.pk %}" id="revoke-user"
+                                   type="button"
+                                   name="button"
+                                   class="au-btn au-btn-icon au-btn--red au-btn--small">
+                                    {% trans "revoke" %}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user"
+                                   type="button"
+                                   name="button"
+                                   class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                    {% trans "approve" %}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+
+
+                    </td>
                     <td>
                         <div class="table-data-feature">
                             <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {#                            <a href="{% url 'ecommerce:products-product-update' product.id %}">#}
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i class="zmdi zmdi-edit"></i>
-                            </button>
-                            {#                            </a>#}
+                            {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
+                            {#                                <i class="zmdi zmdi-edit"></i>#}
+                            {#                            </button>#}
+
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
                                 <i class="zmdi zmdi-delete"></i>
@@ -116,3 +126,102 @@
     <!-- END DATA TABLE -->
 
 {% endblock content %}
+
+{% block modals %}
+
+    <!-- delete user modal -->
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">{% trans 'Attention!' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% trans 'Delete User ?' %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+
+                    <button id="deleteUserButton" type="button" class="btn btn-delete">{% trans 'Delete' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end delete user modal -->
+
+    {# create user modal#}
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-user-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+{% endblock modals %}
+
+{% block scripts %}
+    <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+    <script src="{% static 'js/decorationjs/user.js' %}"></script>
+    <script type="text/javascript">
+        $('#deletemodal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget)
+                const id = button.data('id')
+                document.getElementById("deleteUserButton").onclick = function () {
+                    deleteUser(`/account/users/${id}/delete/`, '#users-table', "{{ csrf_token }}")
+                    $('#deletemodal').modal("hide");
+                }
+            }
+        )
+        const asyncSuccessMessage =
+            "<div " +
+            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' " +
+            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>" +
+            "{% trans "Success: User was created." %}" +
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+            "<span aria-hidden='true'>&times;</span>" +
+            "</button>" +
+            "</div>" +
+            "<script>" +
+            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});" +
+            "<\/script>"
+
+
+        function createUserForm() {
+            $(function () {
+                $("#create-user").modalForm({
+                    modalID: "#create-user-modal",
+                    formURL: "{% url 'accounts:profile-create' %}",
+                    asyncUpdate: true,
+                    asyncSettings: {
+                        successMessage: asyncSuccessMessage,
+                        closeOnSubmit: true,
+                        dataUrl: "{% url "accounts:users-list" %}",
+                        dataElementId: '#users-table',
+                        dataKey: "users",
+                        addModalFormFunction: createUserForm
+                    }
+                })
+            })
+        }
+
+        createUserForm()
+
+        $("#group-select").on('change', function (object) {
+            filterUserByGroup({
+                groupId: $(this).val(),
+                url: "{% url 'accounts:users-list' %}",
+                dataTableId: "#users-table"
+            })
+        })
+
+
+    </script>
+
+
+{% endblock scripts %}

@@ -74,9 +74,13 @@
                                 <ul id="navigation">
                                     <li><a href="{% url 'ecommerce:index' %}">{% trans "Home" %}</a></li>
                                     <li><a href="{% url 'ecommerce:products-list' %}">{% trans "Products" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:categories-list' %}">{% trans "Categories" %}</a></li>
+                                    <li><a href="{% url 'ecommerce:categories-list' %}">{% trans "Categories" %}</a>
+                                    </li>
                                     <li><a href="{% url 'ecommerce:about' %}">{% trans "About" %}</a></li>
                                     <li><a href="{% url 'ecommerce:contact' %}">{% trans "Contact" %}</a></li>
+                                    {% if user.is_staff %}
+                                        <li><a href="{% url 'ecommerce:dashboard' %}">{% trans "Dashboard" %}</a></li>
+                                    {% endif %}
                                 </ul>
                             </nav>
                         </div>
