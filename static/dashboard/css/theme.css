@@ -14676,6 +14676,11 @@ section {
     background-color: #e37f7f25;
 }
 
+.completed {
+    background-color: #7fe39025;
+}
+
+
 .au-btn--red {
     background: #c76363;
 }

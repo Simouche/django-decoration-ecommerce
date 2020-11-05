@@ -1,10 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
 
-</body>
-</html>
+{% block content %}
+    <h3 class="title-5 m-b-35">{% trans "Sales" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+            <div class="rs-select2--light rs-select2--md">
+                <select id="group-select" class="js-select2" name="group">
+                    <option value="" selected="selected">{% trans "Status" %}</option>
+                    <option value="CO">{% trans 'Confirmed' %}</option>
+                    <option value="OD">{% trans 'On Delivery' %}</option>
+                    <option value="D">{% trans 'Delivered' %}</option>
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+        </div>
+        <div class="table-data__tool-right">
+            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+
+                <select class="js-select2" name="type">
+                    <option selected="selected">{% trans "Export" %}</option>
+                    <option value="">PDF</option>
+                    <option value="">EXCEL</option>
+                </select>
+
+                <div class="dropDownSelect2"></div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive table-responsive-data2">
+        <table class="table table-data2" id="users-table">
+            <thead>
+            <tr>
+                <th>{% trans "Number" %}</th>
+                <th>{% trans "Client" %}</th>
+                <th>{% trans "phone" %}</th>
+                <th>{% trans "Items Count" %}</th>
+                <th>{% trans "Total" %}</th>
+                <th>{% trans "date" %}</th>
+                <th class="text-center">{% trans "status" %}</th>
+                <th class="text-center">{% trans "actions" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for sale in sales %}
+                <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'D' %}  completed {% endif %}">
+                    <td>{{ sale.number }}</td>
+                    <td>{{ sale.profile.user.full_name }}</td>
+                    <td><span
+                            class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
+                        {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
+                    </td>
+                    <td>{{ sale.products_count }}</td>
+                    <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
+                    <td>{{ sale.created_at }}</td>
+                    <td class="text-center">
+                        {% if  sale.status == 'D' %}
+                            <span class="status--process">{% trans 'Delivered' %}</span>
+                        {% else %}
+                            <a href="{% url 'ecommerce:dashboard-sales-update-status' sale.pk %}" id="approve-order"
+                               type="button" name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                {% if  sale.status == 'CO' %}
+                                    {% trans "On Delivery" %}
+                                {% elif sale.status == 'OD' %}
+                                    {% trans "Delivered" %}
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="table-data-feature">
+                            <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                                <i class="fa fa-info"></i>
+                            </button>
+                            {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
+                            {#                                <i class="zmdi zmdi-edit"></i>#}
+                            {#                            </button>#}
+                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- END DATA TABLE -->
+{% endblock content %}

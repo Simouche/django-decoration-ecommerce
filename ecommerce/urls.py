@@ -9,6 +9,8 @@ urlpatterns = [
     path('dashboard/main/', views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
     path('dashboard/sales/all/', views.DashboardSalesListView.as_view(), name='dashboard-sales'),
+    path('dashboard/sales/<int:pk>/update/status/', views.DashBoardUpdateSaleStatus.as_view(),
+         name='dashboard-sales-update-status'),
     path('about/', views.Index.as_view(), name='about'),
     path('contact/', views.Index.as_view(), name='contact'),
     path('products/list/', views.ProductsListView.as_view(), name='products-list'),

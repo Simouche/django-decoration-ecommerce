@@ -121,7 +121,7 @@ class Order(DeletableModel):
         total = 0
         for line in self.get_lines:
             total += line.total
-        return total
+        return total.quantize(decimal.Decimal("0.01"))
 
     @property
     def get_lines(self):
@@ -138,6 +138,23 @@ class Order(DeletableModel):
     class Meta:
         verbose_name = _('Order')
         verbose_name_plural = _('Orders')
+
+    def progress_status(self):
+        if self.status == 'P':
+            self.status = 'CO'
+        elif self.status == 'CO':
+            self.status = 'OD'
+        elif self.status == 'OD':
+            self.status = 'D'
+        else:
+            self.status = 'CO'
+        self.save()
+
+    def delete(self, using=None, keep_parents=False):
+        if self.status == 'D':
+            return
+        self.status = 'CA'
+        super(Order, self).delete(using=using, keep_parents=keep_parents)
 
 
 class Favorite(DeletableModel):

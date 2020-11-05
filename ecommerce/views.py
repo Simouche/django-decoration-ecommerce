@@ -112,7 +112,7 @@ class DashboardSalesListView(ListView):
 
     def get(self, request, *args, **kwargs):
         if is_ajax(request):
-            super(DashboardProductsListView, self).get(request, *args, **kwargs)
+            super(DashboardSalesListView, self).get(request, *args, **kwargs)
             context = self.get_context_data()
             data = dict()
             data['products'] = render_to_string('dashboard/_products_table.html',
@@ -120,7 +120,19 @@ class DashboardSalesListView(ListView):
                                                 request=request)
             return JsonResponse(data)
         else:
-            return super(DashboardProductsListView, self).get(request, *args, **kwargs)
+            return super(DashboardSalesListView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(staff_member_required(), name='dispatch')
+class DashBoardUpdateSaleStatus(RedirectView):
+    permanent = True
+    pattern_name = "ecommerce:dashboard-sales"
+
+    def get_redirect_url(self, *args, **kwargs):
+        print('is here')
+        order = get_object_or_404(Order, pk=kwargs['pk'])
+        order.progress_status()
+        return reverse("ecommerce:dashboard-sales")
 
 
 class ViewProductDetailsView(DetailView):

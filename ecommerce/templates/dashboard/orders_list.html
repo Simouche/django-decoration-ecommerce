@@ -38,6 +38,8 @@
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
+                <th class="text-center">{% trans "status" %}</th>
+                <th class="text-center">{% trans "actions" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -57,13 +59,11 @@
                         {% if  order.status == 'CA' %}
                             <span class="status--denied">{% trans 'Canceled' %}</span>
                         {% else %}
-                            <a href="{% url 'accounts:users-activate-user' order.pk %}" id="approve-order" type="button"
-                               name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                {% trans "approve" %}
+                            <a href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}" id="approve-order"
+                               type="button" name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                {% trans "Confirm" %}
                             </a>
                         {% endif %}
-
-
                     </td>
                     <td>
                         <div class="table-data-feature">
@@ -73,7 +73,6 @@
                             {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
                             {#                                <i class="zmdi zmdi-edit"></i>#}
                             {#                            </button>#}
-
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
                                 <i class="zmdi zmdi-delete"></i>
