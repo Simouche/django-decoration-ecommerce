@@ -16,7 +16,7 @@
                                         <ol class="breadcrumb">
                                             <li class="breadcrumb-item"><a
                                                     href="{% url 'ecommerce:index' %}">{% trans 'Home' %}</a></li>
-                                            <li class="breadcrumb-item"><a href="#">{% trans 'Checkout' %}</a></li>
+                                            <li class="breadcrumb-item"><a href="#">{% trans 'Confirmed' %}</a></li>
                                         </ol>
                                     </nav>
                                 </div>
@@ -32,27 +32,25 @@
         <section class="checkout_area section-padding40">
             <div class="container">
                 <div class="cupon_area">
-                    <div class="check_title">
-                        <h2> {% trans 'Have a coupon?' %}</h2>
+                    <div class="check_title status--process">
+                        <h2> {% trans 'Thank you for shopping with us, our sales team will contact you soon.' %}</h2>
                     </div>
-                    <input type="text" placeholder="Enter coupon code"/>
-                    <a class="btn" href="#">{% trans 'Apply Coupon' %}</a>
                 </div>
                 <div class="billing_details">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="order_box">
-                                <h2>{% trans 'Your Order' %}</h2>
+                                <h2>{% trans 'Order: #' %}{{ order.number }}</h2>
                                 <ul class="list">
                                     <li>
                                         <a href="#">{% trans 'Product' %}<span>{% trans 'Total' %}</span>
                                         </a>
                                     </li>
-                                    {% for line in user.profile.cart.get_lines %}
+                                    {% for line in order.get_lines %}
                                         <li>
                                             <a href="#">{{ line.product.name }}
                                                 <span class="middle">x {{ line.quantity }}</span>
-                                                <span class="last">{{ line.total_sum }} {% trans 'DZD' %}</span>
+                                                <span class="last">{{ line.total }} {% trans 'DZD' %}</span>
                                             </a>
                                         </li>
                                     {% endfor %}
@@ -60,7 +58,7 @@
                                 <ul class="list list_2">
                                     <li>
                                         <a href="#">{% trans 'Subtotal' %}
-                                            <span>{{ user.profile.cart.total_sum }} {% trans 'DZD' %}</span></a>
+                                            <span>{{ order.total_sum }} {% trans 'DZD' %}</span></a>
                                     </li>
                                     <li>
                                         <a href="#">{% trans 'Shipping' %}
@@ -68,18 +66,10 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">{% trans 'Total' %}<span>{{ user.profile.cart.total_sum }} {% trans 'DZD' %}</span>
+                                        <a href="#">{% trans 'Total' %}<span>{{ order.total_sum }} {% trans 'DZD' %}</span>
                                         </a>
                                     </li>
                                 </ul>
-                                <div class="creat_account checkout-cap">
-                                    <input type="checkbox" id="f-option8" name="selector"/>
-                                    <label for="f-option8">{% trans 'I’ve read and accept the' %} <a
-                                            href="#">{% trans 'terms & conditions*' %}</a>
-                                    </label>
-                                </div>
-                                <a class="btn w-100"
-                                   href="{% url 'ecommerce:cart-check-out-confirm' %}">{% trans 'Confirm' %}</a>
                             </div>
                         </div>
                     </div>

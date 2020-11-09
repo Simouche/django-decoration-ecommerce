@@ -1,0 +1,98 @@
+{% load i18n %}
+{% load static %}
+<section class="cart_area section-padding40">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans 'Product' %}</th>
+                        <th scope="col">{% trans 'Price' %}</th>
+                        <th scope="col">{% trans 'Quantity' %}</th>
+                        <th scope="col">{% trans 'Total' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for line in cart.lines.all %}
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="d-flex">
+                                        {% if line.product.main_image.url %}
+                                            <img src="{{ line.product.main_image.url }}" alt="" width="72px"/>
+                                        {% else %}
+                                            <img src="{% static 'img/icon/product.png' %}" alt="" width="72px"/>
+                                        {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <p>{{ line.product.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <h5>{{ line.product.price }} {% trans 'DZD' %}</h5>
+                            </td>
+                            <td>
+                                <div class="product_count">
+                                    <span class="input-number-decrement"> <i class="ti-minus"></i></span>
+                                    <input id="quantity{{ line.id }}" class="input-number" type="number"
+                                           value="{{ line.quantity }}"
+                                           min="0">
+                                    <span class="input-number-increment"> <i class="ti-plus"></i></span>
+                                </div>
+                            </td>
+                            <td>
+                                <h5>{{ line.total_sum }} {% trans 'DZD' %}</h5>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="bottom_button">
+                        <td>
+                            <a class="btn" href="#">{% trans 'Update Cart' %}</a>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <h5>{% trans 'Subtotal' %}</h5>
+                        </td>
+                        <td>
+                            <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                        </td>
+                    </tr>
+                    <tr class="shipping_area">
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <h5>{% trans 'Delivery' %}</h5>
+                        </td>
+                        <td>
+                            <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <h5>{% trans 'Total' %}</h5>
+                        </td>
+                        <td>
+                            <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="checkout_btn_inner float-right">
+                    <a class="btn"
+                       href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
+                    <a class="btn checkout_btn" href="#">{% trans 'Proceed to checkout' %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

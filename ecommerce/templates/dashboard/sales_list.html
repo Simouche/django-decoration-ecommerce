@@ -2,6 +2,12 @@
 {% load static %}
 {% load i18n %}
 
+{% block styles %}
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock styles %}
+
+
 {% block content %}
     <h3 class="title-5 m-b-35">{% trans "Sales" %}</h3>
     <div class="table-data__tool">
@@ -61,7 +67,7 @@
                             <span class="status--process">{% trans 'Delivered' %}</span>
                         {% else %}
                             <a href="{% url 'ecommerce:dashboard-sales-update-status' sale.pk %}" id="approve-order"
-                               type="button" name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
+                               type="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
                                 {% if  sale.status == 'CO' %}
                                     {% trans "On Delivery" %}
                                 {% elif sale.status == 'OD' %}
@@ -72,12 +78,13 @@
                     </td>
                     <td>
                         <div class="table-data-feature">
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
+                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
-                            {#                                <i class="zmdi zmdi-edit"></i>#}
-                            {#                            </button>#}
+                            {#<button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
+                            {#<i class="zmdi zmdi-edit"></i>#}
+                            {#</button>#}
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
                                 <i class="zmdi zmdi-delete"></i>
@@ -92,3 +99,19 @@
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
+
+
+{% block modals %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="order-details-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content pb-5"></div>
+        </div>
+    </div>
+
+{% endblock modals %}
+
+{% block scripts %}
+    <script src="{% static 'js/decorationjs/order.js' %}"></script>
+{% endblock scripts %}

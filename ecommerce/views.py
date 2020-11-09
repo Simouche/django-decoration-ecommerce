@@ -102,12 +102,8 @@ class DashboardSalesListView(ListView):
 
     def get_queryset(self):
         queryset = super(DashboardSalesListView, self).get_queryset()
-        # if self.request.GET.get('category', None):
-        #     queryset = queryset.filter(
-        #         category__category_id=self.request.GET.get('category', None))
-        # if self.request.GET.get('sub_category', None):
-        #     queryset = queryset.filter(
-        #         category_id=self.request.GET.get('sub_category', None))
+        if self.request.GET.get('status', None):
+            queryset = queryset.filter(status=self.request.GET.get('status', None))
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -115,9 +111,9 @@ class DashboardSalesListView(ListView):
             super(DashboardSalesListView, self).get(request, *args, **kwargs)
             context = self.get_context_data()
             data = dict()
-            data['products'] = render_to_string('dashboard/_products_table.html',
-                                                {'products': context.pop('products', None)},
-                                                request=request)
+            data['sales'] = render_to_string('dashboard/_sales_table.html',
+                                             {'sales': context.pop('sales', None)},
+                                             request=request)
             return JsonResponse(data)
         else:
             return super(DashboardSalesListView, self).get(request, *args, **kwargs)
@@ -129,10 +125,28 @@ class DashBoardUpdateSaleStatus(RedirectView):
     pattern_name = "ecommerce:dashboard-sales"
 
     def get_redirect_url(self, *args, **kwargs):
-        print('is here')
         order = get_object_or_404(Order, pk=kwargs['pk'])
         order.progress_status()
         return reverse("ecommerce:dashboard-sales")
+
+
+@method_decorator(staff_member_required(), name='dispatch')
+class DashboardSaleDetails(DetailView):
+    model = Order
+    context_object_name = 'order'
+    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D'])
+    template_name = "order_details.html"
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(DashboardSaleDetails, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['order'] = render_to_string('dashboard/_order_details.html',
+                                             {'order': context.pop('order', None)},
+                                             request=request)
+            return JsonResponse(data)
+        return super(DashboardSaleDetails, self).get(request=request, *args, **kwargs)
 
 
 class ViewProductDetailsView(DetailView):
@@ -263,8 +277,19 @@ class CartRemoveView(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CartCashOutToOrder(View):
-    pass
+class CartCashOutToOrder(TemplateView):
+    template_name = "checkout.html"
+
+
+@method_decorator(login_required, name='dispatch')
+class CartCheckOutConfirm(RedirectView):
+    pattern_name = "ecommerce:order-check-out"
+    permanent = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        order = self.request.user.profile.cart.confirm()
+        url = reverse(self.pattern_name, kwargs={'pk': order.id})
+        return url
 
 
 # orders and order lines
@@ -358,11 +383,30 @@ class OrderDetails(DetailView, OrdersMixin):
     model = Order
     context_object_name = 'order'
     queryset = Order.objects.filter(visible=True)
-    template_name = ""
+    template_name = "order_details.html"
 
     def get_queryset(self):
         queryset = super(OrderDetails, self).get_queryset()
         return self.my_get_queryset(queryset)
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(OrderDetails, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['order'] = render_to_string('dashboard/_order_details.html',
+                                             {'order': context.pop('order', None)},
+                                             request=request)
+            return JsonResponse(data)
+        return super(OrderDetails, self).get(request=request, *args, **kwargs)
+
+
+@method_decorator(login_required, name='dispatch')
+class OrderCheckOut(DetailView):
+    model = Order
+    context_object_name = 'order'
+    queryset = Order.objects.filter(visible=True)
+    template_name = "order_confirmed.html"
 
 
 class OrderLineMixin:
@@ -445,7 +489,7 @@ class FavoriteListView(ListView):
 @login_required()
 def get_cart_count(request):
     try:
-        return JsonResponse({'count': request.user.profile.cart.lines.count()})
+        return JsonResponse({'count': request.user.profile.cart.get_lines.count()})
     except Exception:
         return JsonResponse({'count': 0})
 

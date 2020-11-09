@@ -42,12 +42,16 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for line in cart.lines.all %}
+                            {% for line in cart.get_lines.all %}
                                 <tr>
                                     <td>
                                         <div class="media">
                                             <div class="d-flex">
-                                                <img src="assets/img/gallery/card1.png" alt=""/>
+                                                {% if line.product.main_image.url %}
+                                                    <img src="{{ line.product.main_image.url }}" alt="" width="72px"/>
+                                                {% else %}
+                                                    <img src="{% static 'img/icon/product.png' %}" alt="" width="72px"/>
+                                                {% endif %}
                                             </div>
                                             <div class="media-body">
                                                 <p>{{ line.product.name }}</p>
@@ -60,7 +64,8 @@
                                     <td>
                                         <div class="product_count">
                                             <span class="input-number-decrement"> <i class="ti-minus"></i></span>
-                                            <input class="input-number" type="number" value="{{ line.quantity }}"
+                                            <input id="quantity{{ line.id }}" class="input-number" type="number"
+                                                   value="{{ line.quantity }}"
                                                    min="0">
                                             <span class="input-number-increment"> <i class="ti-plus"></i></span>
                                         </div>
@@ -111,8 +116,10 @@
                             </tbody>
                         </table>
                         <div class="checkout_btn_inner float-right">
-                            <a class="btn" href="#">Continue Shopping</a>
-                            <a class="btn checkout_btn" href="#">Proceed to checkout</a>
+                            <a class="btn"
+                               href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
+                            <a class="btn checkout_btn"
+                               href="{% url 'ecommerce:cart-check-out' %}">{% trans 'Proceed to checkout' %}</a>
                         </div>
                     </div>
                 </div>
@@ -124,8 +131,15 @@
         {% include 'footer.html' %}
     </footer>
     <!-- Scroll Up -->
-    <div id="back-top">
+    <div id=" back-top">
         <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
     </div>
 {% endblock content %}
 
+{% block scripts %}
+    <script type="text/javascript">
+        {% for line in cart.lines.all %}
+            inputNumber($('#quantity{{ line.id }}'));
+        {% endfor %}
+    </script>
+{% endblock scripts %}

@@ -2,12 +2,17 @@
 {% load static %}
 {% load i18n %}
 
+{% block styles %}
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock styles %}
+
 {% block content %}
     <h3 class="title-5 m-b-35">{% trans "Orders" %}</h3>
     <div class="table-data__tool">
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
-                <select id="group-select" class="js-select2" name="group">
+                <select id="status-select" class="js-select2" name="group">
                     <option value="" selected="selected">{% trans "Status" %}</option>
                     <option value="P">{% trans 'Pending' %}</option>
                     <option value="CA">{% trans 'Canceled' %}</option>
@@ -67,7 +72,8 @@
                     </td>
                     <td>
                         <div class="table-data-feature">
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <button onclick="showOrderDetails('{% url 'ecommerce:orders-order-details' order.pk %}')"
+                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
                             {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
@@ -87,3 +93,24 @@
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
+
+{% block modals %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="order-details-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content pb-5"></div>
+        </div>
+    </div>
+{% endblock modals %}
+
+{% block scripts %}
+    <script src="{% static 'js/decorationjs/order.js' %}"></script>
+
+    <script type="text/javascript">
+        loadByStatus({
+            selectId: "#status-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+        })
+    </script>
+
+{% endblock scripts %}

@@ -50,7 +50,7 @@ class Product(DeletableModel):
     description_ar = models.TextField(verbose_name=_('Arabic Description'))
     description_en = models.TextField(verbose_name=_('English Description'))
     price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
-    main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')  # ToDo add save to
+    main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')
     slider = ArrayField(models.CharField(max_length=255, ), null=True)
     discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'))
     colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'))
@@ -94,7 +94,7 @@ class OrderLine(DeletableModel):
 
     @property
     def total(self):
-        return self.product.price * self.quantity
+        return (self.product.price * self.quantity).quantize(decimal.Decimal("0.01"))
 
     class Meta:
         verbose_name = _('Order Line')
@@ -110,7 +110,7 @@ class Order(DeletableModel):
 
     profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
-    status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'))
+    status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'), default='P')
 
     @property
     def products_count(self):
@@ -206,6 +206,9 @@ class CartLine(DeletableModel):
     def total_sum(self):
         return self._total_sum().quantize(decimal.Decimal("0.01"))
 
+    def to_order_line(self, order):
+        return OrderLine.objects.create(product=self.product, quantity=self.quantity, order=order)
+
     class Meta:
         verbose_name = _('Cart Line')
         verbose_name_plural = _('Cart Lines')
@@ -215,13 +218,27 @@ class Cart(DeletableModel):
     profile = models.OneToOneField('accounts.Profile', related_name='cart', on_delete=do_nothing)
 
     @property
-    def products_count(self):
-        return 0
-
-    @property
     def total_sum(self):
         return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0) \
             .quantize(decimal.Decimal('0.01'))
+
+    @property
+    def products_count(self):
+        return self.get_lines.aggregate(count=Sum('quantity')).get('count', 0)
+
+    @property
+    def get_lines(self):
+        return self.lines.filter(visible=True)
+
+    def confirm(self):
+        order = Order.objects.create(profile=self.profile)
+        for line in self.get_lines:
+            line.to_order_line(order=order)
+        self.clear_lines()
+        return order
+
+    def clear_lines(self):
+        self.lines.update(visible=False)
 
     class Meta:
         verbose_name = _('Cart')

@@ -378,5 +378,6 @@
             addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
                 '{{ csrf_token }}')
         }
+         inputNumber($('#quantity'));
     </script>
 {% endblock scripts %}
