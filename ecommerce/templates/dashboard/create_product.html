@@ -43,6 +43,16 @@
                     {% endfor %}
                 {% endif %}
             </div>
+            {% if field.name == "main_image" %}
+                <div class="single-input-fields form-group">
+                    <label for="media">{% trans 'Other Pictures' %}</label>
+                    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                        <input accept="image/*" class="form-control browser-default" type="file" name="media" id="media"
+                                   multiple="multiple" {% comment %}onchange="readURL2(this);"{% endcomment %}/>
+                        <div style="margin:2px" class="otherimg"></div>
+                    {% endwith %}
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 

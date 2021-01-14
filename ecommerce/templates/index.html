@@ -14,13 +14,12 @@
                                 <div class="hero__caption">
                                     <span>70% Sale off </span>
                                     <h1 data-animation="fadeInUp" data-delay=".4s">Furniture at Cost</h1>
-                                    <p data-animation="fadeInUp" data-delay=".6s">Suspendisse varius enim in eros
-                                        elementum
-                                        tristique. Duis cursus, mi quis viverra ornare, eros
-                                        dolor interdum nulla.</p>
+                                    <p data-animation="fadeInUp" data-delay=".6s">Le charme d'une maison est son décor
+                                        alors soyez exigeant et venez trouver votre bonheur chez <a
+                                                href="{% url 'ecommerce:index' %}">Samy Déco</a>.</p>
                                     <!-- Hero-btn -->
                                     <div class="hero__btn" data-animation="fadeInUp" data-delay=".7s">
-                                        <a href="industries.html" class="btn hero-btn">Discover More</a>
+                                        <a href="industries.html" class="btn hero-btn">{% trans 'Discover More' %}</a>
                                     </div>
                                 </div>
                             </div>
@@ -39,8 +38,8 @@
                         <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="1s"
                              data-wow-delay=".2s">
                             <h2>{% trans 'Popular products' %}</h2>
-                            <P>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare,
-                                eros dolor interdum nulla.</P>
+                            <P>On dit que quand on ne peut pas changer le monde faut changer le décor ,si vous voulez du changement dans votre quotidien il y aurai une seule adresse <a
+                                                href="{% url 'ecommerce:index' %}">Samy Déco</a>.</P>
                         </div>
                     </div>
                 </div>
@@ -75,7 +74,7 @@
                                         <div class="col-lg-4 col-md-6 col-sm-6">
                                             <div class="single-new-arrival mb-50 text-center">
                                                 <div class="popular-img">
-                                                    <img src="{% static 'img/gallery/popular1.png' %}" alt="">
+                                                    <img src="{{ product.main_image.url }}" alt="">
                                                 </div>
                                                 <div class="popular-caption">
                                                     <h3>
@@ -134,7 +133,7 @@
                             <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                  data-wow-delay=".1s">
                                 <div class="popular-img">
-                                    <img src="{% static 'img/gallery/popular4.png' %}" alt="">
+                                    <img src="{{ product.main_image.url }}" alt="">
                                 </div>
                                 <div class="popular-caption">
                                     <h3>
@@ -149,7 +148,7 @@
                 <!-- Button -->
                 <div class="row justify-content-center">
                     <div class="room-btn">
-                        <a href="products.html" class="border-btn">Discover More</a>
+                        <a href="{% url 'ecommerce:products-list' %}" class="border-btn">{% trans 'Discover More' %}</a>
                     </div>
                 </div>
             </div>
@@ -211,7 +210,7 @@
                             <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                  data-wow-delay=".1s">
                                 <div class="popular-img">
-                                    <img src="{% static 'img/gallery/popular7.png' %}" alt="">
+                                    <img src="{{ product.main_image.url }}" alt="">
                                 </div>
                                 <div class="popular-caption">
                                     <h3>

@@ -3,25 +3,24 @@ import json
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum, F, Count
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
     RedirectView
 
 # Create your views here.
 from accounts.models import User, State
+from base_backend import _
 from base_backend.decorators import super_user_required
-from base_backend.utils import get_current_week, is_ajax
+from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
+from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
-from base_backend import _
 
 
 class Index(TemplateView):
@@ -184,6 +183,19 @@ class CreateProduct(BSModalCreateView):
     success_message = _("Product Created Successfully")
     form_class = CreateProductForm
 
+    def form_valid(self, form):
+        if self.request.POST.get('asyncUpdate', None):
+            response = super(CreateProduct, self).form_valid(form=form)
+            images = self.request.FILES.getlist('media')
+            for image in images:
+                path = MEDIA_ROOT + '/products/' + image.name
+                url = MEDIA_URL + 'products/' + image.name
+                handle_uploaded_file(image, path)
+                self.object.slider.append(url)
+            self.object.save()
+            return response
+        return super(CreateProduct, self).form_valid(form)
+
 
 @method_decorator(staff_member_required, name='dispatch')
 class UpdateProduct(BSModalUpdateView):
@@ -201,6 +213,7 @@ class DeleteProduct(RedirectView):
     pattern_name = "ecommerce:dashboard-products"
 
     def get_redirect_url(self, *args, **kwargs):
+        print(self.request.POST.get('csrfmiddlewaretoken'))
         product = get_object_or_404(Product, pk=kwargs['pk'])
         product.delete()
         return reverse("ecommerce:dashboard-products")
@@ -509,7 +522,6 @@ class CategoriesListView(ListView):
 
     def search(self):
         queries = self.request.GET
-        print('start', self.queryset)
         if queries.get('category', None):
             self.queryset = self.queryset.filter(category__category_id=queries.get('category'))
             print('category', self.queryset)

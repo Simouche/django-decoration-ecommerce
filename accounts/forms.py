@@ -186,8 +186,7 @@ class CreateStaffForm(BSModalModelForm):
             }
         )
     )
-    user_type = forms.ChoiceField(widget=forms.HiddenInput,
-                                  choices=(('C', _('Client')), ('S', _('Staff')), ('A', _('Admin'))))
+    user_type = forms.ChoiceField(choices=(('S', _('Staff')), ('A', _('Admin'))))
 
     class Meta:
         model = User

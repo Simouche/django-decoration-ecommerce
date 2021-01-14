@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
 from django.db.models import Model, Sum, Avg, F
 
-from base_backend.models import DeletableModel, do_nothing
+from base_backend.models import DeletableModel, do_nothing, BaseModel
 from base_backend import _
 
 # Create your models here.
@@ -51,7 +51,7 @@ class Product(DeletableModel):
     description_en = models.TextField(verbose_name=_('English Description'))
     price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
     main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')
-    slider = ArrayField(models.CharField(max_length=255, ), null=True)
+    slider = ArrayField(models.CharField(max_length=255, ), null=True, blank=True, default=list)
     discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'))
     colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'))
     dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'))
@@ -102,6 +102,7 @@ class OrderLine(DeletableModel):
 
 
 class Order(DeletableModel):
+    # add return status
     status_choices = (('P', _('Pending')),
                       ('CO', _('Confirmed')),
                       ('CA', _('Canceled')),
@@ -275,3 +276,50 @@ class DeliveryFee(DeletableModel):
     class Meta:
         verbose_name = _('Delivery Fee')
         verbose_name_plural = _('Delivery Fees')
+
+
+class IndexContent(BaseModel):
+    # card 1 attrs
+    card1_visibility = models.BooleanField(default=True, verbose_name=_("Visibility"))
+    card1_header = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Header"))
+    card1_title = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Title"))
+    card1_content = models.CharField(max_length=150, null=True, blank=True, verbose_name=_("Content Text"))
+    card1_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    card1_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
+
+    # section 1 attrs
+    section1_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
+    section1_text = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Content Text"))
+    section1_categories = models.ManyToManyField("Category", related_name="index_cats",
+                                                 verbose_name=_("Display Categories"))
+
+    # section 2 attrs
+    section2_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
+    section2_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section2_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section2_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
+
+    # section 3 attrs
+    section3_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
+    section3_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section3_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+
+    # section 4 attrs
+    section4_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
+    section4_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section4_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section4_image1 = models.ImageField(null=True, blank=True, verbose_name=_("Image 1"), upload_to='index')
+    section4_image2 = models.ImageField(null=True, blank=True, verbose_name=_("Image 2"), upload_to='index')
+
+    # section 5 attrs
+    section5_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
+    section5_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section5_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+
+
+class Partner(DeletableModel):
+    name = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Name"))
+    url = models.URLField(null=True, blank=True, verbose_name=_("URL"))
+
+    def __str__(self):
+        return f'{self.name}'

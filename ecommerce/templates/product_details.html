@@ -37,18 +37,14 @@
                     <div class="col-lg-5">
                         <div class="product_slider_img">
                             <div id="vertical">
-                                <div data-thumb="{% static 'img/gallery/product-details1.png' %}">
-                                    <img src="{% static 'img/gallery/product-details1.png' %}" class="w-100">
+                                <div data-thumb="{{ product.main_image.url }}">
+                                    <img src="{{ product.main_image.url }}" class="w-100">
                                 </div>
-                                <div data-thumb="{% static 'img/gallery/product-details2.png' %}">
-                                    <img src="{% static 'img/gallery/product-details2.png' %}" class="w-100">
-                                </div>
-                                <div data-thumb="{% static 'img/gallery/product-details3.png' %}">
-                                    <img src="{% static 'img/gallery/product-details3.png' %}" class="w-100">
-                                </div>
-                                <div data-thumb="{% static 'img/gallery/product-details4.png' %}">
-                                    <img src="{% static 'img/gallery/product-details4.png' %}" class="w-100">
-                                </div>
+                                {% for image in product.slider %}
+                                    <div data-thumb="{{ image }}">
+                                        <img src="{{ image }}" class="w-100">
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -378,6 +374,6 @@
             addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
                 '{{ csrf_token }}')
         }
-         inputNumber($('#quantity'));
+        inputNumber($('#quantity'));
     </script>
 {% endblock scripts %}
