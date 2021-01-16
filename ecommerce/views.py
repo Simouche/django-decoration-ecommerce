@@ -1,15 +1,18 @@
+import csv
 import json
 
+import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Sum, F, Count
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
     RedirectView
 
@@ -19,7 +22,7 @@ from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
-from ecommerce.forms import CreateOrderLineForm, CreateProductForm
+from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
 
 
@@ -58,10 +61,8 @@ class DashboardProductsListView(ListView):
     queryset = Product.objects.all()
     model = Product
     context_object_name = "products"
-    extra_context = {'categories_json': json.dumps(Category.objects.with_sub_cats()),
-                     'categories': Category.objects.filter(visible=True)}
     page_kwarg = 'page'
-    paginate_by = 25
+    paginate_by = 10
     allow_empty = True
     ordering = ['-created_at']
 
@@ -86,6 +87,59 @@ class DashboardProductsListView(ListView):
             return JsonResponse(data)
         else:
             return super(DashboardProductsListView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        return super(DashboardProductsListView, self) \
+            .get_context_data(object_list=object_list,
+                              categories_json=json.dumps(Category.objects.with_sub_cats()),
+                              categories=Category.objects.filter(visible=True))
+
+
+@staff_member_required()
+def export_products_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment;filename="users.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([_('Name'), _('Name Ar'), _('Name Fr'), _('Price'), _('Stock'), _('Category')])
+
+    products = Product.objects.filter(visible=True).values_list('name', 'name_ar', 'name_en', 'price', 'stock',
+                                                                'category__name')
+    for product in products:
+        writer.writerow(product)
+
+    return response
+
+
+@staff_member_required()
+def export_products_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="products.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('products')
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [gettext('Name'), gettext('Name Ar'), gettext('Name Fr'), gettext('Price'), gettext('Stock'),
+               gettext('Category')]
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = Product.objects.filter(visible=True).values_list('name', 'name_ar', 'name_en', 'price', 'stock',
+                                                            'category__name')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -474,12 +528,7 @@ class FavoriteCreateView(CreateView):
         initials['profile'] = self.request.user.profile
         return initials
 
-    def form_invalid(self, form):
-        print(form.errors)
-        return super(FavoriteCreateView, self).form_invalid(form=form)
-
     def form_valid(self, form):
-        print("success?")
         if self.request.is_ajax():
             super(FavoriteCreateView, self).form_valid(form=form)
             return JsonResponse({'status': 'Success'})
@@ -544,3 +593,39 @@ class CategoriesListView(ListView):
     def get(self, request, *args, **kwargs):
         self.search()
         return super(CategoriesListView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CreateCategoryForm
+    template_name = "dashboard/create_category.html"
+    success_url = reverse_lazy("ecommerce:dashboard-products")
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = None
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(CategoryCreateView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(staff_member_required, name='dispatch')
+class SubCategoryCreateView(CreateView):
+    model = SubCategory
+    template_name = "dashboard/create_category.html"
+    form_class = CreateSubCategoryForm
+    success_url = reverse_lazy("ecommerce:dashboard-products")
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = None
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(SubCategoryCreateView, self).get(request, *args, **kwargs)

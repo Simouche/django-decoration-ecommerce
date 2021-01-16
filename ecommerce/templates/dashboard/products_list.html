@@ -16,28 +16,45 @@
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>
+            {% if request.user.user_type == 'A' %}
+                <button id="create-category" type="button" name="button"
+                        class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createCategoryForm()">
+                    <i class="zmdi zmdi-plus"></i>{% trans "add category" %}
+                </button>
+            {% endif %}
             <div class="rs-select2--light rs-select2--md">
                 <select class="js-select2" name="sub_category" id="sub_categories">
                     <option value="" selected="selected">{% trans "Sub-Categories" %}</option>
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>
+            {% if request.user.user_type == 'A' %}
+                <button id="create-sub-category" type="button" name="button"
+                        class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createSubCategoryForm()">
+                    <i class="zmdi zmdi-plus"></i>{% trans "add sub-category" %}
+                </button>
+            {% endif %}
+
         </div>
         <div class="table-data__tool-right">
             <button id="create-product" type="button" name="button"
                     class="au-btn au-btn-icon au-btn--green au-btn--small">
-                <i class="zmdi zmdi-plus"></i>{% trans "add item" %}
+                <i class="zmdi zmdi-plus"></i>{% trans "add product" %}
             </button>
-            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+            {% if request.user.user_type == 'A' %}
+                <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+                    <select class="js-select2" name="type">
+                        <option value="P">PDF</option>
+                        <option value="E" selected="selected">EXCEL</option>
+                    </select>
+                    <div class="dropDownSelect2"></div>
+                </div>
 
-                <select class="js-select2" name="type">
-                    <option selected="selected">{% trans "Export" %}</option>
-                    <option value="">PDF</option>
-                    <option value="">EXCEL</option>
-                </select>
-
-                <div class="dropDownSelect2"></div>
-            </div>
+                <a id="export" class="au-btn au-btn-icon au-btn--green au-btn--small"
+                   href="{% url 'ecommerce:products-list-export' %}">
+                    <i class="zmdi" onclick="exportExcel()"></i>{% trans "export" %}
+                </a>
+            {% endif %}
         </div>
     </div>
     <div class="table-responsive table-responsive-data2">
@@ -52,10 +69,10 @@
                 <th>{% trans "price" %}</th>
                 <th>{% trans "stock" %}</th>
                 <th>{% trans "status" %}</th>
+                <th style="text-align:center">{% trans "actions" %}</th>
             </tr>
             </thead>
             <tbody>
-
             {% for product in products %}
                 <tr class="tr-shadow">
                     <td>
@@ -74,33 +91,48 @@
                     <td>{{ product.stock }}</td>
                     <td>{% if product.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
                         <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
-                    <td></td>
                     <td>
                         <div class="table-data-feature row m-0">
-                            <div class="col-6 pl-1">
-                                <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
-                                        id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Edit">
-                                    <i class="zmdi zmdi-edit"></i>
-                                </button>
-                            </div>
-                            <div class="col-6">
-                                {% if product.visible %}
+                            {% if product.visible %}
+                                <div class="col-3 pl-1">
+                                    <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
+                                            id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Edit">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="col-3">
                                     <button type="button" class="item" data-toggle="modal" data-placement="top"
                                             title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
                                         <i class="zmdi zmdi-delete"></i>
                                     </button>
-                                {% endif %}
-                            </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
                 <tr class="spacer"></tr>
             {% endfor %}
-
             </tbody>
         </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; {% trans 'first' %}</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">{% trans 'previous' %}</a>
+                {% endif %}
+
+                <span class="current">
+                    {% trans 'Page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">{% trans 'next' %}</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'last' %} &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
@@ -173,6 +205,37 @@
             "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});" +
             "<\/script>"
 
+        function createCategoryForm() {
+            $.ajax({
+                method: "GET",
+                url: "{% url 'ecommerce:categories-create' %}",
+                success: (data) => {
+                    $(".modal-content").html(data)
+                    $("#create-product-modal").modal()
+                }
+            })
+        }
+
+        function exportExcel() {
+            $.ajax({
+                method: "GET",
+                url: "{% url 'ecommerce:products-list-export' %}",
+                success: (data) => {
+                    console.log("downloaded")
+                }
+            })
+        }
+
+        function createSubCategoryForm() {
+            $.ajax({
+                method: "GET",
+                url: "{% url 'ecommerce:categories-sub-create' %}",
+                success: (data) => {
+                    $(".modal-content").html(data)
+                    $("#create-product-modal").modal()
+                }
+            })
+        }
 
         function createProductForm() {
             $(function () {

@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
-from ecommerce.models import Order, OrderLine, Product, SubCategory
+from ecommerce.models import Order, OrderLine, Product, SubCategory, Category
 from base_backend import _
 
 
@@ -104,3 +104,19 @@ class CreateProductForm(BSModalModelForm):
         model = Product
         fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price',
                   'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category']
+
+
+class CreateCategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'name_ar', 'name_en']
+
+
+class CreateSubCategoryForm(forms.ModelForm):
+    class Meta:
+        model = SubCategory
+        fields = ['name', 'name_en', 'name_ar', 'category']
+
+
+CategoryWithSubCatsFormSet = inlineformset_factory(parent_model=Category, model=SubCategory,
+                                                   fields=['name', 'name_en', 'name_ar'], can_delete=True, extra=1)
