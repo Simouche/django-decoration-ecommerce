@@ -839,6 +839,7 @@ section {
     border-radius: 3px;
     background: #4272d7;
     margin-left: -3px;
+    color: white;
 }
 
 .au-btn--submit:hover {

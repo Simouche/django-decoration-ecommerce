@@ -14,25 +14,32 @@ function showOrderDetails(url) {
 
 function loadByStatus({selectId, callBack, url, dataTableId}) {
     $(selectId).on('change', function (object) {
-        const selectedVal = parseInt($(this).val())
+        const selectedVal = $(this).val()
         const queries = {status: selectedVal}
-        if (isNaN(selectedVal)) {
-            $.ajax({
-                type: "GET",
-                url: url,
-                dataType: "json",
-                success: (response) => $(dataTableId).html(response['orders']),
-                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
-            })
-            return
-        }
         $.ajax({
-                type: "GET",
-                url: url,
-                data: queries,
-                dataType: "json",
-                success: (response) => $(dataTableId).html(response['products']),
-                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
-            })
+            type: "GET",
+            url: url,
+            data: queries,
+            dataType: "json",
+            success: (response) => $(dataTableId).html(response['orders']),
+            error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+        })
+
+    })
+}
+
+function loadByStatusSales({selectId, callBack, url, dataTableId}) {
+    $(selectId).on('change', function (object) {
+        const selectedVal = $(this).val()
+        const queries = {status: selectedVal}
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: queries,
+            dataType: "json",
+            success: (response) => $(dataTableId).html(response['sales']),
+            error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+        })
+
     })
 }

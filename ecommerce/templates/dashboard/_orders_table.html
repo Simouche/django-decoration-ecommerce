@@ -1,10 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load widget_tweaks %}
+{% load i18n %}
+{% load static %}
+<div class="table-responsive table-responsive-data2">
+    <table class="table table-data2" id="orders-table">
+        <thead>
+        <tr>
+            <th>{% trans "Number" %}</th>
+            <th>{% trans "Client" %}</th>
+            <th>{% trans "phone" %}</th>
+            <th>{% trans "Items Count" %}</th>
+            <th>{% trans "Total" %}</th>
+            <th>{% trans "date" %}</th>
+            <th class="text-center">{% trans "status" %}</th>
+            <th class="text-center">{% trans "actions" %}</th>
+        </tr>
+        </thead>
+        <tbody>
 
-</body>
-</html>
+        {% for order in orders %}
+            <tr class="tr-shadow {% if not order.visible or order.status == 'CA' %} deleted {% endif %}">
+                <td>{{ order.number }}</td>
+                <td>{{ order.profile.user.full_name }}</td>
+                <td><span
+                        class="{% if order.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
+                        {{ order.profile.user.phones.first|default:'+213799136332' }}</span>
+                </td>
+                <td>{{ order.products_count }}</td>
+                <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
+                <td>{{ order.created_at }}</td>
+                <td class="text-center">
+                    {% if  order.status == 'CA' %}
+                        <span class="status--denied">{% trans 'Canceled' %}</span>
+                    {% else %}
+                        <a href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}" id="approve-order"
+                           type="button" name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
+                            {% trans "Confirm" %}
+                        </a>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="table-data-feature">
+                        <button onclick="showOrderDetails('{% url 'ecommerce:orders-order-details' order.pk %}')"
+                                class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <i class="fa fa-info"></i>
+                        </button>
+                        {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
+                        {#                                <i class="zmdi zmdi-edit"></i>#}
+                        {#                            </button>#}
+                        <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                            <i class="zmdi zmdi-delete"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "pagination_layout.html" with page_obj=page_obj %}
+</div>

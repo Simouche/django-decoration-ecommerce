@@ -1,13 +1,15 @@
+import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext
 from django.views import View
 from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView
 
@@ -84,10 +86,11 @@ class ProfileDetailsView(DetailView):
     model = Profile
     context_object_name = 'profile'
     queryset = Profile.objects.filter(visible=True)
-    template_name = ""
+    template_name = "dashboard/profile.html"
 
     def get_queryset(self):
-        self.queryset = self.queryset.filter(user=self.request.user)
+        if not self.request.user.is_staff:
+            self.queryset = self.queryset.filter(user=self.request.user)
         return super(ProfileDetailsView, self).get_queryset()
 
 
@@ -118,13 +121,15 @@ class UserListView(ListView):
     context_object_name = 'users'
     extra_context = {'groups': Group.objects.all()}
     page_kwarg = 'page'
-    paginate_by = 25
+    paginate_by = 10
     allow_empty = True
     ordering = ['-date_joined']
 
     def get_queryset(self):
         User.objects.filter()
         queryset = super(UserListView, self).get_queryset()
+        if self.request.user.user_type == 'S':
+            queryset = queryset.filter(user_type__in=['C', 'S'])
         if self.request.GET.get('group', None):
             group = get_object_or_404(Group, id=self.request.GET.get('group', None))
             queryset = queryset.filter(
@@ -137,11 +142,41 @@ class UserListView(ListView):
             context = self.get_context_data()
             data = dict()
             data['users'] = render_to_string('dashboard/_users_table.html',
-                                             {'users': context.pop('users', None)},
+                                             {'users': context.pop('users', None),
+                                              'page_obj': context.pop('page_obj', None)},
                                              request=request)
             return JsonResponse(data)
         else:
             return super(UserListView, self).get(request, *args, **kwargs)
+
+
+@super_user_required()
+def export_users_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('products')
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [gettext('First Name'), gettext('Last Name'), gettext('Email'), gettext('phone')]
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = User.objects.filter(visible=True).values_list('first_name', 'last_name', 'email', 'phones')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
 
 
 @method_decorator(super_user_required, name='dispatch')

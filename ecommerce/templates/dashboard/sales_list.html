@@ -1,9 +1,9 @@
 {% extends 'dashboard/base_dashboard.html' %}
 {% load static %}
 {% load i18n %}
+{% load widget_tweaks %}
 
 {% block styles %}
-
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock styles %}
 
@@ -13,7 +13,7 @@
     <div class="table-data__tool">
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
-                <select id="group-select" class="js-select2" name="group">
+                <select id="status-select" class="js-select2" name="group">
                     <option value="" selected="selected">{% trans "Status" %}</option>
                     <option value="CO">{% trans 'Confirmed' %}</option>
                     <option value="OD">{% trans 'On Delivery' %}</option>
@@ -23,20 +23,14 @@
             </div>
         </div>
         <div class="table-data__tool-right">
-            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
-
-                <select class="js-select2" name="type">
-                    <option selected="selected">{% trans "Export" %}</option>
-                    <option value="">PDF</option>
-                    <option value="">EXCEL</option>
-                </select>
-
-                <div class="dropDownSelect2"></div>
-            </div>
+            {% if  user.user_type == 'A' %}
+                {% url 'ecommerce:dashboard-sales-export' as url %}
+                {% include "dashboard/exportation_layout.html" with exportation_url=url %}
+            {% endif %}
         </div>
     </div>
-    <div class="table-responsive table-responsive-data2">
-        <table class="table table-data2" id="users-table">
+    <div id="sales-table" class="table-responsive table-responsive-data2">
+        <table class="table table-data2">
             <thead>
             <tr>
                 <th>{% trans "Number" %}</th>
@@ -63,18 +57,7 @@
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.created_at }}</td>
                     <td class="text-center">
-                        {% if  sale.status == 'D' %}
-                            <span class="status--process">{% trans 'Delivered' %}</span>
-                        {% else %}
-                            <a href="{% url 'ecommerce:dashboard-sales-update-status' sale.pk %}" id="approve-order"
-                               type="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                {% if  sale.status == 'CO' %}
-                                    {% trans "On Delivery" %}
-                                {% elif sale.status == 'OD' %}
-                                    {% trans "Delivered" %}
-                                {% endif %}
-                            </a>
-                        {% endif %}
+                        <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
                     </td>
                     <td>
                         <div class="table-data-feature">
@@ -82,11 +65,8 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {#<button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
-                            {#<i class="zmdi zmdi-edit"></i>#}
-                            {#</button>#}
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                    title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
                                 <i class="zmdi zmdi-delete"></i>
                             </button>
                         </div>
@@ -96,6 +76,7 @@
             {% endfor %}
             </tbody>
         </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
@@ -110,8 +91,52 @@
         </div>
     </div>
 
+    <!-- delete user modal -->
+    <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">{% trans 'Attention!' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% trans 'Delete Order ?' %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+
+                    <button id="delete-sale-button" type="button" class="btn btn-delete">{% trans 'Delete' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end delete user modal -->
+
 {% endblock modals %}
 
 {% block scripts %}
     <script src="{% static 'js/decorationjs/order.js' %}"></script>
+    <script type="text/javascript">
+        $('#deletemodal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget)
+                const id = button.data('id')
+                document.getElementById("delete-sale-button").onclick = function () {
+                    deleteUser(`/orders/${id}/delete/`, '#sales-table', "{{ csrf_token }}")
+                    $('#deletemodal').modal("hide")
+                }
+            }
+        )
+
+        loadByStatusSales({
+            selectId: "#status-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+            dataTableId: "#sales-table"
+        })
+
+    </script>
 {% endblock scripts %}

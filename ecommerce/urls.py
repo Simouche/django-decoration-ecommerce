@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/main/', views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
     path('dashboard/sales/all/', views.DashboardSalesListView.as_view(), name='dashboard-sales'),
+    path('dashboard/sales/all/export/', views.DashboardSalesListView.as_view(), name='dashboard-sales-export'),
     path('dashboard/sales/<int:pk>/update/status/', views.DashBoardUpdateSaleStatus.as_view(),
          name='dashboard-sales-update-status'),
     path('about/', views.Index.as_view(), name='about'),
@@ -34,6 +35,8 @@ urlpatterns = [
     path('cart/get-count/', views.get_cart_count, name='cart-get-count'),
 
     path('orders/history/', views.OrdersHistory.as_view(), name='orders-history'),
+    path('orders/history/export/', views.export_orders_excel, name='orders-history-export'),
+    path('orders/change-history/', views.OrdersChangeHistory.as_view(), name='orders-change-history'),
     path('orders/create/', views.OrderCreateView.as_view(), name='orders-create'),
     path('orders/<int:pk>/checkout/', views.OrderCheckOut.as_view(), name='order-check-out'),
     path('orders/<int:pk>/update/', views.OrderUpdateView.as_view(), name='orders-order-update'),

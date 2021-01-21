@@ -21,20 +21,14 @@
             </div>
         </div>
         <div class="table-data__tool-right">
-            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
-
-                <select class="js-select2" name="type">
-                    <option selected="selected">{% trans "Export" %}</option>
-                    <option value="">PDF</option>
-                    <option value="">EXCEL</option>
-                </select>
-
-                <div class="dropDownSelect2"></div>
-            </div>
+            {% if  user.user_type == 'A' %}
+                {% url 'ecommerce:orders-history-export' as url %}
+                {% include "dashboard/exportation_layout.html" with exportation_url=url %}
+            {% endif %}
         </div>
     </div>
-    <div class="table-responsive table-responsive-data2">
-        <table class="table table-data2" id="users-table">
+    <div id="orders-table" class="table-responsive table-responsive-data2">
+        <table class="table table-data2">
             <thead>
             <tr>
                 <th>{% trans "Number" %}</th>
@@ -48,7 +42,6 @@
             </tr>
             </thead>
             <tbody>
-
             {% for order in orders %}
                 <tr class="tr-shadow {% if not order.visible or order.status == 'CA' %} deleted {% endif %}">
                     <td>{{ order.number }}</td>
@@ -61,14 +54,7 @@
                     <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ order.created_at }}</td>
                     <td class="text-center">
-                        {% if  order.status == 'CA' %}
-                            <span class="status--denied">{% trans 'Canceled' %}</span>
-                        {% else %}
-                            <a href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}" id="approve-order"
-                               type="button" name="button" class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                {% trans "Confirm" %}
-                            </a>
-                        {% endif %}
+                        <span class="{% if order.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ order.get_status_display }}</span>
                     </td>
                     <td>
                         <div class="table-data-feature">
@@ -76,11 +62,11 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
-                            {#                                <i class="zmdi zmdi-edit"></i>#}
-                            {#                            </button>#}
+                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                <i class="zmdi zmdi-edit"></i>
+                            </button>
                             <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                    title="Delete" data-target="#deletemodal" data-id="{{ order.id }}">
                                 <i class="zmdi zmdi-delete"></i>
                             </button>
                         </div>
@@ -90,6 +76,7 @@
             {% endfor %}
             </tbody>
         </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
     </div>
     <!-- END DATA TABLE -->
 {% endblock content %}
@@ -105,12 +92,24 @@
 
 {% block scripts %}
     <script src="{% static 'js/decorationjs/order.js' %}"></script>
-
     <script type="text/javascript">
+
+        $('#deletemodal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget)
+                const id = button.data('id')
+                document.getElementById("delete-order-button").onclick = function () {
+                    deleteUser(`/orders/${id}/delete/`, '#orders-table', "{{ csrf_token }}")
+                    $('#deletemodal').modal("hide")
+                }
+            }
+        )
+
         loadByStatus({
             selectId: "#status-select",
-            url: "{% url 'ecommerce:dashboard-sales' %}",
+            url: "{% url 'ecommerce:orders-history' %}",
+            dataTableId: "#orders-table"
         })
+
     </script>
 
 {% endblock scripts %}

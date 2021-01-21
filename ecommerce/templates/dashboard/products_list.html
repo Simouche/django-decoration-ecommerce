@@ -41,23 +41,11 @@
                     class="au-btn au-btn-icon au-btn--green au-btn--small">
                 <i class="zmdi zmdi-plus"></i>{% trans "add product" %}
             </button>
-            {% if request.user.user_type == 'A' %}
-                <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
-                    <select class="js-select2" name="type">
-                        <option value="P">PDF</option>
-                        <option value="E" selected="selected">EXCEL</option>
-                    </select>
-                    <div class="dropDownSelect2"></div>
-                </div>
-
-                <a id="export" class="au-btn au-btn-icon au-btn--green au-btn--small"
-                   href="{% url 'ecommerce:products-list-export' %}">
-                    <i class="zmdi" onclick="exportExcel()"></i>{% trans "export" %}
-                </a>
-            {% endif %}
+            {% url 'ecommerce:products-list-export' as url %}
+            {% include "dashboard/exportation_layout.html" with exportation_url=url %}
         </div>
     </div>
-    <div class="table-responsive table-responsive-data2">
+    <div id="users-table-div" class="table-responsive table-responsive-data2">
         <table class="table table-data2" id="products-table">
             <thead>
             <tr>
@@ -216,16 +204,6 @@
             })
         }
 
-        function exportExcel() {
-            $.ajax({
-                method: "GET",
-                url: "{% url 'ecommerce:products-list-export' %}",
-                success: (data) => {
-                    console.log("downloaded")
-                }
-            })
-        }
-
         function createSubCategoryForm() {
             $.ajax({
                 method: "GET",
@@ -298,13 +276,13 @@
             childSelect: "#sub_categories",
             callBack: filterProductByCategoryId,
             url: "{% url 'ecommerce:dashboard-products' %}",
-            dataTableId: '#products-table'
+            dataTableId: '#users-table-div'
         })
         loadSubCategorySelect({
             selectId: "#sub_categories",
             callBack: filterProductByCategoryId,
             url: "{% url 'ecommerce:dashboard-products' %}",
-            dataTableId: '#products-table'
+            dataTableId: '#users-table-div'
         })
     </script>
 

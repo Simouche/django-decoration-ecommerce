@@ -26,3 +26,16 @@ function filterUserByGroup({groupId, url, dataTableId}) {
         error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
     })
 }
+
+function loadUserProfileIntoModal(url, modalContentId) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        success: (data) => {
+            $(modalContentId).find('.modal-content').html(data)
+            $(modalContentId).modal()
+        },
+        error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+    })
+}

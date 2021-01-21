@@ -1,0 +1,27 @@
+{% load i18n %}
+{% if request.user.user_type == 'A' %}
+    <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
+        <select class="js-select2" name="type">
+            <option value="P">PDF</option>
+            <option value="E" selected="selected">EXCEL</option>
+        </select>
+        <div class="dropDownSelect2"></div>
+    </div>
+
+    <a id="export" class="au-btn au-btn-icon au-btn--green au-btn--small"
+       href="{{ exportation_url }}">
+        <i class="zmdi" onclick="exportExcel()"></i>{% trans "export" %}
+    </a>
+{% endif %}
+
+<script type="text/javascript">
+    function exportExcel() {
+        $.ajax({
+            method: "GET",
+            url: "{{ exportation_url }}",
+            success: (data) => {
+                console.log("downloaded")
+            }
+        })
+    }
+</script>

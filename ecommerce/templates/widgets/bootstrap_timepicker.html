@@ -1,0 +1,16 @@
+<div class="input-group date" id="{{ widget.datetimepicker_id }}" data-target-input="nearest">
+    {% include "django/forms/widgets/input.html" %}
+
+    <div class="input-group-append" data-target="#{{ widget.datetimepicker_id }}" data-toggle="datetimepicker">
+        <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#{{ widget.datetimepicker_id }}").datetimepicker({
+            format: 'HH:mm',
+            stepping: 30,
+        });
+    });
+</script>

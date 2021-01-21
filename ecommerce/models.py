@@ -58,6 +58,7 @@ class Product(DeletableModel):
     stock = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
                                  verbose_name=_('Category'), null=True)
+    free_delivery = models.BooleanField(default=False, verbose_name=_('Free Delivery'))
 
     def __str__(self):
         return self.name
@@ -104,14 +105,19 @@ class OrderLine(DeletableModel):
 class Order(DeletableModel):
     # add return status
     status_choices = (('P', _('Pending')),
+                      ('RC', _('RECALL')),
                       ('CO', _('Confirmed')),
                       ('CA', _('Canceled')),
                       ('OD', _('On Delivery')),
-                      ('D', _('Delivered')))
+                      ('D', _('Delivered')),
+                      ('R', _('Returned')),
+                      ('RE', _('Refund')),
+                      ('PA', _('Paid')),)
 
     profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
     status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'), default='P')
+    shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Shipping Fee'), default=0)
 
     @property
     def products_count(self):
@@ -156,6 +162,13 @@ class Order(DeletableModel):
             return
         self.status = 'CA'
         super(Order, self).delete(using=using, keep_parents=keep_parents)
+
+
+class OrderStatusChange(BaseModel):
+    order = models.ForeignKey('Order', on_delete=do_nothing, related_name='status_changes', verbose_name=_('Order'))
+    previous_status = models.CharField(max_length=2, choices=Order.status_choices, verbose_name=_('Previous Status'))
+    new_status = models.CharField(max_length=2, choices=Order.status_choices, verbose_name=_('New Status'))
+    user = models.ForeignKey('accounts.User', on_delete=do_nothing, related_name='status_changes', )
 
 
 class Favorite(DeletableModel):
@@ -269,9 +282,15 @@ class ProductOnSeasonalDiscount(DeletableModel):
         verbose_name_plural = _('Products On Seasonal Discount')
 
 
+class DeliveryCompany(DeletableModel):
+    company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
+    weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
+
+
 class DeliveryFee(DeletableModel):
-    region = models.ForeignKey('accounts.Region', related_name='fees', on_delete=do_nothing)
-    fee = models.DecimalField(max_digits=5, decimal_places=2)
+    state = models.ForeignKey('accounts.State', related_name='fees', on_delete=do_nothing)
+    company = models.ForeignKey('DeliveryCompany', on_delete=do_nothing, related_name='fees')
+    fee = models.DecimalField(max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = _('Delivery Fee')

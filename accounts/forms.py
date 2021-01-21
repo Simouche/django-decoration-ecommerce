@@ -163,7 +163,7 @@ class CreateStaffForm(BSModalModelForm):
                 'placeholder': _("Phone Number")
             }
         ), help_text=_("if you have multiple phones, enter them separated by a coma.")
-    ))
+    ),)
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={

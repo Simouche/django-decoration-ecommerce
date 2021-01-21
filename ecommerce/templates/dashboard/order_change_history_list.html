@@ -1,0 +1,90 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <h3 class="title-5 m-b-35">{% trans "History" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+            <form method="GET" action="{% url 'ecommerce:orders-change-history' %}" class="form-inline">
+                {% for field in form %}
+                    {% if field.name in 'user order from_status to_status' %}
+                        <div class="rs-select2--light rs-select2--md px-1 pr-1">
+                            {% render_field field class="js-select2 form-control browser-default" %}
+                            <div class="dropDownSelect2"></div>
+                        </div>
+                    {% else %}
+                        <div class="form-group px-1 pr-1">
+                            {% render_field field class="form-control browser-default" %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <input type="submit" value="{% trans 'Filter' %}" class="au-btn--submit ml-1">
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive m-b-40">
+        <table class="table table-borderless table-data3">
+            <thead>
+            <tr>
+                <th>{% trans 'date' %}</th>
+                <th>{% trans 'user' %}</th>
+                <th>{% trans 'changed' %}</th>
+                <th>{% trans 'from' %}</th>
+                <th>{% trans 'to' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for status_change in status_changes %}
+                <tr>
+                    <td>{{ status_change.created_at }}</td>
+                    <td>{{ status_change.user }}</td>
+                    <td>{{ status_change.order }}</td>
+                    <td>{{ status_change.get_previous_status_display }}</td>
+                    <td>{{ status_change.get_new_status_display }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; {% trans 'first' %}</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">{% trans 'previous' %}</a>
+                {% endif %}
+
+                <span class="current">
+                    {% trans 'Page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">{% trans 'next' %}</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'last' %} &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <!-- END DATA TABLE-->
+{% endblock content %}
+
+{% block modals %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="order-details-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content pb-5"></div>
+        </div>
+    </div>
+{% endblock modals %}
+
+{% block scripts %}
+    <script src="{% static 'js/decorationjs/order.js' %}"></script>
+
+    <script type="text/javascript">
+        loadByStatus({
+            selectId: "#status-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+        })
+    </script>
+
+{% endblock scripts %}

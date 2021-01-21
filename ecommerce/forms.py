@@ -3,8 +3,10 @@ from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
+from accounts.models import User
 from ecommerce.models import Order, OrderLine, Product, SubCategory, Category
 from base_backend import _
+from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
 
 class CreateOrderForm(forms.ModelForm):
@@ -120,3 +122,25 @@ class CreateSubCategoryForm(forms.ModelForm):
 
 CategoryWithSubCatsFormSet = inlineformset_factory(parent_model=Category, model=SubCategory,
                                                    fields=['name', 'name_en', 'name_ar'], can_delete=True, extra=1)
+
+
+class SearchOrderStatusChangeHistory(forms.Form):
+    FROM_STATUS_CHOICES = (('O', _('Old Status')),) + Order.status_choices
+    TO_STATUS_CHOICES = (('N', _('New Status')),) + Order.status_choices
+
+    date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
+    time = forms.TimeField(required=False, input_formats=['%H:%M'], widget=BootstrapTimePickerInput())
+    user = forms.ModelChoiceField(queryset=User.objects.exclude(user_type='C'), required=False, empty_label=_('User'))
+    order = forms.ModelChoiceField(queryset=Order.objects.all(), required=False, empty_label=_('Order'))
+    from_status = forms.ChoiceField(choices=FROM_STATUS_CHOICES, required=False)
+    to_status = forms.ChoiceField(choices=TO_STATUS_CHOICES, required=False)
+
+    def clean_from_status(self):
+        if self.cleaned_data.get('from_status') == 'O':
+            return None
+        return self.cleaned_data.get('from_status')
+
+    def clean_to_status(self):
+        if self.cleaned_data.get('to_status') == 'N':
+            return None
+        return self.cleaned_data.get('to_status')

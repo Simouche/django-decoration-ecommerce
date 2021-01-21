@@ -1,39 +1,43 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load static %}
-<table class="table table-data2" id="users-table">
-    <thead>
-    <tr>
-        <th>{% trans "picture" %}</th>
-        <th>{% trans "full name" %}</th>
-        <th>{% trans "email" %}</th>
-        <th>{% trans "phone" %}</th>
-        <th>{% trans "date joined" %}</th>
-        <th class="text-center">{% trans "role" %}</th>
-        <th class="text-center">{% trans "orders count" %}</th>
-        <th class="text-center">{% trans "approved" %}</th>
-    </tr>
-    </thead>
-    <tbody>
+<div id="users-table-div" class="table-responsive table-responsive-data2">
+    <table class="table table-data2" id="users-table">
+        <thead>
+        <tr>
+            <th>{% trans "picture" %}</th>
+            <th>{% trans "full name" %}</th>
+            <th>{% trans "email" %}</th>
+            <th>{% trans "phone" %}</th>
+            <th>{% trans "date joined" %}</th>
+            <th class="text-center">{% trans "role" %}</th>
+            <th class="text-center">{% trans "orders count" %}</th>
+            {% if user.user_type == 'A' %}
+                <th class="text-center">{% trans "access" %}</th>
+            {% endif %}
+            <th class="text-center">{% trans "actions" %}</th>
+        </tr>
+        </thead>
+        <tbody>
 
-    {% for user in users %}
-        <tr class="tr-shadow {% if not user.visible %} deleted {% endif %}">
-            <td>
-                <img src="{{ user.profile.get_photo }}" alt="None" width="36px">
-            </td>
-            <td>{{ user.full_name }}</td>
+        {% for user in users %}
+            <tr class="tr-shadow {% if not user.visible %} deleted {% endif %}">
+                <td>
+                    <img src="{{ user.profile.get_photo }}" alt="None" width="36px">
+                </td>
+                <td>{{ user.full_name }}</td>
 
-            <td>
-                <span class="email {% if user.confirmed_email %} status--process {% else %} status--denied {% endif %}"> {{ user.email }}</span>
-            </td>
+                <td>
+                    <span class="email {% if user.confirmed_email %} status--process {% else %} status--denied {% endif %}"> {{ user.email }}</span>
+                </td>
 
-            <td><span
-                    class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phones.first|default:'+213799136332' }}</span>
-            </td>
+                <td><span
+                        class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phones.first|default:'+213799136332' }}</span>
+                </td>
 
-            <td>{{ user.date_joined }}</td>
+                <td>{{ user.date_joined }}</td>
 
-            <td><span class="{% if user.user_type == 'C' %}
+                <td><span class="{% if user.user_type == 'C' %}
                         role member
                     {% elif user.user_type == 'A' %}
                         role admin
@@ -41,35 +45,48 @@
                         role user
                     {% endif %}">{{ user.get_user_type_display }}</span></td>
 
-            <td class="text-center">{{ user.orders_count|default:0 }}</td>
+                <td class="text-center">{{ user.orders_count|default:0 }}</td>
 
-            <td class="text-center">
-                {% if  user.is_active %}
-                    <span class="status--process">{% trans 'Yes' %}</span>
-                {% else %}
-                    <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user" type="button"
-                       name="button"
-                       class="au-btn au-btn-icon au-btn--green au-btn--small">
-                        {% trans "approve" %}
-                    </a>
-                {% endif %} </td>
-            <td>
-                <div class="table-data-feature">
-                    <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
-                        <i class="fa fa-info"></i>
-                    </button>
-                    <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                        <i class="zmdi zmdi-edit"></i>
-                    </button>
-
-                    <button type="button" class="item" data-toggle="modal" data-placement="top"
-                            title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
-                        <i class="zmdi zmdi-delete"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-        <tr class="spacer"></tr>
-    {% endfor %}
-    </tbody>
-</table>
+                {% if request.user.user_type == 'A' %}
+                    <td class="text-center">
+                        {% if  not user.visible %}
+                            <span class="status--denied">{% trans 'Deleted' %}</span>
+                        {% else %}
+                            {% if  user.is_active %}
+                                <a href="{% url 'accounts:users-deactivate-user' user.pk %}" id="revoke-user"
+                                   type="button"
+                                   name="button"
+                                   class="au-btn au-btn-icon au-btn--red au-btn--small">
+                                    {% trans "revoke" %}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user"
+                                   type="button"
+                                   name="button"
+                                   class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                    {% trans "approve" %}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% endif %}
+                <td>
+                    <div class="table-data-feature">
+                        <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <i class="fa fa-info"></i>
+                        </button>
+                        {% if user.visible and request.user.user_type == 'A' %}
+                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "pagination_layout.html" with page_obj=page_obj %}
+</div>

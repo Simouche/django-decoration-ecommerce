@@ -20,23 +20,17 @@
             </div>
         </div>
         <div class="table-data__tool-right">
-            <button id="create-user" type="button" name="button"
-                    class="au-btn au-btn-icon au-btn--green au-btn--small">
-                <i class="zmdi zmdi-plus"></i>{% trans "add user" %}
-            </button>
-            <div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
-
-                <select class="js-select2" name="type">
-                    <option selected="selected">{% trans "Export" %}</option>
-                    <option value="">PDF</option>
-                    <option value="">EXCEL</option>
-                </select>
-
-                <div class="dropDownSelect2"></div>
-            </div>
+            {% if  user.user_type == 'A' %}
+                <button id="create-user" type="button" name="button"
+                        class="au-btn au-btn-icon au-btn--green au-btn--small">
+                    <i class="zmdi zmdi-plus"></i>{% trans "add user" %}
+                </button>
+                {% url 'accounts:users-list-export' as url %}
+                {% include "dashboard/exportation_layout.html" with exportation_url=url %}
+            {% endif %}
         </div>
     </div>
-    <div class="table-responsive table-responsive-data2">
+    <div id="users-table-div" class="table-responsive table-responsive-data2">
         <table class="table table-data2" id="users-table">
             <thead>
             <tr>
@@ -47,7 +41,10 @@
                 <th>{% trans "date joined" %}</th>
                 <th class="text-center">{% trans "role" %}</th>
                 <th class="text-center">{% trans "orders count" %}</th>
-                <th class="text-center">{% trans "access" %}</th>
+                {% if user.user_type == 'A' %}
+                    <th class="text-center">{% trans "access" %}</th>
+                {% endif %}
+                <th class="text-center">{% trans "actions" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -79,42 +76,41 @@
 
                     <td class="text-center">{{ user.orders_count|default:0 }}</td>
 
-                    <td class="text-center">
-                        {% if  not user.visible %}
-                            <span class="status--denied">{% trans 'Deleted' %}</span>
-                        {% else %}
-                            {% if  user.is_active %}
-                                <a href="{% url 'accounts:users-deactivate-user' user.pk %}" id="revoke-user"
-                                   type="button"
-                                   name="button"
-                                   class="au-btn au-btn-icon au-btn--red au-btn--small">
-                                    {% trans "revoke" %}
-                                </a>
+                    {% if request.user.user_type == 'A' %}
+                        <td class="text-center">
+                            {% if  not user.visible %}
+                                <span class="status--denied">{% trans 'Deleted' %}</span>
                             {% else %}
-                                <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user"
-                                   type="button"
-                                   name="button"
-                                   class="au-btn au-btn-icon au-btn--green au-btn--small">
-                                    {% trans "approve" %}
-                                </a>
+                                {% if  user.is_active %}
+                                    <a href="{% url 'accounts:users-deactivate-user' user.pk %}" id="revoke-user"
+                                       type="button"
+                                       name="button"
+                                       class="au-btn au-btn-icon au-btn--red au-btn--small">
+                                        {% trans "revoke" %}
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'accounts:users-activate-user' user.pk %}" id="approve-user"
+                                       type="button"
+                                       name="button"
+                                       class="au-btn au-btn-icon au-btn--green au-btn--small">
+                                        {% trans "approve" %}
+                                    </a>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-
-
-                    </td>
+                        </td>
+                    {% endif %}
                     <td>
                         <div class="table-data-feature">
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <button type="button" class="item" data-toggle="modal" data-placement="top" title="Info"
+                                    onclick="loadUserProfileIntoModal('{% url 'accounts:profile-details' user.profile.pk %}','#details-user-modal')">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {#                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">#}
-                            {#                                <i class="zmdi zmdi-edit"></i>#}
-                            {#                            </button>#}
-
-                            <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
-                                <i class="zmdi zmdi-delete"></i>
-                            </button>
+                            {% if user.visible and request.user.user_type == 'A' %}
+                                <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                        title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -122,6 +118,7 @@
             {% endfor %}
             </tbody>
         </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
     </div>
     <!-- END DATA TABLE -->
 
@@ -163,6 +160,15 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="details-user-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                {% include "dashboard/profile.html" %}
+            </div>
+        </div>
+    </div>
+
 {% endblock modals %}
 
 {% block scripts %}
@@ -174,10 +180,11 @@
                 const id = button.data('id')
                 document.getElementById("deleteUserButton").onclick = function () {
                     deleteUser(`/account/users/${id}/delete/`, '#users-table', "{{ csrf_token }}")
-                    $('#deletemodal').modal("hide");
+                    $('#deletemodal').modal("hide")
                 }
             }
         )
+
         const asyncSuccessMessage =
             "<div " +
             "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' " +
@@ -216,7 +223,7 @@
             filterUserByGroup({
                 groupId: $(this).val(),
                 url: "{% url 'accounts:users-list' %}",
-                dataTableId: "#users-table"
+                dataTableId: "#users-table-div"
             })
         })
 

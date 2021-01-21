@@ -5,7 +5,7 @@ import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Sum, F, Count
+from django.db.models import Sum, F, Count, QuerySet
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -22,8 +22,10 @@ from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
-from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm
-from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory
+from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
+    SearchOrderStatusChangeHistory
+from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
+    OrderStatusChange
 
 
 class Index(TemplateView):
@@ -82,7 +84,8 @@ class DashboardProductsListView(ListView):
             context = self.get_context_data()
             data = dict()
             data['products'] = render_to_string('dashboard/_products_table.html',
-                                                {'products': context.pop('products', None)},
+                                                {'products': context.pop('products', None),
+                                                 'page_obj': context.pop('page_obj', None)},
                                                 request=request)
             return JsonResponse(data)
         else:
@@ -95,7 +98,7 @@ class DashboardProductsListView(ListView):
                               categories=Category.objects.filter(visible=True))
 
 
-@staff_member_required()
+@super_user_required()
 def export_products_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment;filename="users.csv"'
@@ -111,7 +114,7 @@ def export_products_csv(request):
     return response
 
 
-@staff_member_required()
+@super_user_required()
 def export_products_excel(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="products.xls"'
@@ -145,7 +148,7 @@ def export_products_excel(request):
 @method_decorator(staff_member_required(), name='dispatch')
 class DashboardSalesListView(ListView):
     template_name = "dashboard/sales_list.html"
-    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D'])
+    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D', 'R'], visible=True)
     model = Order
     context_object_name = "sales"
     page_kwarg = 'page'
@@ -165,16 +168,48 @@ class DashboardSalesListView(ListView):
             context = self.get_context_data()
             data = dict()
             data['sales'] = render_to_string('dashboard/_sales_table.html',
-                                             {'sales': context.pop('sales', None)},
+                                             {'sales': context.pop('sales', None),
+                                              'page_obj': context.pop('page_obj', None)},
                                              request=request)
             return JsonResponse(data)
         else:
             return super(DashboardSalesListView, self).get(request, *args, **kwargs)
 
 
+@super_user_required()
+def export_sales_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="sales.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('sales')
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [gettext('Number'), gettext('Client'), gettext('Phone'), gettext('Items Count'),
+               gettext('Status')]
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = Order.objects.filter(status__in=['CO', 'OD', 'D'], visible=True).annotate(count=Sum('lines__quantity')) \
+        .values_list('number', 'profile__user__first_name', 'profile__user__phones',
+                     'count', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
+
+
 @method_decorator(staff_member_required(), name='dispatch')
 class DashBoardUpdateSaleStatus(RedirectView):
-    permanent = True
     pattern_name = "ecommerce:dashboard-sales"
 
     def get_redirect_url(self, *args, **kwargs):
@@ -363,7 +398,7 @@ class CartCheckOutConfirm(RedirectView):
 class OrdersMixin:
     def my_get_queryset(self, queryset):
         if self.request.user.is_staff:
-            return queryset.filter(status__in=['P', 'CA'])
+            return queryset.filter(status__in=['P', 'CA', 'RC'])
         return queryset.filter(profile=self.request.user.profile)
 
 
@@ -372,6 +407,9 @@ class OrdersHistory(ListView, OrdersMixin):
     ordering = "-created_at"
     queryset = Order.objects.filter(visible=True)
     context_object_name = "orders"
+    paginate_by = 10
+    paginate_orphans = True
+    allow_empty = True
 
     def get_template_names(self):
         names = []
@@ -383,6 +421,8 @@ class OrdersHistory(ListView, OrdersMixin):
 
     def get_queryset(self):
         queryset = super(OrdersHistory, self).get_queryset()
+        if self.request.GET.get('status', None):
+            queryset = queryset.filter(status=self.request.GET.get('status', None))
         return self.my_get_queryset(queryset)
 
     def get_context_data(self, **kwargs):
@@ -393,6 +433,95 @@ class OrdersHistory(ListView, OrdersMixin):
                 total += order.sub_total
         context['total'] = total
         return context
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(OrdersHistory, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['orders'] = render_to_string('dashboard/_orders_table.html',
+                                              {'orders': context.pop('orders', None),
+                                               'page_obj': context.pop('page_obj', None)},
+                                              request=request)
+            return JsonResponse(data)
+        else:
+            return super(OrdersHistory, self).get(request, *args, **kwargs)
+
+
+@super_user_required()
+def export_orders_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="orders.xls"'
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('orders')
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = [gettext('Number'), gettext('Client'), gettext('Phone'), gettext('Items Count'),
+               gettext('Status')]
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = Order.objects.filter(visible=True).annotate(count=Sum('lines__quantity')) \
+        .values_list('number', 'profile__user__first_name', 'profile__user__phones',
+                     'count', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
+
+
+@method_decorator(super_user_required, name='dispatch')
+class OrdersChangeHistory(ListView):
+    ordering = "-created_at"
+    queryset = OrderStatusChange.objects.all()
+    context_object_name = "status_changes"
+    template_name = "dashboard/order_change_history_list.html"
+    paginate_by = 20
+    paginate_orphans = True
+    allow_empty = True
+
+    def filter_queryset(self, queryset) -> QuerySet:
+        self.search_form = SearchOrderStatusChangeHistory(self.request.GET)
+        if self.search_form.is_valid():
+            if self.search_form.cleaned_data.get('date'):
+                queryset = queryset.filter(created_at__date=self.search_form.cleaned_data.get('date'))
+            if self.search_form.cleaned_data.get('time'):
+                queryset = queryset.filter(created_at__time__gte=self.search_form.cleaned_data.get('time'))
+            if self.search_form.cleaned_data.get('user'):
+                queryset = queryset.filter(user=self.search_form.cleaned_data.get('user'))
+            if self.search_form.cleaned_data.get('order'):
+                queryset = queryset.filter(order=self.search_form.cleaned_data.get('order'))
+            if self.search_form.cleaned_data.get('from_status'):
+                queryset = queryset.filter(previous_status=self.search_form.cleaned_data.get('from_status'))
+            if self.search_form.cleaned_data.get('to_status'):
+                queryset = queryset.filter(new_status=self.search_form.cleaned_data.get('to_status'))
+            return queryset
+        else:
+            print(self.search_form.errors)
+            return queryset
+
+    def get_queryset(self):
+        queryset = super(OrdersChangeHistory, self).get_queryset()
+        return self.filter_queryset(queryset)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        users = User.objects.all()
+        return super(OrdersChangeHistory, self).get_context_data(object_list=object_list, users=users,
+                                                                 form=self.search_form)
+
+    def get(self, request, *args, **kwargs):
+        self.search_form = SearchOrderStatusChangeHistory()
+        return super(OrdersChangeHistory, self).get(request, *args, **kwargs)
 
 
 @method_decorator(login_required, name='dispatch')
