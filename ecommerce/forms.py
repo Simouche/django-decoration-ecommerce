@@ -4,7 +4,7 @@ from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
 from accounts.models import User
-from ecommerce.models import Order, OrderLine, Product, SubCategory, Category
+from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent
 from base_backend import _
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
@@ -144,3 +144,13 @@ class SearchOrderStatusChangeHistory(forms.Form):
         if self.cleaned_data.get('to_status') == 'N':
             return None
         return self.cleaned_data.get('to_status')
+
+
+class IndexContentForm(forms.ModelForm):
+    class Meta:
+        model = IndexContent
+        fields = ['card1_visibility', 'card1_header', 'card1_title', 'card1_content', 'card1_button_text',
+                  'card1_image', 'section1_title', 'section1_text', 'section1_categories', 'section2_title',
+                  'section2_text', 'section2_button_text', 'section2_image', 'section3_title', 'section3_text',
+                  'section3_button_text', 'section4_title', 'section4_text', 'section4_button_text', 'section4_image1',
+                  'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', ]

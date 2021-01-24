@@ -11,17 +11,18 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-xl-6 col-lg-8 col-md-8">
-                                <div class="hero__caption">
-                                    <span>70% Sale off </span>
-                                    <h1 data-animation="fadeInUp" data-delay=".4s">Furniture at Cost</h1>
-                                    <p data-animation="fadeInUp" data-delay=".6s">Le charme d'une maison est son décor
-                                        alors soyez exigeant et venez trouver votre bonheur chez <a
-                                                href="{% url 'ecommerce:index' %}">Samy Déco</a>.</p>
-                                    <!-- Hero-btn -->
-                                    <div class="hero__btn" data-animation="fadeInUp" data-delay=".7s">
-                                        <a href="industries.html" class="btn hero-btn">{% trans 'Discover More' %}</a>
+                                {% if content.card1_visibility %}
+                                    <div class="hero__caption">
+                                        <span>{{ content.card1_header }}</span>
+                                        <h1 data-animation="fadeInUp" data-delay=".4s">{{ content.card1_title }}</h1>
+                                        <p data-animation="fadeInUp" data-delay=".6s">{{ content.card1_content }}</p>
+                                        <!-- Hero-btn -->
+                                        <div class="hero__btn" data-animation="fadeInUp" data-delay=".7s">
+                                            <a href="industries.html"
+                                               class="btn hero-btn">{{ content.card1_button_text }}</a>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -37,9 +38,8 @@
                     <div class="col-xl-7 col-lg-8 col-md-10">
                         <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="1s"
                              data-wow-delay=".2s">
-                            <h2>{% trans 'Popular products' %}</h2>
-                            <P>On dit que quand on ne peut pas changer le monde faut changer le décor ,si vous voulez du changement dans votre quotidien il y aurai une seule adresse <a
-                                                href="{% url 'ecommerce:index' %}">Samy Déco</a>.</P>
+                            <h2>{{ content.section1_title }}</h2>
+                            <P>{{ content.section1_text }}</P>
                         </div>
                     </div>
                 </div>
@@ -98,17 +98,12 @@
         <!--? Visit Our Tailor Start -->
         <div class="visit-tailor-area fix">
             <!--Right Contents  -->
-            <div class="tailor-offers"></div>
+            <div class="tailor-offers" style="background-image: url({{ content.section2_image.url }});"></div>
             <!-- left Contents -->
             <div class="tailor-details">
-                <h2>Best Furniture<br> manufacturer</h2>
-                <p>Suspendisse varius enim in eros elementum
-                    tristique. Duis cursus, mi quis viverra ornare, eros
-                    dolor interdum nulla.</p>
-                <p class="pera-bottom">Suspendisse varius enim in eros elementum
-                    tristique. Duis cursus, mi quis viverra ornare, eros
-                    dolor interdum nulla.</p>
-                <a href="#" class="btn">Discover More</a>
+                <h2>{{ content.section2_title }}</h2>
+                <p>{{ content.section2_text }}</p>
+                <a href="#" class="btn">{{ content.section2_button_text }}</a>
             </div>
 
         </div>
@@ -121,9 +116,8 @@
                     <div class="col-xl-6 col-lg-8 col-md-10">
                         <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="2s"
                              data-wow-delay=".2s">
-                            <h2>{% trans 'Products you may like' %}</h2>
-                            <P>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare,
-                                eros dolor interdum nulla.</P>
+                            <h2>{{ content.section3_title }}</h2>
+                            <P>{{ content.text }}</P>
                         </div>
                     </div>
                 </div>
@@ -148,7 +142,8 @@
                 <!-- Button -->
                 <div class="row justify-content-center">
                     <div class="room-btn">
-                        <a href="{% url 'ecommerce:products-list' %}" class="border-btn">{% trans 'Discover More' %}</a>
+                        <a href="{% url 'ecommerce:products-list' %}"
+                           class="border-btn">{{ content.section3_button_text }}</a>
                     </div>
                 </div>
             </div>
@@ -162,11 +157,9 @@
                         <div class="instra-tittle mb-40">
                             <div class="section-tittle">
                                 <img src="{% static 'img/gallery/insta.png' %}" alt="">
-                                <h2>Get Inspired with Instagram</h2>
-                                <P class="mb-35">Suspendisse varius enim in eros elementum tristique. Duis cursus, mi
-                                    quis
-                                    viverra ornare, eros dolor interdum nulla.</P>
-                                <a href="products.html" class="border-btn">Discover More</a>
+                                <h2>{{ content.section4_title }}</h2>
+                                <P class="mb-35">{{ content.section4_text }}</P>
+                                <a href="products.html" class="border-btn">{{ content.section4_button_text }}</a>
                             </div>
                         </div>
                     </div>
@@ -174,13 +167,13 @@
                         <div class="row no-gutters">
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                 <div class="single-instagram">
-                                    <img src="{% static 'img/gallery/instra1.png' %}" alt="" class="w-100">
+                                    <img src="{{ content.section4_image1.url }}" alt="" class="w-100">
                                     <a href="#"><i class="ti-instagram"></i></a>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
                                 <div class="single-instagram">
-                                    <img src="{% static 'img/gallery/instra2.png' %}" alt="" class="w-100">
+                                    <img src="{{ content.section4_image2.url }}" alt="" class="w-100">
                                     <a href="#"><i class="ti-instagram"></i></a>
                                 </div>
                             </div>
@@ -198,9 +191,8 @@
                     <div class="col-xl-7 col-lg-8 col-md-10">
                         <div class="section-tittle mb-60 text-center wow fadeInUp" data-wow-duration="2s"
                              data-wow-delay=".2s">
-                            <h2>{% trans 'Top Pick' %}</h2>
-                            <P>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare,
-                                eros dolor interdum nulla.</P>
+                            <h2>{{ content.section5_title }}</h2>
+                            <P>{{ content.section5_text }}</P>
                         </div>
                     </div>
                 </div>
@@ -225,7 +217,7 @@
                 <!-- Button -->
                 <div class="row justify-content-center">
                     <div class="room-btn">
-                        <a href="products.html" class="border-btn">Discover More</a>
+                        <a href="products.html" class="border-btn">{{ content.section5_button_text }}</a>
                     </div>
                 </div>
             </div>

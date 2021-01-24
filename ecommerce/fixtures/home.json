@@ -1,0 +1,38 @@
+[
+  {
+    "model": "ecommerce.indexcontent",
+    "pk": 1,
+    "fields": {
+      "created_at": "2021-01-23T16:07:43.169Z",
+      "updated_at": "2021-01-24T11:05:46.326Z",
+      "card1_visibility": true,
+      "card1_header": "70% SALE OFF",
+      "card1_title": "FURNITURE AT COST",
+      "card1_content": "Le Charme d'une maison est son d�cor, alors soyez exigeant et venez trouver votre bonheur chez SamyD�co.",
+      "card1_button_text": "DISCOVER MORE",
+      "card1_image": "index/h1_hero_DLuqyKM.png",
+      "section1_title": "POPULAR PRODUCTS",
+      "section1_text": "On dit que quand on ne peut pas changer le monde faut changer le d�cor ,si vous voulez du changement dans votre quotidien il y aurai une seule adresse SamyD�co.",
+      "section2_title": "BEST FURNITURE MANUFACTURER",
+      "section2_text": "Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.\r\n\r\nSuspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+      "section2_button_text": "DISCOVER MORE",
+      "section2_image": "index/visit_bg_gea09aK.png",
+      "section3_title": "PRODUCTS YOU MAY LIKE",
+      "section3_text": "Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+      "section3_button_text": "DISCOVER MORE",
+      "section4_title": "GET INSPIRED WITH INSTAGRAM",
+      "section4_text": "Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+      "section4_button_text": "DISCOVER MORE",
+      "section4_image1": "index/instra1_NJx1s6r.png",
+      "section4_image2": "index/instra2_qS2FVcN.png",
+      "section5_title": "TOP PICK",
+      "section5_text": "Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.",
+      "section5_button_text": "DISCOVER MORE",
+      "section1_categories": [
+        1,
+        2,
+        3
+      ]
+    }
+  }
+]

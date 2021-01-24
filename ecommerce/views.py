@@ -23,9 +23,9 @@ from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
-    SearchOrderStatusChangeHistory
+    SearchOrderStatusChangeHistory, IndexContentForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange
+    OrderStatusChange, IndexContent
 
 
 class Index(TemplateView):
@@ -37,6 +37,7 @@ class Index(TemplateView):
         m_kwargs['random_products'] = Product.objects.filter(visible=True).order_by('?')[:3]
         m_kwargs['top_pick'] = Product.objects.filter(visible=True).annotate(pick_count=Count('orders_lines')).order_by(
             '-pick_count')[:3]
+        m_kwargs["content"] = IndexContent.objects.all().first()
         return m_kwargs
 
 
@@ -758,3 +759,14 @@ class SubCategoryCreateView(CreateView):
                                     request=request)
             return JsonResponse(html, safe=False)
         return super(SubCategoryCreateView, self).get(request, *args, **kwargs)
+
+
+@method_decorator(permission_required("ecommerce.add_indexcontent"), name='dispatch')
+class UpdateIndexContent(UpdateView):
+    model = IndexContent
+    form_class = IndexContentForm
+    template_name = "dashboard/index_content_form.html"
+    context_object_name = "index_content"
+
+    def get_success_url(self):
+        return reverse_lazy("ecommerce:dashboard-update-index-content", kwargs={"pk": 1})

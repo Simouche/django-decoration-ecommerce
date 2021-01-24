@@ -58,6 +58,7 @@ class User(AbstractUser):
     def delete(self, using=None, keep_parents=False):
         self.visible = False
         self.is_active = False
+        self.profile.visible = False
         self.save()
 
     def __str__(self):

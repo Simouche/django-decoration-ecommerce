@@ -69,7 +69,13 @@ class LoginView(View):
                     return redirect('ecommerce:dashboard-products')
                 return redirect('ecommerce:index')
             else:
-                login_form.add_error(None, _('Invalid username/password'))
+                user = User.objects.filter(username=login_form.cleaned_data.get('username'))
+                if user.exists():
+                    user = user.first()
+                    if not user.is_active:
+                        login_form.add_error(None, _("Your account isn't activated, an admin will activate it soon."))
+                else:
+                    login_form.add_error(None, _('Invalid username/password'))
                 context = dict(login_form=login_form)
                 return render(request, self.template_name, context)
 

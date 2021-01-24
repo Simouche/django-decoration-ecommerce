@@ -93,9 +93,10 @@ class RegistrationForm(forms.ModelForm):
         fields = ['username', "first_name", "last_name", 'user_type', 'phones', 'email']
 
     def clean(self):
-        super(RegistrationForm, self).clean()
+        cleaned_data = super(RegistrationForm, self).clean()
         if not self.cleaned_data.get('password') == self.cleaned_data.get('c_password'):
             raise forms.ValidationError(_("Un-matching passwords!"))
+        return cleaned_data
 
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
@@ -163,7 +164,7 @@ class CreateStaffForm(BSModalModelForm):
                 'placeholder': _("Phone Number")
             }
         ), help_text=_("if you have multiple phones, enter them separated by a coma.")
-    ),)
+    ), )
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={

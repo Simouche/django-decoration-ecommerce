@@ -8,10 +8,15 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('dashboard/main/', views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
+
     path('dashboard/sales/all/', views.DashboardSalesListView.as_view(), name='dashboard-sales'),
     path('dashboard/sales/all/export/', views.DashboardSalesListView.as_view(), name='dashboard-sales-export'),
     path('dashboard/sales/<int:pk>/update/status/', views.DashBoardUpdateSaleStatus.as_view(),
          name='dashboard-sales-update-status'),
+
+    path('dashboard/index-content/<int:pk>/update/', views.UpdateIndexContent.as_view(),
+         name='dashboard-update-index-content'),
+
     path('about/', views.Index.as_view(), name='about'),
     path('contact/', views.Index.as_view(), name='contact'),
 

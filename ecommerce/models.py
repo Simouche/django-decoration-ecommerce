@@ -302,37 +302,37 @@ class IndexContent(BaseModel):
     card1_visibility = models.BooleanField(default=True, verbose_name=_("Visibility"))
     card1_header = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Header"))
     card1_title = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Title"))
-    card1_content = models.CharField(max_length=150, null=True, blank=True, verbose_name=_("Content Text"))
+    card1_content = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     card1_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
     card1_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
 
     # section 1 attrs
     section1_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
-    section1_text = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Content Text"))
+    section1_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section1_categories = models.ManyToManyField("Category", related_name="index_cats",
                                                  verbose_name=_("Display Categories"))
 
     # section 2 attrs
     section2_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
-    section2_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section2_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section2_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
     section2_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
 
     # section 3 attrs
     section3_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
-    section3_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section3_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section3_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
 
     # section 4 attrs
     section4_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
-    section4_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section4_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section4_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
     section4_image1 = models.ImageField(null=True, blank=True, verbose_name=_("Image 1"), upload_to='index')
     section4_image2 = models.ImageField(null=True, blank=True, verbose_name=_("Image 2"), upload_to='index')
 
     # section 5 attrs
     section5_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
-    section5_text = models.CharField(max_length=300, null=True, blank=True, verbose_name=_("Content Text"))
+    section5_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section5_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
 
 

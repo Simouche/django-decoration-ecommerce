@@ -1,0 +1,237 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-23 11:53+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: .\forms.py:14 .\forms.py:41 .\forms.py:142 .\templates\register.html:95
+msgid "Username"
+msgstr ""
+
+#: .\forms.py:14
+msgid "Phone"
+msgstr ""
+
+#: .\forms.py:14 .\forms.py:84 .\forms.py:185 .\views.py:165
+msgid "Email"
+msgstr ""
+
+#: .\forms.py:21 .\forms.py:69 .\forms.py:170 .\templates\login.html:111
+#: .\templates\register.html:180
+msgid "Password"
+msgstr ""
+
+#: .\forms.py:31
+msgid "Code"
+msgstr ""
+
+#: .\forms.py:48 .\forms.py:149 .\templates\register.html:112 .\views.py:165
+msgid "First Name"
+msgstr ""
+
+#: .\forms.py:55 .\forms.py:156 .\templates\register.html:129 .\views.py:165
+msgid "Last Name"
+msgstr ""
+
+#: .\forms.py:62 .\forms.py:163 .\models.py:19
+msgid "Phone Number"
+msgstr ""
+
+#: .\forms.py:64 .\forms.py:165
+msgid "if you have multiple phones, enter them separated by a coma."
+msgstr ""
+
+#: .\forms.py:76 .\forms.py:78 .\forms.py:177 .\templates\register.html:197
+msgid "Confirm Password"
+msgstr ""
+
+#: .\forms.py:89 .\models.py:15
+msgid "Client"
+msgstr ""
+
+#: .\forms.py:89 .\forms.py:189 .\models.py:15
+msgid "Staff"
+msgstr ""
+
+#: .\forms.py:89 .\forms.py:189 .\models.py:15
+msgid "Admin"
+msgstr ""
+
+#: .\forms.py:98 .\forms.py:198
+msgid "Un-matching passwords!"
+msgstr ""
+
+#: .\forms.py:115
+msgid "Choose a user"
+msgstr ""
+
+#: .\forms.py:120 .\models.py:80
+msgid "Address"
+msgstr ""
+
+#: .\forms.py:124
+msgid "Select a city"
+msgstr ""
+
+#: .\forms.py:128 .\models.py:83
+msgid "Birth Date"
+msgstr ""
+
+#: .\models.py:25
+msgid "Active"
+msgstr ""
+
+#: .\models.py:28
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\models.py:34
+msgid "Type"
+msgstr ""
+
+#: .\models.py:37
+msgid ""
+"The user's type can be one of the available choices, Client, Staff or Admin."
+msgstr ""
+
+#: .\models.py:72
+msgid "Profile Picture"
+msgstr ""
+
+#: .\models.py:75
+msgid "the user's profile picture."
+msgstr ""
+
+#: .\models.py:82 .\models.py:151
+msgid "City"
+msgstr ""
+
+#: .\models.py:84
+msgid "Gender"
+msgstr ""
+
+#: .\models.py:107
+msgid "Profile"
+msgstr ""
+
+#: .\models.py:108
+msgid "Profiles"
+msgstr ""
+
+#: .\models.py:112 .\models.py:125 .\models.py:141
+msgid "Name"
+msgstr ""
+
+#: .\models.py:113 .\models.py:126 .\models.py:142
+msgid "Arabic Name"
+msgstr ""
+
+#: .\models.py:114 .\models.py:127 .\models.py:143
+msgid "English Name"
+msgstr ""
+
+#: .\models.py:120 .\models.py:130
+msgid "Region"
+msgstr ""
+
+#: .\models.py:121
+msgid "Regions"
+msgstr ""
+
+#: .\models.py:128
+msgid "Matricule"
+msgstr ""
+
+#: .\models.py:129 .\models.py:144
+msgid "Postal Code"
+msgstr ""
+
+#: .\models.py:136 .\models.py:145
+msgid "State"
+msgstr ""
+
+#: .\models.py:137
+msgid "States"
+msgstr ""
+
+#: .\models.py:152
+msgid "Cities"
+msgstr ""
+
+#: .\templates\login.html:76 .\templates\register.html:217
+msgid "Login"
+msgstr ""
+
+#: .\templates\login.html:77
+msgid "Enter login details to get access"
+msgstr ""
+
+#: .\templates\login.html:94
+msgid "Username, Email Address or Phone number"
+msgstr ""
+
+#: .\templates\login.html:130
+msgid "Forgot Password?"
+msgstr ""
+
+#: .\templates\login.html:135
+msgid "Don’t have an account?"
+msgstr ""
+
+#: .\templates\login.html:136 .\templates\register.html:76
+#: .\templates\register.html:219
+msgid "Sign Up"
+msgstr ""
+
+#: .\templates\login.html:136 .\templates\register.html:218
+msgid "here"
+msgstr ""
+
+#: .\templates\login.html:138
+msgid "LOGIN"
+msgstr ""
+
+#: .\templates\register.html:77
+msgid "Create your account to get full access"
+msgstr ""
+
+#: .\templates\register.html:146
+msgid "Phone number"
+msgstr ""
+
+#: .\templates\register.html:163
+msgid "Email Address"
+msgstr ""
+
+#: .\templates\register.html:216
+msgid "Already have an account? "
+msgstr ""
+
+#: .\views.py:72
+msgid "Invalid username/password"
+msgstr ""
+
+#: .\views.py:165
+msgid "phone"
+msgstr ""
+
+#: .\views.py:188
+msgid "User Created Success"
+msgstr ""
