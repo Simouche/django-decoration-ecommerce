@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
 from django.db.models import Model, Sum, Avg, F
 
-from base_backend.models import DeletableModel, do_nothing, BaseModel
+from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
 from base_backend import _
 
 # Create your models here.
@@ -286,6 +286,30 @@ class DeliveryCompany(DeletableModel):
     company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
     weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
 
+    class Meta:
+        verbose_name = _('Product On Seasonal Discount')
+        verbose_name_plural = _('Products On Seasonal Discount')
+
+
+class DeliveryGuy(DeletableModel):
+    name = models.CharField(unique=True, max_length=50, verbose_name=_('Name'))
+    company = models.ForeignKey('DeliveryCompany', on_delete=cascade, null=True, blank=True,
+                                related_name="delivery_guys")
+
+    class Meta:
+        verbose_name = _('Delivery Guy')
+        verbose_name_plural = _('Delivery Guys')
+
+
+class Deliveries(DeletableModel):
+    order = models.ForeignKey('Order', on_delete=cascade, verbose_name=_('Order'), related_name="deliveries")
+    delivery_guys = models.ForeignKey('DeliveryGuy', on_delete=cascade, verbose_name=_('Delivery Guy'),
+                                      related_name="deliveries")
+
+    class Meta:
+        verbose_name = _('Delivery')
+        verbose_name_plural = _('Deliveries')
+
 
 class DeliveryFee(DeletableModel):
     state = models.ForeignKey('accounts.State', related_name='fees', on_delete=do_nothing)
@@ -339,6 +363,10 @@ class IndexContent(BaseModel):
 class Partner(DeletableModel):
     name = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Name"))
     url = models.URLField(null=True, blank=True, verbose_name=_("URL"))
+
+    class Meta:
+        verbose_name = _('Partner')
+        verbose_name_plural = _('Partners')
 
     def __str__(self):
         return f'{self.name}'

@@ -8,3 +8,4 @@ pillow
 firebase_admin
 django-bootstrap-modal-forms
 xlwt
+django_seed

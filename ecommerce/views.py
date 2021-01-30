@@ -25,7 +25,7 @@ from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany
 
 
 class Index(TemplateView):
@@ -770,3 +770,31 @@ class UpdateIndexContent(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("ecommerce:dashboard-update-index-content", kwargs={"pk": 1})
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class CreateDeliveryGuy(CreateView):
+    model = DeliveryGuy
+    template_name = ""
+    success_url = reverse_lazy("")
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class ListDeliveryGuy(ListView):
+    model = DeliveryGuy
+    template_name = ""
+    queryset = DeliveryGuy.objects.all()
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class CreateDeliveryCompany(CreateView):
+    model = DeliveryCompany
+    success_url = reverse_lazy("")
+    template_name = ""
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class ListDeliveryGuy(ListView):
+    model = DeliveryCompany
+    template_name = ""
+    queryset = DeliveryCompany.objects.all()
