@@ -782,7 +782,7 @@ class CreateDeliveryGuy(CreateView):
 @method_decorator(staff_member_required, name="dispatch")
 class ListDeliveryGuy(ListView):
     model = DeliveryGuy
-    template_name = ""
+    template_name = "dashboard/delivery_guys.html"
     queryset = DeliveryGuy.objects.all()
 
 
@@ -794,7 +794,9 @@ class CreateDeliveryCompany(CreateView):
 
 
 @method_decorator(staff_member_required, name="dispatch")
-class ListDeliveryGuy(ListView):
+class ListDeliveryCompanies(ListView):
     model = DeliveryCompany
-    template_name = ""
+    template_name = "dashboard/delivery_companies.html"
     queryset = DeliveryCompany.objects.all()
+    context_object_name = "companies"
+    paginate_by = 25

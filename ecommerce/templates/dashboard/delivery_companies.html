@@ -1,10 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
 
-</body>
-</html>
+{% block content %}
+    <!-- DATA TABLE -->
+    <h3 class="title-5 m-b-35">{% trans "Delivery Companies" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left"></div>
+        <div class="table-data__tool-right">
+            <button id="create-enterprise" type="button" name="button"
+                    class="au-btn au-btn-icon au-btn--green au-btn--small">
+                <i class="zmdi zmdi-plus"></i>{% trans "add company" %}
+            </button>
+        </div>
+    </div>
+    <div id="companies-table-div" class="table-responsive table-responsive-data2">
+        <table class="table table-data2" id="companies-table">
+            <thead>
+            <tr>
+                <th>
+                    {% trans "company name" %}
+                </th>
+                <th>{% trans "weight threshold" %}</th>
+                <th>{% trans "Delivery Guys Count" %}</th>
+                <th style="text-align:right">{% trans "Fees" %}</th>
+                <th style="text-align:center">{% trans "actions" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for company in companies %}
+                <tr class="tr-shadow">
+                    <td>{{ company.company_name }}</td>
+                    <td>{{ company.weight_threshold }}</td>
+                    <td> {{ company.delivery_guys_count }}</td>
+                    <td>
+                        <div class="table-data-feature">
+                            <div class="col-3 pl-1">
+                                <button type="button" class="item" data-toggle="modal" data-placement="top" title="Info"
+                                        onclick="loadUserProfileIntoModal('{% url 'accounts:profile-details' user.profile.pk %}','#details-user-modal')">
+                                    <i class="fa fa-info"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="table-data-feature row m-0">
+                            {% if company.visible %}
+                                <div class="col-3 pl-1">
+                                    <button {% comment %}data-id="{% url 'ecommerce:products-product-update' company.id %}"{% endcomment %}
+                                            id="update-company{{ company.id }}" class="item" data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Edit">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                            title="Delete" data-target="#deletemodal" data-id="{{ company.id }}">
+                                        <i class="zmdi zmdi-delete"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
+    </div>
+    <!-- END DATA TABLE -->
+{% endblock %}
+
+{% block modals %}
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

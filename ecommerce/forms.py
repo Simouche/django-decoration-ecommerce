@@ -4,7 +4,8 @@ from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
 from accounts.models import User
-from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent
+from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
+    DeliveryFee
 from base_backend import _
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
@@ -154,3 +155,15 @@ class IndexContentForm(forms.ModelForm):
                   'section2_text', 'section2_button_text', 'section2_image', 'section3_title', 'section3_text',
                   'section3_button_text', 'section4_title', 'section4_text', 'section4_button_text', 'section4_image1',
                   'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', ]
+
+
+class CreateDeliveryCompanyForm(forms.ModelForm):
+    class Meta:
+        model = DeliveryCompany
+        fields = ('company_name', 'weight_threshold')
+
+
+class CreateDeliveryFee(forms.ModelForm):
+    class Meta:
+        model = DeliveryFee
+        fields = ('company', '')

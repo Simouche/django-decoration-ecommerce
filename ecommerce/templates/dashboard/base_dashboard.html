@@ -141,10 +141,12 @@
                         <a class="js-arrow" href="#"><i class="fas fa-truck"></i>{% trans 'Delivery' %}</a>
                         <ul class="navbar__sub-list list-unstyled js-sub-list">
                             <li>
-                                <a href=""><i class="fas fa-building"></i>{% trans 'Companies' %}</a>
+                                <a href="{% url "ecommerce:delivery-companies-list" %}"><i
+                                        class="fas fa-building"></i>{% trans 'Companies' %}</a>
                             </li>
                             <li>
-                                <a href=""><i class="fas fa-male"></i>{% trans 'Delivery Guys' %}</a>
+                                <a href="{% url "ecommerce:delivery-agents-list" %}"><i
+                                        class="fas fa-male"></i>{% trans 'Delivery Guys' %}</a>
                             </li>
                         </ul>
                     </li>
@@ -155,6 +157,19 @@
                     <li>
                         <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
                             <i class="fas fa-edit"></i>{% trans "Home Page" %}</a>
+                    </li>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="#"><i class="fas fa-map-marker-alt"></i>{% trans 'Places' %}</a>
+                        <ul class="navbar__sub-list list-unstyled js-sub-list">
+                            <li>
+                                <a href="{% url "ecommerce:delivery-companies-list" %}"><i
+                                        class="fas fa-map-signs"></i>{% trans 'States' %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url "ecommerce:delivery-agents-list" %}"><i
+                                        class="fas fa-location-arrow"></i>{% trans 'Cities' %}</a>
+                            </li>
+                        </ul>
                     </li>
 
                 </ul>

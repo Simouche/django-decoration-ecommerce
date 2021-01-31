@@ -31,6 +31,13 @@ urlpatterns = [
     path('categories/create/', views.CategoryCreateView.as_view(), name='categories-create'),
     path('categories/sub-categories/create/', views.SubCategoryCreateView.as_view(), name='categories-sub-create'),
 
+    path('dashboard/delivery/agents/', views.ListDeliveryGuy.as_view(), name="delivery-agents-list"),
+    path('dashboard/delivery/agents/create/', views.CreateDeliveryGuy.as_view(), name="delivery-agents-create"),
+
+    path('dashboard/delivery/companies/', views.ListDeliveryCompanies.as_view(), name="delivery-companies-list"),
+    path('dashboard/delivery/companies/create/', views.CreateDeliveryCompany.as_view(),
+         name="delivery-companies-create"),
+
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
     path('cart/details/', views.RedirectToCartDetailsView.as_view(), name='cart-details-redirect'),

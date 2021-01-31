@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'decoration.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'decoration',
+        'NAME': 'ecommerce',
         'USER': 'postgres',
         'PASSWORD': 'Simouche',
         'HOST': 'localhost',

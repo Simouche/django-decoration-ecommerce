@@ -286,9 +286,13 @@ class DeliveryCompany(DeletableModel):
     company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
     weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
 
+    @property
+    def delivery_guys_count(self) -> int:
+        return self.delivery_guys.count()
+
     class Meta:
-        verbose_name = _('Product On Seasonal Discount')
-        verbose_name_plural = _('Products On Seasonal Discount')
+        verbose_name = _('Delivery Company')
+        verbose_name_plural = _('Delivery Companies')
 
 
 class DeliveryGuy(DeletableModel):
