@@ -86,7 +86,7 @@ class RegistrationForm(forms.ModelForm):
         )
     )
     user_type = forms.ChoiceField(widget=forms.HiddenInput,
-                                  choices=(('C', _('Client')), ('S', _('Staff')), ('A', _('Admin'))))
+                                  choices=('C', _('Client')))
 
     class Meta:
         model = User
@@ -101,6 +101,7 @@ class RegistrationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password'])
+        user.is_active = True
         user.save()
 
         user_type = self.cleaned_data['user_type']
@@ -187,7 +188,7 @@ class CreateStaffForm(BSModalModelForm):
             }
         )
     )
-    user_type = forms.ChoiceField(choices=(('S', _('Staff')), ('A', _('Admin'))))
+    user_type = forms.ChoiceField(choices=(('S', _('Staff')), ('A', _('Admin')), ('CA', _('Caller'))))
 
     class Meta:
         model = User

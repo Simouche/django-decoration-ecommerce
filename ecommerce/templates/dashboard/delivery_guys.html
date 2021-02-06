@@ -1,10 +1,118 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
 
-</body>
-</html>
+{% block content %}
+    <!-- DATA TABLE -->
+    <h3 class="title-5 m-b-35">{% trans "Delivery Guys" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left"></div>
+        <div class="table-data__tool-right">
+            <button id="create-enterprise" type="button" name="button"
+                    class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createDeliveryGuy()">
+                <i class="zmdi zmdi-plus"></i>{% trans "add delivery guy" %}
+            </button>
+        </div>
+    </div>
+    <div id="companies-table-div" class="table-responsive table-responsive-data2">
+        <table class="table table-data2" id="companies-table">
+            <thead>
+            <tr>
+                <th>{% trans "name" %}</th>
+                <th>{% trans "company" %}</th>
+                <th style="text-align:center">{% trans "actions" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for guy in guys %}
+                <tr class="tr-shadow">
+                    <td>{{ guy.name }}</td>
+                    <td>{{ guy.company }}</td>
+                    <td>
+                        <div class="table-data-feature row m-0">
+                            {% if guy.visible %}
+                                <div class="col-3 pl-1">
+                                    <button id="update-company{{ guy.id }}" class="item" data-toggle="tooltip"
+                                            data-placement="top" onclick="editAgent({{ guy.id }})"
+                                            title="Edit">
+                                        <i class="zmdi zmdi-edit"></i>
+                                    </button>
+                                </div>
+                                {% comment %}<div class="col-3">
+                                    <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                            title="Delete" data-target="#deletemodal" data-id="{{ guy.id }}">
+                                        <i class="zmdi zmdi-delete"></i>
+                                    </button>
+                                </div>{% endcomment %}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
+    </div>
+    <!-- END DATA TABLE -->
+{% endblock %}
+
+{% block modals %}
+
+    {# create user modal#}
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-company-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="create-company-content"></div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        function createDeliveryGuy() {
+            $.ajax({
+                type: 'GET',
+                url: '{% url 'ecommerce:delivery-agents-create' %}',
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#create-company-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+
+        function editAgent(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/dashboard/delivery/agents/${id}/update/`,
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#create-company-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+
+        function showDetails(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/dashboard/delivery/agents/${id}/update/`,
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#create-company-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+    </script>
+
+{% endblock %}

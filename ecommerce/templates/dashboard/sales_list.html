@@ -18,11 +18,49 @@
                     <option value="CO">{% trans 'Confirmed' %}</option>
                     <option value="OD">{% trans 'On Delivery' %}</option>
                     <option value="D">{% trans 'Delivered' %}</option>
+                    <option value="R">{% trans 'Returned' %}</option>
+                    <option value="RE">{% trans 'Refund' %}</option>
+                    <option value="PA">{% trans 'Paid' %}</option>
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>
+
+            <div class="rs-select2--light rs-select2--md">
+                <label for="state-select"></label>
+                <select id="state-select" class="js-select2" name="group">
+                    <option value="" selected="selected">{% trans "States" %}</option>
+                    {% for state in states %}
+                        <option value="{{ state.id }}">{{ state }}</option>
+                    {% endfor %}
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+
+            <div class="rs-select2--light rs-select2--md">
+                <label for="city-select"></label>
+                <select id="city-select" class="js-select2" name="group">
+                    <option value="" selected="selected">{% trans "Cities" %}</option>
+                    {% for city in cities %}
+                        <option value="{{ city.id }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+
         </div>
         <div class="table-data__tool-right">
+            <div class="rs-select2--light rs-select2--md">
+                <label for="assign-to-select"></label>
+                <select id="assign-to-select" class="js-select2" name="agents">
+                    <option value="" selected="selected">{% trans "Delivery Guy" %}</option>
+                    {% for guy in agents %}
+                        <option value="{{ guy.id }}">{{ guy }}</option>
+                    {% endfor %}
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+            <button type="button" onclick="assignTo()"
+                    class="au-btn au-btn-icon au-btn--green au-btn--small">{% trans 'Assign to' %}</button>
             {% if  user.user_type == 'A' %}
                 {% url 'ecommerce:dashboard-sales-export' as url %}
                 {% include "dashboard/exportation_layout.html" with exportation_url=url %}
@@ -33,6 +71,7 @@
         <table class="table table-data2">
             <thead>
             <tr>
+                <th>{% trans "Selected" %}</th>
                 <th>{% trans "Number" %}</th>
                 <th>{% trans "Client" %}</th>
                 <th>{% trans "phone" %}</th>
@@ -44,9 +83,19 @@
             </tr>
             </thead>
             <tbody>
-
             {% for sale in sales %}
-                <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'D' %}  completed {% endif %}">
+                <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'PA' %}  completed {% endif %}">
+                    <td>
+                        {% if sale.status in 'CO' %}
+                            <div class="switch-wrap d-flex justify-content-between">
+                                <div class="confirm-checkbox">
+                                    <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
+                                           value="{{ sale.id }}">
+                                    <label for="checkbox{{ sale.id }}"></label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
                     <td>{{ sale.number }}</td>
                     <td>{{ sale.profile.user.full_name }}</td>
                     <td><span
@@ -65,10 +114,10 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                            {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
                                 <i class="zmdi zmdi-delete"></i>
-                            </button>
+                            </button>{% endcomment %}
                         </div>
                     </td>
                 </tr>
@@ -137,6 +186,65 @@
             url: "{% url 'ecommerce:dashboard-sales' %}",
             dataTableId: "#sales-table"
         })
+
+        loadByState({
+            selectId: "#state-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+            dataTableId: "#sales-table",
+            responseObjectName: "sales"
+        })
+
+        loadByCity({
+            selectId: "#city-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+            dataTableId: "#sales-table",
+            responseObjectName: "sales"
+        })
+
+        function updateOrder(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/orders/${id}/update/`,
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#change-order-status-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+
+        function assignTo() {
+            const ids = []
+            const agentsSelect = $("#assign-to-select")
+            $("input:checkbox[name=selected-orders]:checked").each(function () {
+                ids.push($(this).val())
+            })
+            if (ids.length === 0) {
+                alert("Select an Order")
+                return
+            }
+            if (agentsSelect.val() == "") {
+                alert("Select a delivery guy")
+                return
+            }
+            console.log(ids)
+            console.log(agentsSelect.val())
+            const data = {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                delivery_guy: agentsSelect.val(),
+                orders: ids
+            }
+            $.ajax({
+                type: "POST",
+                url: "{% url "ecommerce:orders-assignment-delivery" %}",
+                data: data,
+                success: (data) => {
+                    console.log("downloaded")
+                }
+            })
+        }
 
     </script>
 {% endblock scripts %}

@@ -12,7 +12,7 @@ from base_backend.validators import phone_validator
 # Create your models here.
 
 class User(AbstractUser):
-    USER_TYPES = (('C', _('Client')), ('S', _('Staff')), ('A', _('Admin')))
+    USER_TYPES = (('C', _('Client')), ('S', _('Staff')), ('A', _('Admin')), ('CA', _('Caller')))
 
     notification_token = models.CharField(max_length=255, unique=True, blank=True, null=True)
     phones = ArrayField(base_field=models.CharField(
@@ -32,7 +32,7 @@ class User(AbstractUser):
 
     user_type = models.CharField(
         _("Type"),
-        max_length=1,
+        max_length=2,
         choices=USER_TYPES,
         help_text=_("The user's type can be one of the available choices, "
                     "Client, Staff or Admin."),
@@ -104,6 +104,9 @@ class Profile(DeletableModel):
         # return self.orders.filter(visible=True).count() or 0
         return '0'
 
+    def __str__(self):
+        return self.user.full_name
+
     class Meta:
         verbose_name = _('Profile')
         verbose_name_plural = _('Profiles')
@@ -128,7 +131,7 @@ class State(BaseModel):
     name_fr = models.CharField(max_length=255, verbose_name=_('English Name'))
     matricule = models.IntegerField(verbose_name=_('Matricule'))
     code_postal = models.IntegerField(verbose_name=_('Postal Code'))
-    region = models.ForeignKey('Region', verbose_name=_('Region'), on_delete=do_nothing)
+    region = models.ForeignKey('Region', verbose_name=_('Region'), on_delete=do_nothing, null=True, blank=True)
 
     def __str__(self):
         return "{0} {1}".format(self.matricule, self.name)

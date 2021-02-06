@@ -32,11 +32,15 @@ urlpatterns = [
     path('categories/sub-categories/create/', views.SubCategoryCreateView.as_view(), name='categories-sub-create'),
 
     path('dashboard/delivery/agents/', views.ListDeliveryGuy.as_view(), name="delivery-agents-list"),
+    path('dashboard/delivery/agents/<int:pk>/update/', views.UpdateDeliveryGuy.as_view(),
+         name="delivery-agents-update"),
     path('dashboard/delivery/agents/create/', views.CreateDeliveryGuy.as_view(), name="delivery-agents-create"),
 
     path('dashboard/delivery/companies/', views.ListDeliveryCompanies.as_view(), name="delivery-companies-list"),
     path('dashboard/delivery/companies/create/', views.CreateDeliveryCompany.as_view(),
          name="delivery-companies-create"),
+    path('dashboard/delivery/companies/<int:pk>/', views.DetailDeliveryCompany.as_view(),
+         name="delivery-companies-detail"),
 
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
@@ -55,6 +59,8 @@ urlpatterns = [
     path('orders/<int:pk>/delete/', views.OrderDeleteView.as_view(), name='orders-order-delete'),
     path('orders/<int:pk>/details/', views.OrderDetails.as_view(), name='orders-order-details'),
     path('sales/<int:pk>/details/', views.DashboardSaleDetails.as_view(), name='sales-sale-details'),
+    path('orders/assign/to-caller/', views.assign_orders_to_caller, name='orders-assignment-caller'),
+    path('orders/assign/to-agent/', views.assign_orders_to_delivery_guy, name='orders-assignment-delivery'),
     path('orders/lines/<int:pk>/update/', views.OrderLineUpdateView.as_view(), name='orderlines-line-details'),
     path('orders/lines/<int:pk>/delete/', views.OrderLineDeleteView.as_view(), name='orderlines-line-delete'),
 

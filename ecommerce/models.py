@@ -55,6 +55,7 @@ class Product(DeletableModel):
     discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'))
     colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'))
     dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'))
+    reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
                                  verbose_name=_('Category'), null=True)
@@ -84,7 +85,7 @@ class Product(DeletableModel):
         verbose_name_plural = _('Products')
 
 
-class OrderLine(DeletableModel):
+class OrderLine(BaseModel):
     product = models.ForeignKey('Product', related_name='orders_lines', on_delete=do_nothing)
     order = models.ForeignKey('Order', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
@@ -112,27 +113,37 @@ class Order(DeletableModel):
                       ('D', _('Delivered')),
                       ('R', _('Returned')),
                       ('RE', _('Refund')),
-                      ('PA', _('Paid')),)
+                      ('PA', _('Paid')),
+                      ('NA', _('No Answer')),)
 
     profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
     status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'), default='P')
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Shipping Fee'), default=0)
+    free_shipping = models.BooleanField(default=False, blank=True)
 
     @property
     def products_count(self):
         return self.get_lines.aggregate(count=Sum('quantity')).get('count', 0)
 
     @property
-    def total_sum(self):
+    def sub_total(self):
         total = 0
         for line in self.get_lines:
             total += line.total
         return total.quantize(decimal.Decimal("0.01"))
 
     @property
+    def total_sum(self):
+        total = 0
+        for line in self.get_lines:
+            total += line.total
+        total += self.shipping_fee
+        return total.quantize(decimal.Decimal("0.01"))
+
+    @property
     def get_lines(self):
-        return self.lines.filter(visible=True)
+        return self.lines.filter()
 
     @staticmethod
     def generate_number():
@@ -285,10 +296,14 @@ class ProductOnSeasonalDiscount(DeletableModel):
 class DeliveryCompany(DeletableModel):
     company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
     weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
+    base_fee = models.PositiveIntegerField(verbose_name=_('Base Fee'), default=0, blank=True)
 
     @property
     def delivery_guys_count(self) -> int:
         return self.delivery_guys.count()
+
+    def __str__(self):
+        return self.company_name
 
     class Meta:
         verbose_name = _('Delivery Company')
@@ -299,6 +314,9 @@ class DeliveryGuy(DeletableModel):
     name = models.CharField(unique=True, max_length=50, verbose_name=_('Name'))
     company = models.ForeignKey('DeliveryCompany', on_delete=cascade, null=True, blank=True,
                                 related_name="delivery_guys")
+
+    def __str__(self):
+        return "{} {}".format(self.name, self.company)
 
     class Meta:
         verbose_name = _('Delivery Guy')

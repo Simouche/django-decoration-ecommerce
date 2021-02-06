@@ -106,12 +106,12 @@
                                     onclick="loadUserProfileIntoModal('{% url 'accounts:profile-details' user.profile.pk %}','#details-user-modal')">
                                 <i class="fa fa-info"></i>
                             </button>
-                            {% if user.visible and request.user.user_type == 'A' %}
+                            {% comment %}                            {% if user.visible and request.user.user_type == 'A' %}
                                 <button type="button" class="item" data-toggle="modal" data-placement="top"
                                         title="Delete" data-target="#deletemodal" data-id="{{ user.id }}">
                                     <i class="zmdi zmdi-delete"></i>
                                 </button>
-                            {% endif %}
+                            {% endif %}{% endcomment %}
                         </div>
                     </td>
                 </tr>

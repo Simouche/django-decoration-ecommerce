@@ -18,4 +18,7 @@ urlpatterns = [
     path('users/<int:pk>/activate/', views.activate_user, name='users-activate-user'),
     path('users/<int:pk>/deactivate/', views.deactivate_user, name='users-deactivate-user'),
     path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='users-delete'),
+
+    path('dashboard/places/states/', views.StatesList.as_view(), name="dashboard-states"),
+    path('dashboard/places/cities/', views.CitiesList.as_view(), name="dashboard-cities"),
 ]

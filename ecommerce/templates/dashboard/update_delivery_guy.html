@@ -1,11 +1,11 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load static %}
-<form method="post" enctype="multipart/form-data" action="">
+<form method="post" enctype="multipart/form-data" action="{% url "ecommerce:delivery-agents-update"  view.kwargs.pk %}">
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Create New User' %}</h5>
+        <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Create New Delivery Agent' %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -49,7 +49,7 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-        <button type="button" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
+        <button type="submit" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
     </div>
 
 </form>

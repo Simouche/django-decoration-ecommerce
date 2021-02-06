@@ -1,10 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
 
-</body>
-</html>
+{% block content %}
+    <div id="orders-table" class="table-responsive table-responsive-data2">
+        <table class="table table-data2">
+            <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Arabic Name" %}</th>
+                <th>{% trans "English Namet" %}</th>
+                <th>{% trans "Code Postal" %}</th>
+                <th>{% trans "State" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for city in cities %}
+                <tr class="tr-shadow">
+                    <td>{{ city.name }}</td>
+                    <td>{{ city.name_ar }}</td>
+                    <td>{{ city.name_fr }}</td>
+                    <td>{{ city.code_postal }}</td>
+                    <td>{{ city.state }}</td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
+    </div>
+{% endblock %}

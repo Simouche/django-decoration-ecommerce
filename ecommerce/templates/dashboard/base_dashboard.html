@@ -129,49 +129,48 @@
                         <a href="{% url 'accounts:users-list' %}">
                             <i class="fas fa-users"></i>{% trans "Users" %}</a>
                     </li>
-                    <li>
+                    <li {% if "orders/history" in request.path %} class="active" {% endif %}>
                         <a href="{% url 'ecommerce:orders-history' %}">
                             <i class="far fa-credit-card"></i>{% trans "Orders" %}</a>
                     </li>
-                    <li>
+                    <li {% if "sales" in request.path %} class="active" {% endif %}>
                         <a href="{% url 'ecommerce:dashboard-sales' %}">
                             <i class="far fa-credit-card"></i>{% trans "Sales" %}</a>
                     </li>
                     <li class="has-sub">
                         <a class="js-arrow" href="#"><i class="fas fa-truck"></i>{% trans 'Delivery' %}</a>
                         <ul class="navbar__sub-list list-unstyled js-sub-list">
-                            <li>
+                            <li {% if "companies" in request.path %} class="active" {% endif %}>
                                 <a href="{% url "ecommerce:delivery-companies-list" %}"><i
                                         class="fas fa-building"></i>{% trans 'Companies' %}</a>
                             </li>
-                            <li>
+                            <li {% if "agents" in request.path %} class="active" {% endif %}>
                                 <a href="{% url "ecommerce:delivery-agents-list" %}"><i
                                         class="fas fa-male"></i>{% trans 'Delivery Guys' %}</a>
                             </li>
                         </ul>
                     </li>
-                    <li>
+                    <li {% if "change-history" in request.path %} class="active" {% endif %}>
                         <a href="{% url 'ecommerce:orders-change-history' %}">
                             <i class="fas fa-history"></i>{% trans "History" %}</a>
                     </li>
-                    <li>
+                    <li {% if "index-content" in request.path %} class="active" {% endif %}>
                         <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
                             <i class="fas fa-edit"></i>{% trans "Home Page" %}</a>
                     </li>
                     <li class="has-sub">
                         <a class="js-arrow" href="#"><i class="fas fa-map-marker-alt"></i>{% trans 'Places' %}</a>
                         <ul class="navbar__sub-list list-unstyled js-sub-list">
-                            <li>
-                                <a href="{% url "ecommerce:delivery-companies-list" %}"><i
+                            <li {% if "states" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "accounts:dashboard-states" %}"><i
                                         class="fas fa-map-signs"></i>{% trans 'States' %}</a>
                             </li>
-                            <li>
-                                <a href="{% url "ecommerce:delivery-agents-list" %}"><i
+                            <li {% if "cities" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "accounts:dashboard-cities" %}"><i
                                         class="fas fa-location-arrow"></i>{% trans 'Cities' %}</a>
                             </li>
                         </ul>
                     </li>
-
                 </ul>
             </nav>
         </div>
@@ -237,7 +236,7 @@
                             <div class="account-wrap">
                                 <div class="account-item clearfix js-item-menu">
                                     <div class="image">
-                                        <img src="{% static 'img/icon/avatar.jpg' %}" alt="John Doe"/>
+                                        <img src="{% static 'img/icon/avatar.jpg' %}" alt="profile image"/>
                                     </div>
                                     <div class="content">
                                         <a class="js-acc-btn" href="#">{{ user.first_name }}</a>
@@ -261,10 +260,6 @@
                                             <div class="account-dropdown__item">
                                                 <a href="{% url 'accounts:profile-details' user.id %}">
                                                     <i class="zmdi zmdi-account"></i>{% trans "Account" %}</a>
-                                            </div>
-                                            <div class="account-dropdown__item">
-                                                <a href="#">
-                                                    <i class="zmdi zmdi-settings"></i>{% trans "Setting" %}</a>
                                             </div>
                                         </div>
                                         <div class="account-dropdown__footer">

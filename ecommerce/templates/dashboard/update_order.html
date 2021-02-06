@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load static %}
 
-<form action="{% url "ecommerce:delivery-companies-create" %}" method="POST">
+<form action="{% url "ecommerce:orders-order-update" view.kwargs.pk %}" method="POST">
     {% csrf_token %}
     <div class="modal-header">
-        <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Create New Company' %}</h5>
+        <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Update Order' %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -48,9 +48,9 @@
     </div>
 
     <table class="table">
-        {{ fees_form.management_form }}
+        {{ lines_form.management_form }}
 
-        {% for form in fees_form.forms %}
+        {% for form in lines_form.forms %}
             {% if forloop.first %}
                 <thead>
                 <tr>
@@ -89,7 +89,7 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-        <button type="submit" class="submit-btn btn btn-primary">{% trans 'Create' %}</button>
+        <button type="submit" class="submit-btn btn btn-primary">{% trans 'Update' %}</button>
     </div>
 </form>
 
@@ -98,6 +98,6 @@
     $('.formset_row').formset({
         addText: 'add',
         deleteText: 'remove',
-        prefix: 'fees'
+        prefix: 'lines'
     });
 </script>

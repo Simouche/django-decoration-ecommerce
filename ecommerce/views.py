@@ -5,10 +5,11 @@ import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -17,15 +18,16 @@ from django.views.generic import CreateView, UpdateView, DeleteView, DetailView,
     RedirectView
 
 # Create your views here.
-from accounts.models import User, State
+from accounts.models import User, State, City
 from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
-    SearchOrderStatusChangeHistory, IndexContentForm
+    SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
+    OrderWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries
 
 
 class Index(TemplateView):
@@ -48,11 +50,11 @@ class Dashboard(TemplateView):
     def get_context_data(self, **kwargs):
         m_kwargs = super(Dashboard, self).get_context_data(**kwargs)
         m_kwargs["total_users"] = User.objects.filter(user_type="C").count()
-        m_kwargs["items_sold"] = OrderLine.objects.filter(visible=True).aggregate(count=Sum('quantity')) \
+        m_kwargs["items_sold"] = OrderLine.objects.all().aggregate(count=Sum('quantity')) \
                                      .get('count', 0) or 0
-        m_kwargs["items_sold_week"] = OrderLine.objects.filter(visible=True, created_at__week=get_current_week()) \
+        m_kwargs["items_sold_week"] = OrderLine.objects.filter(created_at__week=get_current_week()) \
                                           .aggregate(count=Sum('quantity')).get('count', 0) or 0
-        m_kwargs["earnings"] = OrderLine.objects.filter(visible=True) \
+        m_kwargs["earnings"] = OrderLine.objects.all() \
             .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('total', 0)
         m_kwargs["states"] = State.objects.all()[:10]
         return m_kwargs
@@ -149,19 +151,32 @@ def export_products_excel(request):
 @method_decorator(staff_member_required(), name='dispatch')
 class DashboardSalesListView(ListView):
     template_name = "dashboard/sales_list.html"
-    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D', 'R'], visible=True)
+    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D', 'R', 'RE', 'PA'], visible=True)
     model = Order
     context_object_name = "sales"
     page_kwarg = 'page'
-    paginate_by = 25
+    paginate_by = 10
     allow_empty = True
     ordering = ['-created_at']
+    extra_context = {
+        "states": State.objects.all(),
+        "cities": City.objects.all(),
+    }
 
     def get_queryset(self):
         queryset = super(DashboardSalesListView, self).get_queryset()
         if self.request.GET.get('status', None):
             queryset = queryset.filter(status=self.request.GET.get('status', None))
+        if self.request.GET.get('city', None):
+            queryset = queryset.filter(profile__city=self.request.GET.get('city'))
+        if self.request.GET.get('state', None):
+            queryset = queryset.filter(profile__city__state=self.request.GET.get('state'))
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardSalesListView, self).get_context_data(**kwargs)
+        context['agents'] = DeliveryGuy.objects.all()
+        return context
 
     def get(self, request, *args, **kwargs):
         if is_ajax(request):
@@ -399,7 +414,7 @@ class CartCheckOutConfirm(RedirectView):
 class OrdersMixin:
     def my_get_queryset(self, queryset):
         if self.request.user.is_staff:
-            return queryset.filter(status__in=['P', 'CA', 'RC'])
+            return queryset.filter(status__in=['P', 'CA', 'RC', 'NA'])
         return queryset.filter(profile=self.request.user.profile)
 
 
@@ -411,6 +426,10 @@ class OrdersHistory(ListView, OrdersMixin):
     paginate_by = 10
     paginate_orphans = True
     allow_empty = True
+    extra_context = {
+        "states": State.objects.all(),
+        "cities": City.objects.all(),
+    }
 
     def get_template_names(self):
         names = []
@@ -424,6 +443,10 @@ class OrdersHistory(ListView, OrdersMixin):
         queryset = super(OrdersHistory, self).get_queryset()
         if self.request.GET.get('status', None):
             queryset = queryset.filter(status=self.request.GET.get('status', None))
+        if self.request.GET.get('state', None):
+            queryset = queryset.filter(profile__city__state=self.request.GET.get('state'))
+        if self.request.GET.get('city', None):
+            queryset = queryset.filter(profile__city=self.request.GET.get('city'))
         return self.my_get_queryset(queryset)
 
     def get_context_data(self, **kwargs):
@@ -433,6 +456,7 @@ class OrdersHistory(ListView, OrdersMixin):
             for order in kwargs.get('object_list'):
                 total += order.sub_total
         context['total'] = total
+        context['agents'] = DeliveryGuy.objects.all()
         return context
 
     def get(self, request, *args, **kwargs):
@@ -553,14 +577,39 @@ class OrderCreateView(FormView):
 class OrderUpdateView(UpdateView, OrdersMixin):
     model = Order
     context_object_name = 'order'
-    fields = ['profile', 'number', 'status']
-    success_url = ""
-    template_name = ""
+    success_url = reverse_lazy("ecommerce:orders-history")
+    template_name = "dashboard/update_order.html"
     queryset = Order.objects.filter(visible=True)
+    form_class = CreateOrderForm
 
-    def get_queryset(self):
-        queryset = super(OrderUpdateView, self).get_queryset()
-        return self.my_get_queryset(queryset)
+    def get_context_data(self, **kwargs):
+        data = super(OrderUpdateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['lines_form'] = OrderWithLinesFormSet(self.request.POST, instance=self.object)
+        else:
+            form = OrderWithLinesFormSet(instance=self.object)
+            data['lines_form'] = form
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        lines_form = context['lines_form']
+        with transaction.atomic():
+            self.object = form.save()
+            if lines_form.is_valid():
+                lines_form.instance = self.object
+                lines_form.save()
+        return super(OrderUpdateView, self).form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = self.get_object()
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(OrderUpdateView, self).get(request, *args, **kwargs)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -625,7 +674,7 @@ class OrderLineUpdateView(UpdateView):
     fields = ['product', 'quantity']
     success_url = ""
     template_name = ""
-    queryset = OrderLine.objects.filter(visible=True)
+    queryset = OrderLine.objects.all()
 
     def get_queryset(self):
         queryset = super(OrderLineUpdateView, self).get_queryset()
@@ -638,7 +687,7 @@ class OrderLineDeleteView(DeleteView):
     context_object_name = 'order'
     success_url = ""
     template_name = ""
-    queryset = OrderLine.objects.filter(visible=True)
+    queryset = OrderLine.objects.filter()
 
     def get_queryset(self):
         queryset = super(OrderLineDeleteView, self).get_queryset()
@@ -775,8 +824,37 @@ class UpdateIndexContent(UpdateView):
 @method_decorator(staff_member_required, name="dispatch")
 class CreateDeliveryGuy(CreateView):
     model = DeliveryGuy
-    template_name = ""
-    success_url = reverse_lazy("")
+    template_name = "dashboard/create_delivery_guy.html"
+    success_url = reverse_lazy("ecommerce:delivery-agents-list")
+    form_class = CreateDeliveryGuyForm
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = None
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(CreateDeliveryGuy, self).get(request, *args, **kwargs)
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class UpdateDeliveryGuy(UpdateView):
+    template_name = "dashboard/update_delivery_guy.html"
+    model = DeliveryGuy
+    success_url = reverse_lazy("ecommerce:delivery-agents-list")
+    form_class = CreateDeliveryGuyForm
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = self.get_object()
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(UpdateDeliveryGuy, self).get(request, *args, **kwargs)
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -784,19 +862,93 @@ class ListDeliveryGuy(ListView):
     model = DeliveryGuy
     template_name = "dashboard/delivery_guys.html"
     queryset = DeliveryGuy.objects.all()
+    context_object_name = "guys"
+    paginate_by = 25
+    ordering = ['-id']
 
 
 @method_decorator(staff_member_required, name="dispatch")
 class CreateDeliveryCompany(CreateView):
     model = DeliveryCompany
-    success_url = reverse_lazy("")
-    template_name = ""
+    success_url = reverse_lazy("ecommerce:delivery-companies-list")
+    template_name = "dashboard/create_company.html"
+    fields = ['company_name', 'weight_threshold', 'base_fee']
+
+    def get_context_data(self, **kwargs):
+        data = super(CreateDeliveryCompany, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['fees_form'] = CompanyFeesFormset(self.request.POST)
+        else:
+            form = CompanyFeesFormset()
+            for i, j in enumerate(form.extra_forms):
+                form.forms[i].initial['state'] = i + 49
+            data['fees_form'] = form
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        fees_form = context['fees_form']
+        with transaction.atomic():
+            self.object = form.save()
+            if fees_form.is_valid():
+                fees_form.instance = self.object
+                fees_form.save()
+        return super(CreateDeliveryCompany, self).form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = None
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(CreateDeliveryCompany, self).get(request, *args, **kwargs)
 
 
 @method_decorator(staff_member_required, name="dispatch")
 class ListDeliveryCompanies(ListView):
     model = DeliveryCompany
     template_name = "dashboard/delivery_companies.html"
-    queryset = DeliveryCompany.objects.all()
+    queryset = DeliveryCompany.objects.filter(visible=True)
     context_object_name = "companies"
     paginate_by = 25
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class DetailDeliveryCompany(DetailView):
+    model = DeliveryCompany
+    context_object_name = "company"
+    template_name = "dashboard/company_details.html"
+    queryset = DeliveryCompany.objects.filter(visible=True)
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = self.get_object()
+            context = self.get_context_data(object=self.object)
+            print(context)
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(DetailDeliveryCompany, self).get(request, *args, **kwargs)
+
+
+@login_required()
+def assign_orders_to_caller(request):
+    print(request.POST)
+    return redirect("ecommerce:orders-history")
+
+
+@login_required()
+def assign_orders_to_delivery_guy(request):
+    ids = request.POST.getlist('orders[]')
+    delivery_guy_id = request.POST.get('delivery_guy')
+    orders = Order.objects.filter(pk__in=ids)
+    delivery_guy = get_object_or_404(DeliveryGuy, pk=delivery_guy_id)
+    deliveries = [Deliveries(order=order, delivery_guys=delivery_guy) for order in orders]
+    deliveries = Deliveries.objects.bulk_create(deliveries)
+    # ToDo Generate the excel file (feuille de route)
+    if deliveries:
+        orders.update(status='OD')
+    return redirect("ecommerce:dashboard-sales")

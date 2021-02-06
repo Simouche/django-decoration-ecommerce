@@ -14,7 +14,7 @@ from django.views import View
 from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView
 
 from accounts.forms import LoginForm, RegistrationForm, CreateStaffForm
-from accounts.models import Profile, User
+from accounts.models import Profile, User, State, City
 from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import is_ajax
@@ -226,3 +226,19 @@ class PasswordReset(View):
 
     def post(self, request):
         pass
+
+
+@method_decorator(login_required, name="dispatch")
+class StatesList(ListView):
+    template_name = "dashboard/states.html"
+    model = State
+    context_object_name = "states"
+    paginate_by = 50
+
+
+@method_decorator(login_required, name="dispatch")
+class CitiesList(ListView):
+    template_name = "dashboard/cities.html"
+    model = City
+    context_object_name = "cities"
+    paginate_by = 25

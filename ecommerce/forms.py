@@ -5,15 +5,22 @@ from django.forms import inlineformset_factory
 
 from accounts.models import User
 from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
-    DeliveryFee
+    DeliveryFee, DeliveryGuy
 from base_backend import _
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
 
 class CreateOrderForm(forms.ModelForm):
+    number = forms.IntegerField(widget=forms.NumberInput(
+        attrs={
+            'placeholder': _('Number'),
+            'readonly': True
+        }
+    ))
+
     class Meta:
         model = Order
-        fields = ['profile', 'number', 'status']
+        fields = ['profile', 'number', 'status', 'shipping_fee']
 
 
 class CreateOrderLineForm(forms.ModelForm):
@@ -21,11 +28,11 @@ class CreateOrderLineForm(forms.ModelForm):
 
     class Meta:
         model = OrderLine
-        fields = ['product', 'order', 'quantity', 'quantity']
+        fields = ['product', 'order', 'quantity']
 
 
-OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, fields=['product', 'quantity'],
-                                              can_delete=True, extra=1)
+OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, form=CreateOrderLineForm,
+                                              can_delete=True, extra=0)
 
 
 class CreateProductForm(BSModalModelForm):
@@ -163,7 +170,16 @@ class CreateDeliveryCompanyForm(forms.ModelForm):
         fields = ('company_name', 'weight_threshold')
 
 
-class CreateDeliveryFee(forms.ModelForm):
+class CreateDeliveryFeeForm(forms.ModelForm):
     class Meta:
         model = DeliveryFee
-        fields = ('company', '')
+        fields = ('company', 'state', 'fee')
+
+
+CompanyFeesFormset = inlineformset_factory(DeliveryCompany, DeliveryFee, form=CreateDeliveryFeeForm, extra=48)
+
+
+class CreateDeliveryGuyForm(forms.ModelForm):
+    class Meta:
+        model = DeliveryGuy
+        fields = ('name', 'company')
