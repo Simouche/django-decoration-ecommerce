@@ -1,0 +1,434 @@
+[
+  {
+    "id": 49,
+    "name": "Adrar",
+    "name_ar": "\u0623\u062f\u0631\u0627\u0631",
+    "name_fr": "Adrar",
+    "matricule": 1,
+    "code_postal": 1,
+    "region": null
+  },
+  {
+    "id": 50,
+    "name": "Chlef",
+    "name_ar": "\u0627\u0644\u0634\u0644\u0641",
+    "name_fr": "Chlef",
+    "matricule": 2,
+    "code_postal": 2,
+    "region": null
+  },
+  {
+    "id": 51,
+    "name": "Laghouat",
+    "name_ar": "\u0627\u0644\u0623\u063a\u0648\u0627\u0637",
+    "name_fr": "Laghouat",
+    "matricule": 3,
+    "code_postal": 3,
+    "region": null
+  },
+  {
+    "id": 52,
+    "name": "Oum Bouaghi",
+    "name_ar": "\u0623\u0645 \u0628\u0648\u0627\u0642\u064a",
+    "name_fr": "Oum Bouaghi",
+    "matricule": 4,
+    "code_postal": 4,
+    "region": null
+  },
+  {
+    "id": 53,
+    "name": "Batna",
+    "name_ar": "\u0628\u0627\u062a\u0646\u0629",
+    "name_fr": "Batna",
+    "matricule": 5,
+    "code_postal": 5,
+    "region": null
+  },
+  {
+    "id": 54,
+    "name": "Bejaia",
+    "name_ar": "\u0628\u062c\u0627\u064a\u0629",
+    "name_fr": "Bejaia",
+    "matricule": 6,
+    "code_postal": 6,
+    "region": null
+  },
+  {
+    "id": 55,
+    "name": "Biskra",
+    "name_ar": "\u0628\u0633\u0643\u0631\u0629",
+    "name_fr": "Biskra",
+    "matricule": 7,
+    "code_postal": 7,
+    "region": null
+  },
+  {
+    "id": 56,
+    "name": "Bechar",
+    "name_ar": "\u0628\u0634\u0627\u0631",
+    "name_fr": "Bechar",
+    "matricule": 8,
+    "code_postal": 8,
+    "region": null
+  },
+  {
+    "id": 57,
+    "name": "Blida",
+    "name_ar": "\u0627\u0644\u0628\u0644\u064a\u062f\u0629",
+    "name_fr": "Blida",
+    "matricule": 9,
+    "code_postal": 9,
+    "region": null
+  },
+  {
+    "id": 58,
+    "name": "Bouira",
+    "name_ar": "\u0627\u0644\u0628\u0648\u064a\u0631\u0629",
+    "name_fr": "Bouira",
+    "matricule": 10,
+    "code_postal": 10,
+    "region": null
+  },
+  {
+    "id": 59,
+    "name": "Tamanrasset",
+    "name_ar": "\u062a\u0645\u0646\u0631\u0627\u0633\u062a",
+    "name_fr": "Tamanrasset",
+    "matricule": 11,
+    "code_postal": 11,
+    "region": null
+  },
+  {
+    "id": 60,
+    "name": "Tebessa",
+    "name_ar": "\u062a\u0628\u0633\u0629",
+    "name_fr": "Tebessa",
+    "matricule": 12,
+    "code_postal": 12,
+    "region": null
+  },
+  {
+    "id": 61,
+    "name": "Tlemcen",
+    "name_ar": "\u062a\u0644\u0645\u0633\u0627\u0646",
+    "name_fr": "Tlemcen",
+    "matricule": 13,
+    "code_postal": 13,
+    "region": null
+  },
+  {
+    "id": 62,
+    "name": "Tiaret",
+    "name_ar": "\u062a\u064a\u0627\u0631\u062a",
+    "name_fr": "Tiaret",
+    "matricule": 14,
+    "code_postal": 14,
+    "region": null
+  },
+  {
+    "id": 63,
+    "name": "Tizi Ouzou",
+    "name_ar": "\u062a\u064a\u0632\u064a \u0648\u0632\u0648 ",
+    "name_fr": "Tizi Ouzou",
+    "matricule": 15,
+    "code_postal": 15,
+    "region": null
+  },
+  {
+    "id": 64,
+    "name": "Alger",
+    "name_ar": "\u0627\u0644\u062c\u0632\u0627\u0626\u0631",
+    "name_fr": "Alger",
+    "matricule": 16,
+    "code_postal": 16,
+    "region": null
+  },
+  {
+    "id": 65,
+    "name": "Djelfa",
+    "name_ar": "\u0627\u0644\u062c\u0644\u0641\u0629",
+    "name_fr": "Djelfa",
+    "matricule": 17,
+    "code_postal": 17,
+    "region": null
+  },
+  {
+    "id": 66,
+    "name": "Jijel",
+    "name_ar": "\u062c\u064a\u062c\u0644",
+    "name_fr": "Jijel",
+    "matricule": 18,
+    "code_postal": 18,
+    "region": null
+  },
+  {
+    "id": 67,
+    "name": "Setif",
+    "name_ar": "\u0633\u0637\u064a\u0641",
+    "name_fr": "Setif",
+    "matricule": 19,
+    "code_postal": 19,
+    "region": null
+  },
+  {
+    "id": 68,
+    "name": "Saida",
+    "name_ar": "\u0633\u0639\u064a\u062f\u0629",
+    "name_fr": "Saida",
+    "matricule": 20,
+    "code_postal": 20,
+    "region": null
+  },
+  {
+    "id": 69,
+    "name": "Skikda",
+    "name_ar": "\u0633\u0643\u064a\u0643\u062f\u0629",
+    "name_fr": "Skikda",
+    "matricule": 21,
+    "code_postal": 21,
+    "region": null
+  },
+  {
+    "id": 70,
+    "name": "Sidi Belabbes",
+    "name_ar": "\u0633\u064a\u062f\u064a \u0628\u0644\u0639\u0628\u0627\u0633 ",
+    "name_fr": "Sidi Belabbes",
+    "matricule": 22,
+    "code_postal": 22,
+    "region": null
+  },
+  {
+    "id": 71,
+    "name": "Annaba",
+    "name_ar": "\u0639\u0646\u0627\u0628\u0629",
+    "name_fr": "Annaba",
+    "matricule": 23,
+    "code_postal": 23,
+    "region": null
+  },
+  {
+    "id": 72,
+    "name": "Guelma",
+    "name_ar": "\u0642\u0627\u0644\u0645\u0629",
+    "name_fr": "Guelma",
+    "matricule": 24,
+    "code_postal": 24,
+    "region": null
+  },
+  {
+    "id": 73,
+    "name": "Constantine",
+    "name_ar": "\u0642\u0633\u0646\u0637\u064a\u0646\u0629",
+    "name_fr": "Constantine",
+    "matricule": 25,
+    "code_postal": 25,
+    "region": null
+  },
+  {
+    "id": 74,
+    "name": "Medea",
+    "name_ar": "\u0627\u0644\u0645\u062f\u064a\u0629",
+    "name_fr": "Medea",
+    "matricule": 26,
+    "code_postal": 26,
+    "region": null
+  },
+  {
+    "id": 75,
+    "name": "Mostaganem",
+    "name_ar": "\u0645\u0633\u062a\u063a\u0627\u0646\u0645",
+    "name_fr": "Mostaganem",
+    "matricule": 27,
+    "code_postal": 27,
+    "region": null
+  },
+  {
+    "id": 76,
+    "name": "M\u2019sila",
+    "name_ar": "\u0627\u0644\u0645\u0633\u064a\u0644\u0629",
+    "name_fr": "M\u2019sila",
+    "matricule": 28,
+    "code_postal": 28,
+    "region": null
+  },
+  {
+    "id": 77,
+    "name": "Mascara",
+    "name_ar": "\u0645\u0639\u0633\u0643\u0631",
+    "name_fr": "Mascara",
+    "matricule": 29,
+    "code_postal": 29,
+    "region": null
+  },
+  {
+    "id": 78,
+    "name": "Ouargla",
+    "name_ar": "\u0648\u0631\u0642\u0644\u0629",
+    "name_fr": "Ouargla",
+    "matricule": 30,
+    "code_postal": 30,
+    "region": null
+  },
+  {
+    "id": 79,
+    "name": "Oran",
+    "name_ar": "\u0648\u0647\u0631\u0627\u0646",
+    "name_fr": "Oran",
+    "matricule": 31,
+    "code_postal": 31,
+    "region": null
+  },
+  {
+    "id": 80,
+    "name": "El Bayadh",
+    "name_ar": "\u0627\u0644\u0628\u064a\u0636",
+    "name_fr": "El Bayadh",
+    "matricule": 32,
+    "code_postal": 32,
+    "region": null
+  },
+  {
+    "id": 81,
+    "name": "Illizi",
+    "name_ar": "\u0627\u0644\u064a\u0632\u064a",
+    "name_fr": "Illizi",
+    "matricule": 33,
+    "code_postal": 33,
+    "region": null
+  },
+  {
+    "id": 82,
+    "name": "Bordj B. Arreridj",
+    "name_ar": "\u0628\u0631\u062c \u0628\u0648\u0639\u0631\u064a\u0631\u064a\u062c ",
+    "name_fr": "Bordj B. Arreridj",
+    "matricule": 34,
+    "code_postal": 34,
+    "region": null
+  },
+  {
+    "id": 83,
+    "name": "Boumerdes",
+    "name_ar": "\u0628\u0648\u0645\u0631\u062f\u0627\u0633",
+    "name_fr": "Boumerdes",
+    "matricule": 35,
+    "code_postal": 35,
+    "region": null
+  },
+  {
+    "id": 84,
+    "name": "Taref",
+    "name_ar": "\u0627\u0644\u0637\u0627\u0631\u0641 ",
+    "name_fr": "Taref",
+    "matricule": 36,
+    "code_postal": 36,
+    "region": null
+  },
+  {
+    "id": 85,
+    "name": "Tindouf",
+    "name_ar": "\u062a\u0646\u062f\u0648\u0641",
+    "name_fr": "Tindouf",
+    "matricule": 37,
+    "code_postal": 37,
+    "region": null
+  },
+  {
+    "id": 86,
+    "name": "Tissemsilt",
+    "name_ar": "\u062a\u0633\u0645\u0633\u064a\u0644\u062a",
+    "name_fr": "Tissemsilt",
+    "matricule": 38,
+    "code_postal": 38,
+    "region": null
+  },
+  {
+    "id": 87,
+    "name": "El Oued",
+    "name_ar": "\u0627\u0644\u0648\u0627\u062f\u064a",
+    "name_fr": "El Oued",
+    "matricule": 39,
+    "code_postal": 39,
+    "region": null
+  },
+  {
+    "id": 88,
+    "name": "Khenchela",
+    "name_ar": "\u062e\u0646\u0634\u0644\u0629",
+    "name_fr": "Khenchela",
+    "matricule": 40,
+    "code_postal": 40,
+    "region": null
+  },
+  {
+    "id": 89,
+    "name": "Souk Ahras",
+    "name_ar": "\u0633\u0648\u0642 \u0623\u0647\u0631\u0627\u0633",
+    "name_fr": "Souk Ahras",
+    "matricule": 41,
+    "code_postal": 41,
+    "region": null
+  },
+  {
+    "id": 90,
+    "name": "Tipaza",
+    "name_ar": "\u062a\u064a\u0628\u0627\u0632\u0629",
+    "name_fr": "Tipaza",
+    "matricule": 42,
+    "code_postal": 42,
+    "region": null
+  },
+  {
+    "id": 91,
+    "name": "Mila",
+    "name_ar": "\u0645\u064a\u0644\u0629",
+    "name_fr": "Mila",
+    "matricule": 43,
+    "code_postal": 43,
+    "region": null
+  },
+  {
+    "id": 92,
+    "name": "Ain Defla",
+    "name_ar": "\u0639\u064a\u0646 \u0627\u0644\u062f\u0641\u0644\u0649 ",
+    "name_fr": "Ain Defla",
+    "matricule": 44,
+    "code_postal": 44,
+    "region": null
+  },
+  {
+    "id": 93,
+    "name": "Naama",
+    "name_ar": "\u0627\u0644\u0646\u0639\u0627\u0645\u0629",
+    "name_fr": "Naama",
+    "matricule": 45,
+    "code_postal": 45,
+    "region": null
+  },
+  {
+    "id": 94,
+    "name": "Ain Temouchent",
+    "name_ar": "\u0639\u064a\u0646 \u062a\u0645\u0648\u0634\u0646\u062a ",
+    "name_fr": "Ain Temouchent",
+    "matricule": 46,
+    "code_postal": 46,
+    "region": null
+  },
+  {
+    "id": 95,
+    "name": "Ghardaia",
+    "name_ar": "\u063a\u0631\u062f\u0627\u064a\u0629",
+    "name_fr": "Ghardaia",
+    "matricule": 47,
+    "code_postal": 47,
+    "region": null
+  },
+  {
+    "id": 96,
+    "name": "Relizane",
+    "name_ar": "\u063a\u0644\u064a\u0632\u0627\u0646",
+    "name_fr": "Relizane",
+    "matricule": 48,
+    "code_postal": 48,
+    "region": null
+  }
+]
