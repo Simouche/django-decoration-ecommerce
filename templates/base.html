@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-
 {% load static %}
 {% load i18n %}
 
 {% get_current_language as LANGUAGE_CODE %}
-
 
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -67,7 +65,7 @@
                         <div class="logo2">
                             <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/borderless_logo_gold.png' %}"
                                                                        alt=""
-                                                                       height="96px"></a>
+                                                                       height="64px"></a>
                         </div>
                         <!-- Main-menu -->
                         <div class="main-menu  d-none d-lg-block">
@@ -91,7 +89,7 @@
                             <ul class="d-flex align-items-center">
                                 <li>
                                     <!-- Search Box -->
-                                    <form action="#" class="form-box f-right ">
+                                    <form action="#" class="form-box f-right" method="GET">
                                         <input type="text" name="Search" placeholder="Search products">
                                         <div class="search-icon">
                                             <i class="ti-search"></i>
@@ -100,7 +98,7 @@
                                 </li>
                                 {% if user.is_authenticated %}
                                     <li>
-                                        <a href="{% url 'accounts:profile-details' request.user.id %}"
+                                        <a href="{% url 'accounts:profile-update' request.user.profile.id %}"
                                            class="account-btn pr-0">{% trans "My Account" %}</a>
                                         {% else %}
                                         <a href="{% url 'accounts:login' %}"
@@ -127,7 +125,7 @@
                                             <span id="cart_count">0</span></a>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="ml-15">
                                     <form id="form-lang" action="{% url 'set_language' %}" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" name="next" value="{{ redirect_to }}">

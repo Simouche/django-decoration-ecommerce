@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block styles %}
+    <style>
+        .image-upload > input {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <main>
+        <section class="properties fix">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="properties__button text-center">
+                            <!--Nav Button  -->
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active"
+                                       id="nav-profile-tab" data-toggle="tab" href="#nav-1" role="tab"
+                                       aria-controls="nav-Sofa" aria-selected="true">{% trans 'Profile' %}</a>
+
+                                    <a class="nav-item nav-link"
+                                       id="nav-orders-tab" data-toggle="tab" href="#nav-2" role="tab"
+                                       aria-controls="nav-Sofa" aria-selected="true">{% trans 'My Orders' %}</a>
+                                </div>
+                            </nav>
+                            <!--End Nav Button  -->
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!-- Nav Card -->
+                    <div class="tab-content" id="nav-tabContent">
+                        <!-- Profile Card -->
+                        <div class="tab-pane fade show active"
+                             id="nav-1" role="tabpanel"
+                             aria-labelledby="nav-profile-tab">
+                            <div>
+                                <form method="post" enctype="multipart/form-data"
+                                      action="{% url "accounts:profile-update" view.kwargs.pk %}">
+                                    {% csrf_token %}
+
+                                    {% if form.non_field_errors %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {% for error in form.non_field_errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="">
+                                        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+                                            {% for error in form.non_field_errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+
+                                        {% for field in form %}
+                                            <div class="mt-10 {% if field.errors %} invalid {% endif %}">
+                                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                                                    {% if field.name == 'photo' %}
+                                                        <div class="image-upload">
+                                                            <img width="100"
+                                                                 alt="{% trans "Profile Picture" %}"
+                                                                    {% if profile.get_photo %}
+                                                                 src="{{ profile.get_photo }}"
+                                                                    {% else %}
+                                                                 src="{% static 'img/icon/avatar.jpg' %}"
+                                                                    {% endif %}
+                                                            />
+                                                            {% render_field field class="single-input" %}
+                                                        </div>
+                                                    {% elif field.name == 'city' %}
+                                                        <div class="rs-select2--light rs-select2--md">
+                                                            {% render_field field class="js-select2 single-input" %}
+                                                            <div class="dropDownSelect2"></div>
+                                                        </div>
+                                                    {% else %}
+                                                        {% render_field field class="single-input" %}
+                                                    {% endif %}
+                                                {% endwith %}
+
+                                                {% if field.errors %}
+                                                    {% for error in field.errors %}
+                                                        <div class="invalid-feedback help-block">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button"
+                                                class="submit-btn btn btn-primary">{% trans 'Save' %}</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Orders Card -->
+                        <div class="tab-pane fade"
+                             id="nav-2" role="tabpanel"
+                             aria-labelledby="nav-profile-tab">
+                            <div>
+                                <div id="orders-table" class="table-responsive table-responsive-data2">
+                                    <table class="table table-data2">
+                                        <thead>
+                                        <tr>
+                                            <th>{% trans "Number" %}</th>
+                                            <th>{% trans "Items Count" %}</th>
+                                            <th>{% trans "Total" %}</th>
+                                            <th>{% trans "date" %}</th>
+                                            <th class="text-center">{% trans "status" %}</th>
+                                            <th class="text-center">{% trans "actions" %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for order in orders %}
+                                            <tr class="tr-shadow {% if order.status == 'CA' %} deleted {% endif %}">
+                                                <td>{{ order.number }}</td>
+                                                <td>{{ order.products_count }}</td>
+                                                <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
+                                                <td>{{ order.created_at }}</td>
+                                                <td class="text-center">
+                                                    <span class="{% if order.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ order.get_status_display }}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="table-data-feature">
+                                                        <button onclick="showOrderDetails('{% url 'ecommerce:orders-order-details' order.pk %}')"
+                                                                class="item" data-toggle="tooltip" data-placement="top"
+                                                                title="Info">
+                                                            <i class="fa fa-info"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="spacer"></tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Nav Card -->
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

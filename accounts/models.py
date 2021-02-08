@@ -86,6 +86,8 @@ class Profile(DeletableModel):
 
     @property
     def get_age(self) -> int:
+        if not self.birth_date:
+            return 0
         today = date.today()
         dob = self.birth_date
         before_dob = (today.month, today.day) < (dob.month, dob.day)
@@ -96,13 +98,11 @@ class Profile(DeletableModel):
         try:
             return self.photo.url
         except ValueError:
-            return ""
+            return None
 
     @property
     def orders_count(self):
-        # print("tessssssssssssssssstt")
-        # return self.orders.filter(visible=True).count() or 0
-        return '0'
+        return self.orders.filter(visible=True).count() or 0
 
     def __str__(self):
         return self.user.full_name

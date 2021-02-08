@@ -66,7 +66,8 @@ class Product(DeletableModel):
 
     @property
     def overall(self):
-        return self.ratings.filter(visible=True).aggregate(overall=Avg('stars')).get('overall', 0) or 0
+        return self.ratings.filter(visible=True).aggregate(overall=Avg('stars')).get('overall', 0).quantize(
+            decimal.Decimal("0.0")) or 0
 
     @property
     def total_reviews_count(self):
@@ -192,7 +193,7 @@ class Favorite(DeletableModel):
 
 
 class Rate(DeletableModel):
-    stars = models.DecimalField(max_digits=1, decimal_places=1, verbose_name=_('Stars'))
+    stars = models.DecimalField(max_digits=2, decimal_places=1, verbose_name=_('Stars'))
     comment = models.CharField(max_length=255, null=True, verbose_name=_('Comment'))
     profile = models.ForeignKey('accounts.Profile', related_name='ratings', on_delete=do_nothing)
     product = models.ForeignKey('Product', related_name='ratings', on_delete=do_nothing)

@@ -86,7 +86,7 @@ class RegistrationForm(forms.ModelForm):
         )
     )
     user_type = forms.ChoiceField(widget=forms.HiddenInput,
-                                  choices=('C', _('Client')))
+                                  choices=(('C', _('Client')), ('S', _('Staff'))))
 
     class Meta:
         model = User

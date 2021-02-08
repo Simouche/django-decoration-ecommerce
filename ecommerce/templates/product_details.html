@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="add_to_cart">
                                     <button id="add-to-cart" href="#" class="btn">{% trans 'add to cart' %}</button>
-                                    <button id="add-to-fav" class="like_us"><i class="ti-heart"></i></button>
+                                    {# <button id="add-to-fav" class="like_us"><i class="ti-heart"></i></button>#}
                                 </div>
                             </div>
                         </div>
@@ -194,7 +194,7 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="rating_list">
-                                            <h3>{% trans 'Based on' %} 3 {% trans 'Reviews' %}</h3>
+                                            <h3>{% trans 'Based on' %} {{ product.ratings.count }} {% trans 'Reviews' %}</h3>
                                             <ul class="list">
                                                 <li>
                                                     <a href="#">5 {% trans 'Star' %}
@@ -250,15 +250,20 @@
                                         <div class="review_item">
                                             <div class="media">
                                                 <div class="d-flex">
-                                                    <img src="{% static 'img/gallery/review-1.png' %}" alt=""/>
+                                                    {% if rating.profile.get_image %}
+                                                        <img src="{{ rating.profile.get_image }}" alt=""/>
+                                                    {% else %}
+                                                        <img width="36" src="{% static 'img/icon/avatar.jpg' %}"
+                                                             alt=""/>
+                                                    {% endif %}
                                                 </div>
                                                 <div class="media-body">
-                                                    <h4>{{ rating.profile.full_name }}</h4>
+                                                    <h4>{{ rating.profile.user.full_name }}</h4>
                                                     {% for i in rating.checked_stars_range %}
                                                         <i class="fa fa-star checked-star"></i>
                                                     {% endfor %}
                                                     {% for i in rating.un_checked_stars_range %}
-                                                        <i class="fa fa-star un-checked-star"></i>
+                                                        <i class="fa fa-star"></i>
                                                     {% endfor %}
                                                 </div>
                                             </div>
@@ -267,49 +272,6 @@
                                             </p>
                                         </div>
                                     {% endfor %}
-
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="{% static 'img/gallery/review-1.png' %}" alt=""/>
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                            sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea commodo
-                                        </p>
-                                    </div>
-                                    <div class="review_item">
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                <img src="{% static 'img/gallery/review-2.png' %}" alt=""/>
-                                            </div>
-                                            <div class="media-body">
-                                                <h4>Blake Ruiz</h4>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                            sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                            ullamco laboris nisi ut aliquip ex ea commodo
-                                        </p>
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -325,11 +287,13 @@
                                         </ul>
                                         <p>{% trans 'Outstanding' %}</p>
                                         <form class="row contact_form" action="{% url 'ecommerce:review-add' %}"
-                                              method="post"
-                                              novalidate="novalidate">
+                                              method="POST" novalidate="novalidate">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="product" value="{{ product.pk }}">
+                                            <input type="hidden" name="profile" value="{{ user.profile.pk }}">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                <textarea class="form-control" name="message" rows="8"
+                                                <textarea class="form-control" name="comment" rows="8"
                                                           placeholder="{% trans 'Review' %}"></textarea>
                                                 </div>
                                             </div>

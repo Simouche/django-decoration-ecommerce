@@ -4,7 +4,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
@@ -27,14 +27,6 @@ class RegisterView(FormView):
     success_url = reverse_lazy("accounts:login")
     form_class = RegistrationForm
     initial = {'user_type': 'C'}
-
-    def get_context_data(self, **kwargs):
-        context = super(RegisterView, self).get_context_data(**kwargs)
-        return context
-
-    def form_invalid(self, form):
-        print(form.errors)
-        return super(RegisterView, self).form_invalid(form)
 
     def form_valid(self, form):
         form.save()
@@ -104,8 +96,18 @@ class ProfileDetailsView(DetailView):
 class ProfileUpdateView(UpdateView):
     model = Profile
     fields = ['photo', 'address', 'city', 'birth_date', 'gender']
-    template_name = ""
-    success_url = ""
+    template_name = "profile.html"
+    success_url = "profile-update"
+    context_object_name = "profile"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileUpdateView, self).get_context_data(**kwargs)
+        context['orders'] = self.request.user.profile.orders.filter(visible=True)
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url(), pk=self.object.pk)
 
 
 @method_decorator(staff_member_required, name='dispatch')

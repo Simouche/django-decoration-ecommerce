@@ -1,5 +1,6 @@
 import csv
 import json
+import random
 
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
@@ -27,7 +28,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
     OrderWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
 
 
 class Index(TemplateView):
@@ -273,7 +274,7 @@ class ProductsListView(ListView):
     context_object_name = 'products'
     queryset = Product.objects.filter(visible=True)
     template_name = "products.html"
-    paginate_by = 21
+    paginate_by = 12
     page_kwarg = 'page'
     paginate_orphans = True
     ordering = ['-created_at']
@@ -952,3 +953,24 @@ def assign_orders_to_delivery_guy(request):
     if deliveries:
         orders.update(status='OD')
     return redirect("ecommerce:dashboard-sales")
+
+
+@method_decorator(login_required, name="dispatch")
+class AddReview(CreateView):
+    model = Rate
+    fields = ['comment', 'product', 'profile']
+    template_name = "product_details.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.profile = self.request.user.profile
+        self.object.stars = random.randint(0, 5)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(AddReview, self).form_invalid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("ecommerce:products-product-details", kwargs={"pk": self.object.product.pk})

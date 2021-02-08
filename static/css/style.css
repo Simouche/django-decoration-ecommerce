@@ -2713,7 +2713,7 @@ hr {
     position: absolute;
     z-index: 2;
     top: 10px;
-    left: 15px;
+    left: 0;
     display: none
 }
 

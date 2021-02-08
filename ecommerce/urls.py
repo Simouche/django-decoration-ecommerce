@@ -67,5 +67,5 @@ urlpatterns = [
     path('favorite/add/', views.FavoriteCreateView.as_view(), name='favorite-add'),
     path('favorite/list/', views.FavoriteListView.as_view(), name='favorite-list'),
 
-    path('reviews/add/', views.FavoriteListView.as_view(), name='review-add'),
+    path('reviews/add/', views.AddReview.as_view(), name='review-add'),
 ]
