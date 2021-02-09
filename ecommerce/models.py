@@ -66,8 +66,10 @@ class Product(DeletableModel):
 
     @property
     def overall(self):
-        return self.ratings.filter(visible=True).aggregate(overall=Avg('stars')).get('overall', 0).quantize(
-            decimal.Decimal("0.0")) or 0
+        return (self.ratings
+                .filter(visible=True)
+                .aggregate(overall=Avg('stars')).get('overall', 0) or decimal.Decimal(0)) \
+                   .quantize(decimal.Decimal("0.0")) or 0
 
     @property
     def total_reviews_count(self):

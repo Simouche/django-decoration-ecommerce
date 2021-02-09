@@ -5,10 +5,10 @@ class CustomCategoryManager(Manager):
 
     def category_with_3_products(self):
         categories = []
-        for category in self.filter(visible=True):
+        for category in self.filter(visible=True).order_by("?"):
             for sub in category.sub_categories.all():
                 if sub.products.count() > 3:
-                    categories.append((category, sub.products.all()[0:3]))
+                    categories.append((category, sub.products.all().order_by("?")[0:3]))
         return categories
 
     def with_sub_cats(self):
