@@ -1,4 +1,5 @@
 import csv
+import decimal
 import json
 import random
 
@@ -7,7 +8,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.db.models import Sum, F, Count, QuerySet
+from django.db.models import Sum, F, Count, QuerySet, Q
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -50,14 +51,26 @@ class Dashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
         m_kwargs = super(Dashboard, self).get_context_data(**kwargs)
+        order_line_lookup = Q(order__status__in=['CO', 'OD', 'D', 'PA'])
+        order_lookup = Q(status__in=['CO', 'OD', 'D', 'PA'])
         m_kwargs["total_users"] = User.objects.filter(user_type="C").count()
-        m_kwargs["items_sold"] = OrderLine.objects.all().aggregate(count=Sum('quantity')) \
-                                     .get('count', 0) or 0
-        m_kwargs["items_sold_week"] = OrderLine.objects.filter(created_at__week=get_current_week()) \
+        m_kwargs["items_sold"] = OrderLine.objects \
+                                     .filter(order_line_lookup) \
+                                     .aggregate(count=Sum('quantity')).get('count', 0) or 0
+        m_kwargs["items_sold_week"] = OrderLine.objects \
+                                          .filter(order_line_lookup, created_at__week=get_current_week()) \
                                           .aggregate(count=Sum('quantity')).get('count', 0) or 0
-        m_kwargs["earnings"] = OrderLine.objects.all() \
-            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('total', 0)
-        m_kwargs["states"] = State.objects.all()[:10]
+        m_kwargs["earnings"] = OrderLine.objects \
+            .filter(order_line_lookup) \
+            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0) \
+            .quantize(decimal.Decimal("0.01"))
+        m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
+                                 .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
+        m_kwargs["items"] = Product.objects \
+            .values('price', 'stock', product_name=F('name'), order_count=Count('orders_lines__order'),
+                    quantities=Sum('orders_lines__quantity'), ) \
+            .filter(order_count__gt=0) \
+            .order_by("-order_count")[:10]
         return m_kwargs
 
 

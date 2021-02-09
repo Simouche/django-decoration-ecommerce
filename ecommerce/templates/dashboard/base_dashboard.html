@@ -56,8 +56,8 @@
         <div class="header-mobile__bar">
             <div class="container-fluid">
                 <div class="header-mobile-inner">
-                    <a class="logo" href="dashboard.html">
-                        <img src="{% static 'dashboard/images/icon/logo.png' %}" alt="CoolAdmin"/>
+                    <a href="{% url 'ecommerce:index' %}">
+                        <img src="{% static 'img/logo/logo_black.png' %}" alt="Samy Deco"/>
                     </a>
                     <button class="hamburger hamburger--slider" type="button">
                             <span class="hamburger-box">
@@ -70,34 +70,61 @@
         <nav class="navbar-mobile">
             <div class="container-fluid">
                 <ul class="navbar-mobile__list list-unstyled">
+                    {% if user.user_type == 'A' %}
+                        <li {% if "main" in request.path %} class="active" {% endif %} >
+                            <a class="js-arrow" href="{% url 'ecommerce:dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i>{% trans "Dashboard" %}</a>
+                        </li>
+                    {% endif %}
+                    <li {% if "products" in request.path %} class="active" {% endif %} >
+                        <a href="{% url 'ecommerce:dashboard-products' %}">
+                            <i class="fas fa-barcode"></i>{% trans "Products" %}</a>
+                    </li>
+                    <li {% if "users" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'accounts:users-list' %}">
+                            <i class="fas fa-users"></i>{% trans "Users" %}</a>
+                    </li>
+                    <li {% if "orders/history" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:orders-history' %}">
+                            <i class="far fa-credit-card"></i>{% trans "Orders" %}</a>
+                    </li>
+                    <li {% if "sales" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:dashboard-sales' %}">
+                            <i class="far fa-credit-card"></i>{% trans "Sales" %}</a>
+                    </li>
                     <li class="has-sub">
-                        <a class="js-arrow" href="#">
-                            <i class="fas fa-tachometer-alt"></i>Dashboard</a>
-                        <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
-                            <li>
-                                <a href="dashboard.html">Dashboard 1</a>
+                        <a class="js-arrow" href="#"><i class="fas fa-truck"></i>{% trans 'Delivery' %}</a>
+                        <ul class="navbar__sub-list list-unstyled js-sub-list">
+                            <li {% if "companies" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "ecommerce:delivery-companies-list" %}"><i
+                                        class="fas fa-building"></i>{% trans 'Companies' %}</a>
+                            </li>
+                            <li {% if "agents" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "ecommerce:delivery-agents-list" %}"><i
+                                        class="fas fa-male"></i>{% trans 'Delivery Guys' %}</a>
                             </li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="chart.html">
-                            <i class="fas fa-chart-bar"></i>Charts</a>
+                    <li {% if "change-history" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:orders-change-history' %}">
+                            <i class="fas fa-history"></i>{% trans "History" %}</a>
                     </li>
-                    <li>
-                        <a href="table.html">
-                            <i class="fas fa-table"></i>Tables</a>
+                    <li {% if "index-content" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
+                            <i class="fas fa-edit"></i>{% trans "Home Page" %}</a>
                     </li>
-                    <li>
-                        <a href="form.html">
-                            <i class="far fa-check-square"></i>Forms</a>
-                    </li>
-                    <li>
-                        <a href="calendar.html">
-                            <i class="fas fa-calendar-alt"></i>Calendar</a>
-                    </li>
-                    <li>
-                        <a href="map.html">
-                            <i class="fas fa-map-marker-alt"></i>Maps</a>
+                    <li class="has-sub">
+                        <a class="js-arrow" href="#"><i class="fas fa-map-marker-alt"></i>{% trans 'Places' %}</a>
+                        <ul class="navbar__sub-list list-unstyled js-sub-list">
+                            <li {% if "states" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "accounts:dashboard-states" %}"><i
+                                        class="fas fa-map-signs"></i>{% trans 'States' %}</a>
+                            </li>
+                            <li {% if "cities" in request.path %} class="active" {% endif %}>
+                                <a href="{% url "accounts:dashboard-cities" %}"><i
+                                        class="fas fa-location-arrow"></i>{% trans 'Cities' %}</a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -107,9 +134,9 @@
 
     <!-- MENU SIDEBAR-->
     <aside class="menu-sidebar d-none d-lg-block">
-        <div class="logo">
+        <div>
             <a href="{% url 'ecommerce:index' %}">
-                <img src="{% static 'img/logo/logo_black.png' %}" alt="Samy Deco"/>
+                <img src="{% static 'img/logo/logo_black.png' %}" alt="Samy Deco" class="mt-20 pt-20"/>
             </a>
         </div>
         <div class="menu-sidebar__content js-scrollbar1">
@@ -185,15 +212,15 @@
                 <div class="container-fluid">
                     <div class="header-wrap">
                         <form class="form-header" action="" method="POST">
-                            <input class="au-input au-input--xl" type="text" name="search"
+                            {% comment %}<input class="au-input au-input--xl" type="text" name="search"
                                    placeholder="{% trans "Search" %}"/>
                             <button class="au-btn--submit" type="submit">
                                 <i class="zmdi zmdi-search"></i>
-                            </button>
+                            </button>{% endcomment %}
                         </form>
                         <div class="header-button">
-                            <div class="noti-wrap">
-                                <div class="noti__item js-item-menu">
+                            {% comment %}<div class="noti-wrap">
+                                 <div class="noti__item js-item-menu">
                                     <i class="zmdi zmdi-notifications"></i>
                                     <span class="quantity">3</span>
                                     <div class="notifi-dropdown js-dropdown">
@@ -232,7 +259,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>{% endcomment %}
                             <div class="account-wrap">
                                 <div class="account-item clearfix js-item-menu">
                                     <div class="image">
@@ -269,7 +296,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <form id="form-lang" action="{% url 'set_language' %}" method="post">
+                            <form class="ml-5" id="form-lang" action="{% url 'set_language' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{{ redirect_to }}">
                                 <div class="custom-select2 fas">

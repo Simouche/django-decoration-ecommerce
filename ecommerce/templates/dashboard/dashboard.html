@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="overview-chart">
-                        <canvas id="widgetChart1"></canvas>
+                        {#                        <canvas id="widgetChart1"></canvas>#}
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="overview-chart">
-                        <canvas id="widgetChart2"></canvas>
+                        {#                        <canvas id="widgetChart2"></canvas>#}
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="overview-chart">
-                        <canvas id="widgetChart3"></canvas>
+                        {#                        <canvas id="widgetChart3"></canvas>#}
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="overview-chart">
-                        <canvas id="widgetChart4"></canvas>
+                        {#                        <canvas id="widgetChart4"></canvas>#}
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
     </div>
     <div class="row">
         <div class="col-lg-9">
-            <h2 class="title-1 m-b-25">Earnings By Items</h2>
+            <h2 class="title-1 m-b-25">{% trans "Earnings By Items" %}</h2>
             <div class="table-responsive table--no-card m-b-40">
                 <table class="table table-borderless table-striped table-earning">
                     <thead>
@@ -96,23 +96,24 @@
                         <th class="text-center">{% trans 'quantity' %}</th>
                         <th class="text-center">{% trans 'price' %}</th>
                         <th class="text-center">{% trans 'available' %}</th>
-                        {#                        <th class="text-right">total</th>#}
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>iPhone X 64Gb Grey</td>
-                        <td>100398</td>
-                        <td class="text-center">1</td>
-                        <td class="text-center">$999.00</td>
-                        <td class="text-center">$999.00</td>
-                    </tr>
+                    {% for item in items %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.order_count }}</td>
+                            <td class="text-center">{{ item.quantities }}</td>
+                            <td class="text-center">{{ item.price }}</td>
+                            <td class="text-center">{{ item.price }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="col-lg-3">
-            <h2 class="title-1 m-b-25">Top states</h2>
+            <h2 class="title-1 m-b-25">{% trans "Top states" %}</h2>
             <div class="au-card au-card--bg-blue au-card-top-countries m-b-40">
                 <div class="au-card-inner">
                     <div class="table-responsive">
@@ -120,8 +121,8 @@
                             <tbody>
                             {% for state in states %}
                                 <tr>
-                                    <td>{{ state.name|slice:"0:10" }}</td>
-                                    <td class="text-right">DZD 0.0</td>
+                                    <td>{{ state.state_name }}</td>
+                                    <td class="text-right">{{ state.s_count }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
