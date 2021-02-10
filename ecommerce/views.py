@@ -27,7 +27,7 @@ from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet
+    OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
 
@@ -67,10 +67,11 @@ class Dashboard(TemplateView):
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
-            .values('price', 'stock', product_name=F('name'), order_count=Count('orders_lines__order'),
-                    quantities=Sum('orders_lines__quantity'), ) \
-            .filter(order_count__gt=0) \
-            .order_by("-order_count")[:10]
+                                .values('price', 'stock', product_name=F('name'),
+                                        order_count=Count('orders_lines__order'),
+                                        quantities=Sum('orders_lines__quantity'), ) \
+                                .filter(order_count__gt=0) \
+                                .order_by("-order_count")[:10]
         return m_kwargs
 
 
@@ -366,6 +367,13 @@ class CartDetailsView(DetailView, CartMixin):
     def get_queryset(self):
         queryset = super(CartDetailsView, self).get_queryset()
         return self.my_get_queryset(queryset)
+
+    def get_context_data(self, **kwargs):
+        return super(CartDetailsView, self).get_context_data(cart_lines=self.get_form(), **kwargs)
+
+    def get_form(self):
+        cart_lines = CartWithLinesFormSet(instance=self.object)
+        return cart_lines
 
 
 @method_decorator(login_required, name='dispatch')
@@ -987,3 +995,13 @@ class AddReview(CreateView):
 
     def get_success_url(self):
         return reverse_lazy("ecommerce:products-product-details", kwargs={"pk": self.object.product.pk})
+
+
+@method_decorator(login_required, name="dispatch")
+class LoginRequired(RedirectView):
+    permanent = True
+    query_string = False
+
+    def get_redirect_url(self, *args, **kwargs):
+        self.url = self.request.GET.get('next')
+        return super(LoginRequired, self).get_redirect_url(*args, **kwargs)

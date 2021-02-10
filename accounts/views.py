@@ -47,6 +47,11 @@ class LoginView(View):
         return render(request, self.template_name, context)
 
     def post(self, request):
+        if request.user.is_authenticated:
+            if request.user.is_staff:
+                return redirect('ecommerce:dashboard')
+            return redirect('ecommerce:index')
+
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             user = authenticate(request, username=login_form.cleaned_data.get('username'),

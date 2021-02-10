@@ -54,8 +54,8 @@
                             <h2>{{ product.price }} {% trans 'DZD' %}</h2>
                             <ul class="list">
                                 <li>
-                                    {# TODO add category link #}
-                                    <a class="active" href="#">
+                                    <a class="active"
+                                       href="{% url "ecommerce:categories-list" %}?category={{ product.category_id }}">
                                         <span>{% trans 'Category' %}</span> : {{ product.category.name }}</a>
                                 </li>
                                 <li>
@@ -331,12 +331,16 @@
     <script src="{% static 'js/decorationjs/favorite.js' %}"></script>
 
     <script type="text/javascript">
-        document.getElementById('add-to-fav').onclick = function () {
+        {% comment %}document.getElementById('add-to-fav').onclick = function () {
             addToFavorite({{ product.id }}, {{ request.user.profile.id }}, '{% url 'ecommerce:favorite-add' %}', '{{ csrf_token }}')
-        }
+        }{% endcomment %}
         document.getElementById('add-to-cart').onclick = function () {
-            addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
-                '{{ csrf_token }}')
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'ecommerce:login-required' %}?next={{ request.path }}"
+            {% else %}
+                addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
+                    '{{ csrf_token }}')
+            {% endif %}
         }
         inputNumber($('#quantity'));
     </script>

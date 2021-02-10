@@ -4,9 +4,9 @@ from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
 from accounts.models import User
-from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
-    DeliveryFee, DeliveryGuy
 from base_backend import _
+from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
+    DeliveryFee, DeliveryGuy, CartLine, Cart
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
 
@@ -183,3 +183,17 @@ class CreateDeliveryGuyForm(forms.ModelForm):
     class Meta:
         model = DeliveryGuy
         fields = ('name', 'company')
+
+
+class CartLineForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CartLineForm, self).__init__(*args, **kwargs)
+        self.fields['product'].widget.attrs['readonly'] = True
+
+    class Meta:
+        model = CartLine
+        fields = ('product', 'cart', 'quantity')
+
+
+CartWithLinesFormSet = inlineformset_factory(parent_model=Cart, model=CartLine, form=CartLineForm)

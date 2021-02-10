@@ -68,4 +68,6 @@ urlpatterns = [
     path('favorite/list/', views.FavoriteListView.as_view(), name='favorite-list'),
 
     path('reviews/add/', views.AddReview.as_view(), name='review-add'),
+
+    path('login-required/', views.LoginRequired.as_view(), name='login-required')
 ]
