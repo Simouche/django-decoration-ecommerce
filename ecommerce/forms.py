@@ -186,14 +186,25 @@ class CreateDeliveryGuyForm(forms.ModelForm):
 
 
 class CartLineForm(forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(visible=True))
+    price = forms.DecimalField(required=False)
+    quantity = forms.DecimalField()
+    total = forms.DecimalField(required=False)
 
     def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        initial['price'] = kwargs.get('instance').product.price
+        initial['total'] = kwargs.get('instance').total
+        kwargs['initial'] = initial
         super(CartLineForm, self).__init__(*args, **kwargs)
         self.fields['product'].widget.attrs['readonly'] = True
+        self.fields['product'].widget.attrs['disabled'] = 'disabled'
+        self.fields['price'].widget.attrs['readonly'] = True
+        self.fields['total'].widget.attrs['readonly'] = True
 
     class Meta:
         model = CartLine
         fields = ('product', 'cart', 'quantity')
 
 
-CartWithLinesFormSet = inlineformset_factory(parent_model=Cart, model=CartLine, form=CartLineForm)
+CartWithLinesFormSet = inlineformset_factory(parent_model=Cart, model=CartLine, form=CartLineForm, extra=0)

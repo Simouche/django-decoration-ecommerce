@@ -234,6 +234,10 @@ class CartLine(DeletableModel):
     def total_sum(self):
         return self._total_sum().quantize(decimal.Decimal("0.01"))
 
+    @property
+    def total(self):
+        return self.total_sum
+
     def to_order_line(self, order):
         return OrderLine.objects.create(product=self.product, quantity=self.quantity, order=order)
 

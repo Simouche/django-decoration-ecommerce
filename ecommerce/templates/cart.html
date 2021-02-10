@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load widget_tweaks %}
 {% block content %}
     <main>
         <!--? slider Area Start-->
@@ -32,89 +33,93 @@
             <div class="container">
                 <div class="cart_inner">
                     <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">{% trans 'Product' %}</th>
-                                <th scope="col">{% trans 'Price' %}</th>
-                                <th scope="col">{% trans 'Quantity' %}</th>
-                                <th scope="col">{% trans 'Total' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for line in cart.get_lines.all %}
-                                <tr>
-                                    <td>
-                                        <div class="media">
-                                            <div class="d-flex">
-                                                {% if line.product.main_image.url %}
-                                                    <img src="{{ line.product.main_image.url }}" alt="" width="72px"/>
-                                                {% else %}
-                                                    <img src="{% static 'img/icon/product.png' %}" alt="" width="72px"/>
+                        <form action="">
+                            <table class="table">
+                                {{ cart_lines.management_form }}
+                                {% for form in cart_lines.forms %}
+                                    {% if forloop.first %}
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">{% trans 'Product' %}</th>
+                                            <th scope="col">{% trans 'Quantity' %}</th>
+                                            <th scope="col">{% trans 'Price' %}</th>
+                                            <th scope="col">{% trans 'Total' %}</th>
+                                            <th scope="col">{% trans 'Delete' %}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                    {% endif %}
+                                    <tr class="formset_row">
+                                        {% for field in form.visible_fields %}
+                                            <td>
+                                                {# Include the hidden fields in the form #}
+                                                {% if forloop.first %}
+                                                    {% for hidden in form.hidden_fields %}
+                                                        {{ hidden }}
+                                                    {% endfor %}
                                                 {% endif %}
-                                            </div>
-                                            <div class="media-body">
-                                                <p>{{ line.product.name }}</p>
-                                            </div>
-                                        </div>
+
+                                                {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                                                    {% if field.name in 'quantity price total' %}
+                                                        <div class="product_count">
+                                                            {% render_field field class="input-number" %}
+                                                        </div>
+                                                    {% else %}
+                                                        {% render_field field class="form-control browser-default" %}
+                                                    {% endif %}
+                                                {% endwith %}
+                                                {% if field.errors %}
+                                                    {% for error in field.errors %}
+                                                        <div class="invalid-feedback help-block">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                                <tr class="bottom_button">
+                                    <td>
+                                        <a class="btn" href="#">{% trans 'Update Cart' %}</a>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h5>{% trans 'Subtotal' %}</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ line.product.price }} {% trans 'DZD' %}</h5>
-                                    </td>
-                                    <td>
-                                        <div class="product_count">
-                                            <span class="input-number-decrement"> <i class="ti-minus"></i></span>
-                                            <input id="quantity{{ line.id }}" class="input-number" type="number"
-                                                   value="{{ line.quantity }}"
-                                                   min="0">
-                                            <span class="input-number-increment"> <i class="ti-plus"></i></span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h5>{{ line.total_sum }} {% trans 'DZD' %}</h5>
+                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
                                     </td>
                                 </tr>
-                            {% endfor %}
-                            <tr class="bottom_button">
-                                <td>
-                                    <a class="btn" href="#">{% trans 'Update Cart' %}</a>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <h5>{% trans 'Subtotal' %}</h5>
-                                </td>
-                                <td>
-                                    <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
-                                </td>
-                            </tr>
-                            <tr class="shipping_area">
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <h5>{% trans 'Delivery' %}</h5>
-                                </td>
-                                <td>
-                                    <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <h5>{% trans 'Total' %}</h5>
-                                </td>
-                                <td>
-                                    <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                <tr class="shipping_area">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h5>{% trans 'Delivery' %}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h5>{% trans 'Total' %}</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
                         <div class="checkout_btn_inner float-right">
                             <a class="btn"
                                href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
@@ -138,8 +143,6 @@
 
 {% block scripts %}
     <script type="text/javascript">
-        {% for line in cart.lines.all %}
-            inputNumber($('#quantity{{ line.id }}'));
-        {% endfor %}
+
     </script>
 {% endblock scripts %}
