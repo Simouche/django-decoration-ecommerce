@@ -123,7 +123,10 @@ class Order(DeletableModel):
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
     status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'), default='P')
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Shipping Fee'), default=0)
-    free_shipping = models.BooleanField(default=False, blank=True)
+    free_delivery = models.BooleanField(default=False, blank=True)
+    assigned_to = models.ForeignKey("accounts.User", on_delete=do_nothing, null=True, blank=True,
+                                    verbose_name=_("Assigned To"),
+                                    related_name="orders")
 
     @property
     def products_count(self):
@@ -211,6 +214,9 @@ class Rate(DeletableModel):
     @property
     def un_checked_stars_range(self):
         return range(0, 5 - int(self.stars))
+
+    def __str__(self):
+        return f'{self.comment}'
 
 
 class Like(DeletableModel):
@@ -334,6 +340,10 @@ class Deliveries(DeletableModel):
     order = models.ForeignKey('Order', on_delete=cascade, verbose_name=_('Order'), related_name="deliveries")
     delivery_guys = models.ForeignKey('DeliveryGuy', on_delete=cascade, verbose_name=_('Delivery Guy'),
                                       related_name="deliveries")
+
+    @property
+    def fee(self) -> int:
+        return 0
 
     class Meta:
         verbose_name = _('Delivery')

@@ -78,6 +78,7 @@
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
+                <th>{% trans "assigned to" %}</th>
                 <th class="text-center">{% trans "status" %}</th>
                 <th class="text-center">{% trans "actions" %}</th>
             </tr>
@@ -105,6 +106,7 @@
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.created_at }}</td>
+                    <td>{{ order.assigned_to|default:"" }}</td>
                     <td class="text-center">
                         <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
                     </td>

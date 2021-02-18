@@ -31,10 +31,18 @@
 
         {% for field in form %}
             <div class="single-input-fields form-group {% if field.errors %} invalid {% endif %}">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {% with WIDGET_ERROR_CLASS='is-invalid' %}
-                    {% render_field field class="form-control browser-default" %}
-                {% endwith %}
+                {% if field.name == 'free_shipping' %}
+                    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                        {% render_field field %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% endwith %}
+
+                {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                        {% render_field field class="form-control browser-default" %}
+                    {% endwith %}
+                {% endif %}
 
                 {% if field.errors %}
                     {% for error in field.errors %}
@@ -89,7 +97,7 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-        <button type="submit" class="submit-btn btn btn-primary">{% trans 'Update' %}</button>
+        <button type="submit" class="submit-btn btn">{% trans 'Update' %}</button>
     </div>
 </form>
 

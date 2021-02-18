@@ -9,12 +9,12 @@
     <div class="table-data__tool">
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
+                <label for="group-select"></label>
                 <select id="group-select" class="js-select2" name="group">
                     <option value="" selected="selected">{% trans "Groups" %}</option>
                     {% for group in groups %}
                         <option value="{{ group.id }}">{{ group.name }}</option>
                     {% endfor %}
-
                 </select>
                 <div class="dropDownSelect2"></div>
             </div>

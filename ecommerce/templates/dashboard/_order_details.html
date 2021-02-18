@@ -28,7 +28,7 @@
                 <a href="#">{% trans 'Subtotal' %} <span>{{ order.sub_total }} {% trans 'DZD' %}</span></a>
             </li>
             <li>
-                <a href="#">{% trans 'Shipping' %}
+                <a href="#">{% trans 'Shipping' %} {% if order.free_delivery %}({% trans 'free' %}) {% endif %}
                     <span>{{ order.shipping_fee }}</span>
                 </a>
             </li>
