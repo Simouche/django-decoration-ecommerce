@@ -251,8 +251,8 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0) \
-            .quantize(decimal.Decimal('0.01'))
+        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0) 
+            #.quantize(decimal.Decimal('0.01'))
 
     @property
     def products_count(self):
