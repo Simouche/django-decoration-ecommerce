@@ -17,10 +17,11 @@ class CreateOrderForm(forms.ModelForm):
             'readonly': True
         }
     ))
+    assigned_to = forms.ModelChoiceField(queryset=User.objects.filter(user_type='CA'), required=False)
 
     class Meta:
         model = Order
-        fields = ['profile', 'number', 'status', 'shipping_fee']
+        fields = ['profile', 'number', 'status', 'shipping_fee', 'free_delivery', 'assigned_to']
 
 
 class CreateOrderLineForm(forms.ModelForm):
@@ -113,7 +114,7 @@ class CreateProductForm(BSModalModelForm):
     class Meta:
         model = Product
         fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price',
-                  'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category']
+                  'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category', 'free_delivery']
 
 
 class CreateCategoryForm(forms.ModelForm):
@@ -208,3 +209,8 @@ class CartLineForm(forms.ModelForm):
 
 
 CartWithLinesFormSet = inlineformset_factory(parent_model=Cart, model=CartLine, form=CartLineForm, extra=0)
+
+
+class AssignOrdersToCallerForm(forms.Form):
+    orders = forms.ModelMultipleChoiceField(queryset=Order.objects.filter(visible=True))
+    caller = forms.ModelChoiceField(queryset=User.objects.filter(user_type='CA'))

@@ -11,7 +11,7 @@ from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, get_list_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -27,7 +27,7 @@ from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet
+    OrderWithLinesFormSet, CartWithLinesFormSet, AssignOrdersToCallerForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
 
@@ -180,6 +180,8 @@ class DashboardSalesListView(ListView):
 
     def get_queryset(self):
         queryset = super(DashboardSalesListView, self).get_queryset()
+        if self.request.user.user_type in ['CA', 'S']:
+            queryset = queryset.filter(assigned_to=self.request.user)
         if self.request.GET.get('status', None):
             queryset = queryset.filter(status=self.request.GET.get('status', None))
         if self.request.GET.get('city', None):
@@ -436,7 +438,10 @@ class CartCheckOutConfirm(RedirectView):
 class OrdersMixin:
     def my_get_queryset(self, queryset):
         if self.request.user.is_staff:
-            return queryset.filter(status__in=['P', 'CA', 'RC', 'NA'])
+            queryset = queryset.filter(status__in=['P', 'CA', 'RC', 'NA'])
+            if self.request.user.user_type in ['CA', 'S']:
+                queryset = queryset.filter(assigned_to=self.request.user)
+            return queryset
         return queryset.filter(profile=self.request.user.profile)
 
 
@@ -478,7 +483,7 @@ class OrdersHistory(ListView, OrdersMixin):
             for order in kwargs.get('object_list'):
                 total += order.sub_total
         context['total'] = total
-        context['agents'] = DeliveryGuy.objects.all()
+        context['callers'] = User.objects.filter(user_type='CA')
         return context
 
     def get(self, request, *args, **kwargs):
@@ -958,8 +963,9 @@ class DetailDeliveryCompany(DetailView):
 
 @login_required()
 def assign_orders_to_caller(request):
-    print(request.POST)
-    return redirect("ecommerce:orders-history")
+    caller = get_object_or_404(User, pk=request.POST.get('caller'), user_type='CA')
+    Order.objects.filter(pk__in=request.POST.getlist('orders[]')).update(assigned_to=caller)
+    return JsonResponse({"status": 'Success'})
 
 
 @login_required()

@@ -47,10 +47,10 @@
         <div class="table-data__tool-right">
             <div class="rs-select2--light rs-select2--md">
                 <label for="assign-to-select"></label>
-                <select id="assign-to-select" class="js-select2" name="agents">
-                    <option value="" selected="selected">{% trans "Delivery Guy" %}</option>
-                    {% for guy in agents %}
-                        <option value="{{ guy.id }}">{{ guy }}</option>
+                <select id="assign-to-select" class="js-select2" name="callers">
+                    <option value="" selected="selected">{% trans "Call Agent" %}</option>
+                    {% for caller in callers %}
+                        <option value="{{ caller.id }}">{{ caller }}</option>
                     {% endfor %}
                 </select>
                 <div class="dropDownSelect2"></div>
@@ -74,6 +74,7 @@
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
+                <th>{% trans "assigned to" %}</th>
                 <th class="text-center">{% trans "status" %}</th>
                 <th class="text-center">{% trans "actions" %}</th>
             </tr>
@@ -101,6 +102,7 @@
                     <td>{{ order.products_count }}</td>
                     <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ order.created_at }}</td>
+                    <td>{{ order.assigned_to|default:"" }}</td>
                     <td class="text-center">
                         <span class="{% if order.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ order.get_status_display }}</span>
                     </td>
@@ -211,19 +213,24 @@
                 alert("Select a delivery guy")
                 return
             }
-            console.log(ids)
-            console.log(agentsSelect.val())
             const data = {
-                csrfmiddlewaretoken: {{ csrf_token }},
-                delivery_guy: agentsSelect.val(),
-                orders: ids
+                "csrfmiddlewaretoken": "{{ csrf_token }}",
+                "caller": agentsSelect.val(),
+                "orders": ids
             }
             $.ajax({
                 type: "POST",
                 url: "{% url "ecommerce:orders-assignment-caller" %}",
                 data: data,
                 success: (data) => {
-                    console.log("downloaded")
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'ecommerce:orders-history' %}",
+                        success: (response) => {
+                            $("#orders-table").html(response["orders"])
+                            print(response["orders"])
+                        }
+                    })
                 }
             })
         }
