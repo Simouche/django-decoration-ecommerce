@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 {% load i18n %}
 
-<form method="post" enctype="multipart/form-data" action="{% url "ecommerce:categories-sub-create" %}">
+<form method="post" enctype="multipart/form-data" action="{% url "ecommerce:categories-create" %}">
     {% csrf_token %}
 
     <div class="modal-header">

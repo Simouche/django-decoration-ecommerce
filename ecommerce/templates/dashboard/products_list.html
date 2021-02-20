@@ -19,7 +19,7 @@
             {% if request.user.user_type == 'A' %}
                 <button id="create-category" type="button" name="button"
                         class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createCategoryForm()">
-                    <i class="zmdi zmdi-plus"></i>{% trans "add category" %}
+                    <i class="zmdi zmdi-plus"></i>{% trans "category" %}
                 </button>
             {% endif %}
             <div class="rs-select2--light rs-select2--md">
@@ -31,7 +31,7 @@
             {% if request.user.user_type == 'A' %}
                 <button id="create-sub-category" type="button" name="button"
                         class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createSubCategoryForm()">
-                    <i class="zmdi zmdi-plus"></i>{% trans "add sub-category" %}
+                    <i class="zmdi zmdi-plus"></i>{% trans "sub-category" %}
                 </button>
             {% endif %}
 
@@ -39,7 +39,7 @@
         <div class="table-data__tool-right">
             <button id="create-product" type="button" name="button"
                     class="au-btn au-btn-icon au-btn--green au-btn--small">
-                <i class="zmdi zmdi-plus"></i>{% trans "add product" %}
+                <i class="zmdi zmdi-plus"></i>{% trans "product" %}
             </button>
             {% url 'ecommerce:products-list-export' as url %}
             {% include "dashboard/exportation_layout.html" with exportation_url=url %}

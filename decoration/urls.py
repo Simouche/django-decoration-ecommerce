@@ -20,8 +20,9 @@ from django.urls import path, include
 from decoration import settings
 
 urlpatterns = [
-                  path('i18n/', include('django.conf.urls.i18n')),
-                  path('admin/', admin.site.urls),
-                  path('', include('ecommerce.urls')),
-                  path('account/', include('accounts.urls'))
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                   path('i18n/', include('django.conf.urls.i18n')),
+                   path('admin/', admin.site.urls),
+                   path('', include('ecommerce.urls')),
+                   path('account/', include('accounts.urls'))
+               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
