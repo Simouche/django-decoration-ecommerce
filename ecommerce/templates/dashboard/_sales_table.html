@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 <div id="sales-table" class="table-responsive table-responsive-data2">
-    <table class="table table-data2">
+   <table class="table table-data2">
             <thead>
             <tr>
                 <th>{% trans "Selected" %}</th>
@@ -12,6 +12,8 @@
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
+                <th>{% trans "caller" %}</th>
+                <th>{% trans "assigned to" %}</th>
                 <th class="text-center">{% trans "status" %}</th>
                 <th class="text-center">{% trans "actions" %}</th>
             </tr>
@@ -39,6 +41,8 @@
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.created_at }}</td>
+                    <td>{{ order.assigned_to|default:"" }}</td>
+                    <td>{{ order.get_delivery_guy|default:"" }}</td>
                     <td class="text-center">
                         <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
                     </td>
@@ -48,10 +52,10 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                            {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
                                 <i class="zmdi zmdi-delete"></i>
-                            </button>
+                            </button>{% endcomment %}
                         </div>
                     </td>
                 </tr>

@@ -210,13 +210,13 @@
                 return
             }
             if (agentsSelect.val() == "") {
-                alert("Select a delivery guy")
+                alert("Select a Caller")
                 return
             }
             const data = {
-                "csrfmiddlewaretoken": "{{ csrf_token }}",
-                "caller": agentsSelect.val(),
-                "orders": ids
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                caller: agentsSelect.val(),
+                orders: ids
             }
             $.ajax({
                 type: "POST",
@@ -228,7 +228,6 @@
                         url: "{% url 'ecommerce:orders-history' %}",
                         success: (response) => {
                             $("#orders-table").html(response["orders"])
-                            print(response["orders"])
                         }
                     })
                 }

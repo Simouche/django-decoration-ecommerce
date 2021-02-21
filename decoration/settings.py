@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'requests',
     'django_seed',
     'bootstrap_modal_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -89,9 +90,9 @@ WSGI_APPLICATION = 'decoration.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_ecommerce',
+        'NAME': 'ecommerce',
         'USER': 'postgres',
-        'PASSWORD': '123456789',
+        'PASSWORD': 'Simouche',
         'HOST': 'localhost',
         'PORT': '5432',
         'CONN_MAX_AGE': 180000,

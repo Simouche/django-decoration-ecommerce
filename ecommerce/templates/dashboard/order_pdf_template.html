@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>{% trans "test" %}</th>
+        <th>{% trans "test" %}</th>
+        <th>{% trans "test" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in "123456" %}
+        <tr>
+            <td>this is {{ i }}</td>
+            <td>this is {{ i }}</td>
+            <td>this is {{ i }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

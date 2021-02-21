@@ -1,17 +1,18 @@
 import csv
-import decimal
 import json
 import random
 
+import pdfkit as pdfkit
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, get_list_or_404
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, FileResponse
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -19,15 +20,14 @@ from django.utils.translation import gettext
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
     RedirectView
 
-# Create your views here.
 from accounts.models import User, State, City
 from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
-from decoration.settings import MEDIA_ROOT, MEDIA_URL
+from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, AssignOrdersToCallerForm
+    OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
 
@@ -62,7 +62,7 @@ class Dashboard(TemplateView):
                                           .aggregate(count=Sum('quantity')).get('count', 0) or 0
         m_kwargs["earnings"] = OrderLine.objects \
             .filter(order_line_lookup) \
-            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0) 
+            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0)
         #    .quantize(decimal.Decimal("0.01"))
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
@@ -170,7 +170,7 @@ class DashboardSalesListView(ListView):
     model = Order
     context_object_name = "sales"
     page_kwarg = 'page'
-    paginate_by = 10
+    paginate_by = 50
     allow_empty = True
     ordering = ['-created_at']
     extra_context = {
@@ -979,7 +979,7 @@ def assign_orders_to_delivery_guy(request):
     # ToDo Generate the excel file (feuille de route)
     if deliveries:
         orders.update(status='OD')
-    return redirect("ecommerce:dashboard-sales")
+    return JsonResponse({"status": 'Success'})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -995,10 +995,6 @@ class AddReview(CreateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, form):
-        print(form.errors)
-        return super(AddReview, self).form_invalid(form)
-
     def get_success_url(self):
         return reverse_lazy("ecommerce:products-product-details", kwargs={"pk": self.object.product.pk})
 
@@ -1011,3 +1007,14 @@ class LoginRequired(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         self.url = self.request.GET.get('next')
         return super(LoginRequired, self).get_redirect_url(*args, **kwargs)
+
+
+@login_required
+def print_view(request):
+    html = render_to_string("dashboard/order_pdf_template.html", request=request)
+    directory_path = BASE_DIR / "uploads/invoices"
+    output_path = directory_path / "test.pdf"
+    pdfkit.from_string(html, output_path)
+    fss = FileSystemStorage(directory_path)
+    file = fss.open("test.pdf")
+    return FileResponse(file, as_attachment=True, filename="test.pdf")

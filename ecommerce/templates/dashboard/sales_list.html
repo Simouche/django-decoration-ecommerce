@@ -78,7 +78,8 @@
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
-                <th>{% trans "assigned to" %}</th>
+                <th>{% trans "caller" %}</th>
+                <th>{% trans "delivery" %}</th>
                 <th class="text-center">{% trans "status" %}</th>
                 <th class="text-center">{% trans "actions" %}</th>
             </tr>
@@ -106,7 +107,8 @@
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.created_at }}</td>
-                    <td>{{ order.assigned_to|default:"" }}</td>
+                    <td>{{ sale.assigned_to|default:"" }}</td>
+                    <td>{{ sale.get_delivery_guy|default:"" }}</td>
                     <td class="text-center">
                         <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
                     </td>
@@ -115,6 +117,10 @@
                             <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
+                            </button>
+                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
+                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                                <i class="fas fa-print"></i>
                             </button>
                             {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
@@ -231,8 +237,6 @@
                 alert("Select a delivery guy")
                 return
             }
-            console.log(ids)
-            console.log(agentsSelect.val())
             const data = {
                 csrfmiddlewaretoken: "{{ csrf_token }}",
                 delivery_guy: agentsSelect.val(),
@@ -243,7 +247,13 @@
                 url: "{% url "ecommerce:orders-assignment-delivery" %}",
                 data: data,
                 success: (data) => {
-                    console.log("downloaded")
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'ecommerce:dashboard-sales' %}",
+                        success: (response) => {
+                            $("#sales-table").html(response["sales"])
+                        }
+                    })
                 }
             })
         }

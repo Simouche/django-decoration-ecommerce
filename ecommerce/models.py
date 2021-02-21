@@ -125,8 +125,7 @@ class Order(DeletableModel):
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Shipping Fee'), default=0)
     free_delivery = models.BooleanField(default=False, blank=True)
     assigned_to = models.ForeignKey("accounts.User", on_delete=do_nothing, null=True, blank=True,
-                                    verbose_name=_("Assigned To"),
-                                    related_name="orders")
+                                    verbose_name=_("Assigned To"), related_name="orders")
 
     @property
     def products_count(self):
@@ -179,6 +178,13 @@ class Order(DeletableModel):
             return
         self.status = 'CA'
         super(Order, self).delete(using=using, keep_parents=keep_parents)
+
+    @property
+    def get_delivery_guy(self) -> str:
+        try:
+            return self.deliveries.all().first().delivery_guys.name
+        except AttributeError:
+            return ""
 
 
 class OrderStatusChange(BaseModel):
@@ -257,8 +263,8 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0) 
-            #.quantize(decimal.Decimal('0.01'))
+        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0)
+        # .quantize(decimal.Decimal('0.01'))
 
     @property
     def products_count(self):
@@ -340,10 +346,14 @@ class Deliveries(DeletableModel):
     order = models.ForeignKey('Order', on_delete=cascade, verbose_name=_('Order'), related_name="deliveries")
     delivery_guys = models.ForeignKey('DeliveryGuy', on_delete=cascade, verbose_name=_('Delivery Guy'),
                                       related_name="deliveries")
+    delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True)
 
     @property
     def fee(self) -> int:
         return 0
+
+    def __str__(self) -> str:
+        return f'{self.delivery_guys.name} is delivering {self.order.number}'
 
     class Meta:
         verbose_name = _('Delivery')
