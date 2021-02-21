@@ -55,50 +55,48 @@
         <div class="main-header header-sticky">
             <div class="container-fluid">
                 <div class="row menu-wrapper align-items-center justify-content-between">
-                    <!--<div class="header-left d-flex align-items-center">
-                        
-                        <div class="logo">
-                            <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.png' %}" alt=""
-                                                                       height="96px"></a>
-                        </div>
-                        
-                        <div class="logo2">
-                            <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/borderless_logo_gold.png' %}"
-                                                                       alt=""
-                                                                       height="64px"></a>
-                        </div>
-                        <div class="main-menu  d-none d-lg-block">
-                            <nav>
-                                <ul id="navigation">
-                                    <li><a href="{% url 'ecommerce:index' %}">{% trans "Home" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:products-list' %}">{% trans "Products" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:categories-list' %}">{% trans "Categories" %}</a>
-                                    </li>
-                                    <li><a href="{% url 'ecommerce:about' %}">{% trans "About" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:contact' %}">{% trans "Contact" %}</a></li>
-                                    {% if user.is_staff %}
-                                        <li><a href="{% url 'ecommerce:dashboard' %}">{% trans "Dashboard" %}</a></li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        </div>
+                    <!-- Logo -->
+                    <div class="logo">
+                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.png' %}" alt=""
+                                                                   height="96px"></a>
                     </div>
-                    <div class="header-right1 d-flex align-items-center">
-                        <div class="search">
-                            <ul class="d-flex align-items-center">
-                                <li>
-                                    <form action="#" class="form-box f-right" method="GET">
+                    <!-- Logo-2 -->
+                    <div class="logo2">
+                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/borderless_logo_gold.png' %}"
+                                                                   alt=""
+                                                                   height="64px"></a>
+                    </div>
+                    <!-- Main-menu -->
+                    <div class="main-menu  d-none d-lg-block header-right1" style="width: 100%">
+                        <nav>
+                            <ul id="navigation" style="display: contents">
+                                <li><a href="{% url 'ecommerce:index' %}">{% trans "Home" %}</a></li>
+                                <li><a href="{% url 'ecommerce:products-list' %}">{% trans "Products" %}</a></li>
+                                <li><a href="{% url 'ecommerce:categories-list' %}">{% trans "Categories" %}</a>
+                                </li>
+                                <li><a href="{% url 'ecommerce:about' %}">{% trans "About" %}</a></li>
+                                <li><a href="{% url 'ecommerce:contact' %}">{% trans "Contact" %}</a></li>
+                                {% if user.is_staff %}
+                                    <li><a href="{% url 'ecommerce:dashboard' %}">{% trans "Dashboard" %}</a></li>
+                                {% endif %}
+                                {% comment %}<li>
+                                    <form action="#" class="form-box position-relative" method="GET">
                                         <input type="text" name="Search" placeholder="Search products">
                                         <div class="search-icon">
                                             <i class="ti-search"></i>
                                         </div>
                                     </form>
-                                </li>
+                                </li>{% endcomment %}
+
+                            </ul>
+                            <ul class=" my-2 my-lg-0" style="float: right">
+
                                 {% if user.is_authenticated %}
                                     <li>
                                         <a href="{% url 'accounts:profile-update' request.user.profile.id %}"
                                            class="account-btn pr-0">{% trans "My Account" %}</a></li>
-                                        {% else %}<li>
+                                {% else %}
+                                    <li>
                                         <a href="{% url 'accounts:login' %}"
                                            class="account-btn pr-0">{% trans "Login" %}</a>
                                     </li>
@@ -143,91 +141,8 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
-                    </div>-->
-                    <!-- Logo -->
-                        <div class="logo">
-                            <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.png' %}" alt=""
-                                                                       height="96px"></a>
-                        </div>
-                        <!-- Logo-2 -->
-                        <div class="logo2">
-                            <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/borderless_logo_gold.png' %}"
-                                                                       alt=""
-                                                                       height="64px"></a>
-                        </div>
-                        <!-- Main-menu -->
-                        <div class="main-menu  d-none d-lg-block header-right1">
-                            <nav>
-                                <ul id="navigation">
-                                    <li><a href="{% url 'ecommerce:index' %}">{% trans "Home" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:products-list' %}">{% trans "Products" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:categories-list' %}">{% trans "Categories" %}</a>
-                                    </li>
-                                    <li><a href="{% url 'ecommerce:about' %}">{% trans "About" %}</a></li>
-                                    <li><a href="{% url 'ecommerce:contact' %}">{% trans "Contact" %}</a></li>
-                                    {% if user.is_staff %}
-                                        <li><a href="{% url 'ecommerce:dashboard' %}">{% trans "Dashboard" %}</a></li>
-                                    {% endif %}
-                                    <li>
-                                    <form action="#" class="form-box position-relative" method="GET">
-                                        <input type="text" name="Search" placeholder="Search products">
-                                        <div class="search-icon">
-                                            <i class="ti-search"></i>
-                                        </div>
-                                    </form>
-                                </li>
-                                {% if user.is_authenticated %}
-                                    <li>
-                                        <a href="{% url 'accounts:profile-update' request.user.profile.id %}"
-                                           class="account-btn pr-0">{% trans "My Account" %}</a></li>
-                                        {% else %}<li>
-                                        <a href="{% url 'accounts:login' %}"
-                                           class="account-btn pr-0">{% trans "Login" %}</a>
-                                    </li>
-                                {% endif %}
-                                {% if not user.is_authenticated %}
-                                    <li>
-                                        <a href="{% url 'accounts:register' %}"
-                                           class="account-btn pl-5">{% trans "Register" %}
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li>
-                                        <a href="{% url 'accounts:logout' %}"
-                                           class="account-btn  pl-5">{% trans "Logout" %}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                                <li>
-                                    <div class="card-stor">
-                                        <a href="{% url 'ecommerce:cart-details-redirect' %}"> <img
-                                                src="{% static 'img/icon/card.svg' %}" alt="">
-                                            <span id="cart_count">0</span></a>
-                                    </div>
-                                </li>
-                                <li class="ml-15">
-                                    <form id="form-lang" action="{% url 'set_language' %}" method="post">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="next" value="{{ redirect_to }}">
-                                        <div class="custom-select2 fas">
-                                            <select name="language" id="language" class="select-bf">
-                                                {% get_available_languages as LANGUAGES %}
-                                                {% get_language_info_list for LANGUAGES as languages %}
-                                                {% for language in languages %}
-                                                    <option value="{{ language.code }}"
-                                                            {% if language.code == LANGUAGE_CODE %}
-                                                            selected {% endif %}>
-                                                        {{ language.name_local|title }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </form>
-                                </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        </nav>
+                    </div>
                     <!-- Mobile Menu -->
                     <div class="col-12">
                         <div class="mobile_menu d-block d-lg-none"></div>
