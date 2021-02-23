@@ -30,6 +30,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
+from ecommerce.reports import OrderToPDF
 
 
 class Index(TemplateView):
@@ -1018,3 +1019,17 @@ def print_view(request):
     fss = FileSystemStorage(directory_path)
     file = fss.open("test.pdf")
     return FileResponse(file, as_attachment=True, filename="test.pdf")
+
+
+def print_order(request):
+    if request.method == "GET":
+        order_id = request.GET.get('order')
+        if order_id is None:
+            return JsonResponse({"message": "no order id provided"})
+        order = get_object_or_404(Order, pk=order_id)
+        data = order.render_as_printable()
+        pdf = OrderToPDF(data=data, file_name=str(order.number))
+        pdf.build_pdf()
+        fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
+        file = fss.open(str(order.number) + ".pdf")
+        return FileResponse(file, as_attachment=True, filename=str(order.number) + ".pdf")

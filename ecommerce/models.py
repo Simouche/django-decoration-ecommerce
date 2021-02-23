@@ -186,6 +186,17 @@ class Order(DeletableModel):
         except AttributeError:
             return ""
 
+    def render_as_printable(self) -> list:
+        columns = (_('Product'), _('Price'), _('Quantity'), _('Total'))
+        data = [columns]
+        for line in self.get_lines:
+            line_data = [line.product.name, line.product.price, line.quantity, line.total]
+            data.append(line_data)
+        bottom_row = [" ", " ", " ", self.total_sum]
+        data.append(bottom_row)
+
+        return data
+
 
 class OrderStatusChange(BaseModel):
     order = models.ForeignKey('Order', on_delete=do_nothing, related_name='status_changes', verbose_name=_('Order'))

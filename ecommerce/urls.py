@@ -5,7 +5,7 @@ from . import views
 app_name = "ecommerce"
 
 urlpatterns = [
-    path('print/', views.print_view, name='pdf'),
+    path('print/', views.print_order, name='pdf'),
     path('', views.Index.as_view(), name='index'),
     path('dashboard/main/', views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
