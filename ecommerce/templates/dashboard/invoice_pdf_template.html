@@ -1,0 +1,164 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sales Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+
+        .invoice-box {
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .table td {
+            width: 100%;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:last-child {
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:last-child {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            padding: 2rem;
+        }
+
+        .my-3 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div id="invoice" class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td class="title">
+                            <img src="{% static 'images/logo.png' %}" style="width:300px;">
+                        </td>
+
+                        <td>
+                            N ° Bon : {{ order.number }}<br>
+                            Bon du: {{ order.created_at }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td>
+                            SamyDeco.com<br>
+                        </td>
+                        <td>
+                            N ° Client : {{ order.profile.user.full_name }}<br>
+                            Adresse: {{ order.profile.address }}<br>
+                            Ville: {{ order.profile.city }}<br>
+                            Wilaya: {{ order.profile.city.state }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <table class="table" cellpadding="0" cellspacing="0">
+
+        <tr class="heading">
+            <td>Produit</td>
+            <td>Prix.U</td>
+            <td>Quantité</td>
+            <td>Total</td>
+        </tr>
+
+        {% for line in order.get_lines %}
+            <tr>
+                <td>{{ line.product.name }}</td>
+                <td>{{ line.product.price }}</td>
+                <td>{{ line.quantity }}</td>
+                <td>{{ line.total }}</td>
+            </tr>
+        {% endfor %}
+
+        <tr class="total">
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td> {{ order.total_sum }} </td>
+        </tr>
+    </table>
+    <hr class="my-3">
+    <div class="footer">
+
+    </div>
+    <div id="footer__content">
+        <strong>SamyDeco</strong>: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora soluta
+        assumenda aperiam officia veritatis! In animi eligendi vero et voluptatem explicabo ea corporis, culpa
+        reiciendis, amet iusto. Optio, tempora rerum?
+    </div>
+</div>
+</body>
+</html>

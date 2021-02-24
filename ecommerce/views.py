@@ -30,7 +30,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
-from ecommerce.reports import OrderToPDF
+from ecommerce.reports import OrderToPDF, render_to_pdf
 
 
 class Index(TemplateView):
@@ -1010,15 +1010,15 @@ class LoginRequired(RedirectView):
         return super(LoginRequired, self).get_redirect_url(*args, **kwargs)
 
 
-@login_required
-def print_view(request):
-    html = render_to_string("dashboard/order_pdf_template.html", request=request)
-    directory_path = BASE_DIR / "uploads/invoices"
-    output_path = directory_path / "test.pdf"
-    pdfkit.from_string(html, output_path)
-    fss = FileSystemStorage(directory_path)
-    file = fss.open("test.pdf")
-    return FileResponse(file, as_attachment=True, filename="test.pdf")
+# @login_required
+# def print_view(request):
+#     html = render_to_string("dashboard/order_pdf_template.html", request=request)
+#     directory_path = BASE_DIR / "uploads/invoices"
+#     output_path = directory_path / "test.pdf"
+#     pdfkit.from_string(html, output_path)
+#     fss = FileSystemStorage(directory_path)
+#     file = fss.open("test.pdf")
+#     return FileResponse(file, as_attachment=True, filename="test.pdf")
 
 
 def print_order(request):
@@ -1033,3 +1033,15 @@ def print_order(request):
         fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
         file = fss.open(str(order.number) + ".pdf")
         return FileResponse(file, as_attachment=True, filename=str(order.number) + ".pdf")
+
+
+def print_view(request, order_id):
+    if request.method == "GET":
+        if order_id is None:
+            return JsonResponse({"message": "no order id provided"})
+
+        order = get_object_or_404(Order, pk=order_id)
+
+        pdf = render_to_pdf('dashboard/invoice_pdf_template.html', {'order': order})
+
+        return pdf

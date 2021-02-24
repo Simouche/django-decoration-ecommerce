@@ -118,10 +118,10 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
-                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <a href="{% url 'ecommerce:print_order' sale.pk %}"
+                               class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fas fa-print"></i>
-                            </button>
+                            </a>
                             {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
                                 <i class="zmdi zmdi-delete"></i>

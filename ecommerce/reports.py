@@ -1,7 +1,17 @@
+import os
+import uuid
+from io import BytesIO
+
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, FileResponse
+from django.template.loader import get_template
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-import uuid
+from xhtml2pdf import pisa
+
+from decoration import settings
+from decoration.settings import BASE_DIR
 
 
 class OrderToPDF:
@@ -106,11 +116,35 @@ class OrderToPDF:
         return Paragraph("SamyDeco")
 
     def get_client_info(self):
+        paragraph = Paragraph()
         return Paragraph(
             """
-            Client: Wassim
-            Phone: 0799136332
-            Addresse: edsqfklqsdlkjfhqslkdjfhkljqsdhfklj
-            Commune: Alger
-            Expidié le: 12/12/92 12:12
+            Client: Wassim\n
+            Phone: 0799136332\n
+            Addresse: edsqfklqsdlkjfhqslkdjfhkljqsdhfklj\n
+            Commune: Alger\n
+            Expidié le: 12/12/92 12:12\n
             """)
+
+
+def render_to_pdf(template_src, context_dict=None):
+    if context_dict is None:
+        context_dict = {}
+
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("utf8")), result, link_callback=fetch_resources)
+    name = uuid.uuid4().__str__().replace("-", "")
+    with open(BASE_DIR / "uploads/invoices/" / (name + ".pdf"), "wb") as f:
+        f.write(result.getvalue())
+
+    fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
+    file = fss.open(name + ".pdf")
+
+    return FileResponse(file, as_attachment=True, filename=name + ".pdf")
+
+
+def fetch_resources(uri, rel):
+    path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    return path
