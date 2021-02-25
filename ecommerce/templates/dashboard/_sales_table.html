@@ -2,66 +2,70 @@
 {% load i18n %}
 {% load static %}
 <div id="sales-table" class="table-responsive table-responsive-data2">
-   <table class="table table-data2">
-            <thead>
-            <tr>
-                <th>{% trans "Selected" %}</th>
-                <th>{% trans "Number" %}</th>
-                <th>{% trans "Client" %}</th>
-                <th>{% trans "phone" %}</th>
-                <th>{% trans "Items Count" %}</th>
-                <th>{% trans "Total" %}</th>
-                <th>{% trans "date" %}</th>
-                <th>{% trans "caller" %}</th>
-                <th>{% trans "assigned to" %}</th>
-                <th class="text-center">{% trans "status" %}</th>
-                <th class="text-center">{% trans "actions" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for sale in sales %}
-                <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'PA' %}  completed {% endif %}">
-                    <td>
-                        {% if sale.status in 'CO' %}
-                            <div class="switch-wrap d-flex justify-content-between">
-                                <div class="confirm-checkbox">
-                                    <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
-                                           value="{{ sale.id }}">
-                                    <label for="checkbox{{ sale.id }}"></label>
-                                </div>
+    <table class="table table-data2">
+        <thead>
+        <tr>
+            <th>{% trans "Selected" %}</th>
+            <th>{% trans "Number" %}</th>
+            <th>{% trans "Client" %}</th>
+            <th>{% trans "phone" %}</th>
+            <th>{% trans "Items Count" %}</th>
+            <th>{% trans "Total" %}</th>
+            <th>{% trans "date" %}</th>
+            <th>{% trans "caller" %}</th>
+            <th>{% trans "delivery" %}</th>
+            <th class="text-center">{% trans "status" %}</th>
+            <th class="text-center">{% trans "actions" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sale in sales %}
+            <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'PA' %}  completed {% endif %}">
+                <td>
+                    {% if sale.status in 'CO' %}
+                        <div class="switch-wrap d-flex justify-content-between">
+                            <div class="confirm-checkbox">
+                                <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
+                                       value="{{ sale.id }}">
+                                <label for="checkbox{{ sale.id }}"></label>
                             </div>
-                        {% endif %}
-                    </td>
-                    <td>{{ sale.number }}</td>
-                    <td>{{ sale.profile.user.full_name }}</td>
-                    <td><span
-                            class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
+                        </div>
+                    {% endif %}
+                </td>
+                <td>{{ sale.number }}</td>
+                <td>{{ sale.profile.user.full_name }}</td>
+                <td><span
+                        class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
                         {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
-                    </td>
-                    <td>{{ sale.products_count }}</td>
-                    <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
-                    <td>{{ sale.created_at }}</td>
-                    <td>{{ order.assigned_to|default:"" }}</td>
-                    <td>{{ order.get_delivery_guy|default:"" }}</td>
-                    <td class="text-center">
-                        <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
-                    </td>
-                    <td>
-                        <div class="table-data-feature">
-                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
-                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
-                                <i class="fa fa-info"></i>
-                            </button>
-                            {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
+                </td>
+                <td>{{ sale.products_count }}</td>
+                <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
+                <td>{{ sale.created_at }}</td>
+                <td>{{ sale.assigned_to|default:"" }}</td>
+                <td>{{ sale.get_delivery_guy|default:"" }}</td>
+                <td class="text-center">
+                    <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
+                </td>
+                <td>
+                    <div class="table-data-feature">
+                        <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
+                                class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <i class="fa fa-info"></i>
+                        </button>
+                        <a href="{% url 'ecommerce:print_order' sale.pk %}"
+                           class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                            <i class="fas fa-print"></i>
+                        </a>
+                        {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
                                 <i class="zmdi zmdi-delete"></i>
                             </button>{% endcomment %}
-                        </div>
-                    </td>
-                </tr>
-                <tr class="spacer"></tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
     {% include "pagination_layout.html" with page_obj=page_obj %}
 </div>

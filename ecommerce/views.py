@@ -977,10 +977,20 @@ def assign_orders_to_delivery_guy(request):
     delivery_guy = get_object_or_404(DeliveryGuy, pk=delivery_guy_id)
     deliveries = [Deliveries(order=order, delivery_guys=delivery_guy) for order in orders]
     deliveries = Deliveries.objects.bulk_create(deliveries)
-    # ToDo Generate the excel file (feuille de route)
     if deliveries:
         orders.update(status='OD')
-    return JsonResponse({"status": 'Success'})
+        total = 0
+        for order in orders:
+            total += order.total_sum
+        context = {
+            'orders': orders,
+            'delivery_guy': delivery_guy,
+            'total': total
+        }
+        print(context)
+        pdf = render_to_pdf('dashboard/roadmap_pdf_template.html', context)
+        return pdf
+    return JsonResponse({"status": 'Fail'})
 
 
 @method_decorator(login_required, name="dispatch")
@@ -1010,31 +1020,7 @@ class LoginRequired(RedirectView):
         return super(LoginRequired, self).get_redirect_url(*args, **kwargs)
 
 
-# @login_required
-# def print_view(request):
-#     html = render_to_string("dashboard/order_pdf_template.html", request=request)
-#     directory_path = BASE_DIR / "uploads/invoices"
-#     output_path = directory_path / "test.pdf"
-#     pdfkit.from_string(html, output_path)
-#     fss = FileSystemStorage(directory_path)
-#     file = fss.open("test.pdf")
-#     return FileResponse(file, as_attachment=True, filename="test.pdf")
-
-
-def print_order(request):
-    if request.method == "GET":
-        order_id = request.GET.get('order')
-        if order_id is None:
-            return JsonResponse({"message": "no order id provided"})
-        order = get_object_or_404(Order, pk=order_id)
-        data = order.render_as_printable()
-        pdf = OrderToPDF(data=data, file_name=str(order.number))
-        pdf.build_pdf()
-        fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
-        file = fss.open(str(order.number) + ".pdf")
-        return FileResponse(file, as_attachment=True, filename=str(order.number) + ".pdf")
-
-
+@login_required
 def print_view(request, order_id):
     if request.method == "GET":
         if order_id is None:

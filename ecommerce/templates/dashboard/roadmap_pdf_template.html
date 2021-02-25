@@ -99,8 +99,7 @@
                         </td>
 
                         <td>
-                            N ° Bon : {{ order.number }}<br>
-                            Bon du: {{ order.created_at }}
+                            Bon du: {% now "SHORT_DATE_FORMAT" %}
                         </td>
                     </tr>
                 </table>
@@ -114,11 +113,11 @@
                         <td>
                             SamyDeco.com<br>
                         </td>
+                        <td>Assistance: {{ assistance }}</td>
                         <td>
-                            N ° Client : {{ order.profile.user.full_name }}<br>
-                            Adresse: {{ order.profile.address }}<br>
-                            Ville: {{ order.profile.city }}<br>
-                            Wilaya: {{ order.profile.city.state }}
+                            Livreur : {{ delivery_guy.name }}<br>
+                            Total: {{ total }}<br>
+                            Colis: {{ orders.count }}<br>
                         </td>
                     </tr>
                 </table>
@@ -128,47 +127,31 @@
     <table class="table" cellpadding="0" cellspacing="0">
 
         <tr class="heading">
-            <td>Produit</td>
-            <td>Prix.U</td>
-            <td>Quantité</td>
-            <td>Total</td>
+            <td>Téléphone</td>
+            <td>Client</td>
+            <td>Produits</td>
+            <td>Montant</td>
+            <td>Adresse</td>
+            <td>Wilaya</td>
+            <td>Commune</td>
         </tr>
 
-        {% for line in order.get_lines %}
+        {% for order in orders %}
             <tr>
-                <td>{{ line.product.name }}</td>
-                <td>{{ line.product.price }}</td>
-                <td>{{ line.quantity }}</td>
-                <td>{{ line.total }}</td>
+                <td>{{ order.profile.user.phones.0 }}</td>
+                <td>{{ order.profile.user.full_name }}</td>
+                <td>
+                    {% for line in order.get_lines %}
+                        {{ line.product.name }} qté {{ line.quantity }}<br>
+                    {% endfor %}
+                </td>
+                <td>{{ order.total_sum }}</td>
+                <td>{{ order.profile.address }}</td>
+                <td>{{ order.profile.city.state }}</td>
+                <td>{{ order.profile.city }}</td>
             </tr>
         {% endfor %}
-
-        <tr class="total">
-            <td>Sous-Total</td>
-            <td></td>
-            <td></td>
-            <td> {{ order.total_sum }} </td>
-        </tr>
-        <tr class="total">
-            <td>Livraison</td>
-            <td></td>
-            <td></td>
-            <td> {{ order.total_sum }} </td>
-        </tr>
-        <tr class="total">
-            <td>Total</td>
-            <td></td>
-            <td></td>
-            <td> {{ order.total_sum }} </td>
-        </tr>
     </table>
-    <hr class="my-3">
-    <div class="footer">
-
-    </div>
-    <div id="footer__content">
-        <strong>SamyDeco</strong>:{{ policy|default:'' }}
-    </div>
 </div>
 </body>
 </html>

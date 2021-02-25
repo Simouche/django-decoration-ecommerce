@@ -119,7 +119,7 @@
                                 <i class="fa fa-info"></i>
                             </button>
                             <a href="{% url 'ecommerce:print_order' sale.pk %}"
-                               class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                               class="item" data-toggle="tooltip" data-placement="top" title="Print">
                                 <i class="fas fa-print"></i>
                             </a>
                             {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
@@ -247,13 +247,14 @@
                 url: "{% url "ecommerce:orders-assignment-delivery" %}",
                 data: data,
                 success: (data) => {
-                    $.ajax({
-                        type: "GET",
-                        url: "{% url 'ecommerce:dashboard-sales' %}",
-                        success: (response) => {
-                            $("#sales-table").html(response["sales"])
-                        }
-                    })
+                    console.log("success")
+                    {#$.ajax({#}
+                    {#    type: "GET",#}
+                    {#    url: "{% url 'ecommerce:dashboard-sales' %}",#}
+                    {#    success: (response) => {#}
+                    {#        $("#sales-table").html(response["sales"])#}
+                    {#    }#}
+                    //})
                 }
             })
         }
