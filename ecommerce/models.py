@@ -105,6 +105,12 @@ class OrderLine(BaseModel):
         verbose_name = _('Order Line')
         verbose_name_plural = _('Order Lines')
 
+    def delete(self, using=None, keep_parents=False):
+        data = super(OrderLine, self).delete(using, keep_parents)
+        from ecommerce.signals import order_line_deleted
+        order_line_deleted.send(sender=self.__class__, instance=self)
+        return data
+
 
 class Order(DeletableModel):
     # add return status
