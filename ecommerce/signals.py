@@ -1,8 +1,11 @@
+from django.db.models import F
 from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
+from django.dispatch import receiver, Signal
 
 from accounts.models import Profile
-from ecommerce.models import Cart, Order, OrderStatusChange, IndexContent
+from ecommerce.models import Cart, Order, OrderStatusChange, IndexContent, OrderLine
+
+order_line_deleted = Signal()
 
 
 @receiver(post_save, sender=Profile)
@@ -30,6 +33,17 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
                                                  new_status=instance.status, user=request.user)
 
 
+@receiver(post_save, sender=OrderLine)
+def order_line_created(sender, instance: OrderLine, created, raw, **kwargs):
+    if created:
+        instance.product.stock = F('stock') - instance.quantity
+
+
+@receiver(order_line_deleted)
+def order_line_deleted(sender, instance: OrderLine):
+    instance.product.stock = F('stock') + instance.quantity
+
+
 def get_request():
     import inspect
     for frame_record in inspect.stack():
@@ -46,4 +60,7 @@ def prepare_index_content():
         IndexContent.objects.create()
 
 
-prepare_index_content()
+try:
+    prepare_index_content()
+except Exception:
+    pass

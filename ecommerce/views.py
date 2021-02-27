@@ -1,4 +1,5 @@
 import csv
+import decimal
 import json
 import random
 
@@ -63,8 +64,8 @@ class Dashboard(TemplateView):
                                           .aggregate(count=Sum('quantity')).get('count', 0) or 0
         m_kwargs["earnings"] = OrderLine.objects \
             .filter(order_line_lookup) \
-            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0)
-        #    .quantize(decimal.Decimal("0.01"))
+            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0.0) \
+            .quantize(decimal.Decimal("0.01"))
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
