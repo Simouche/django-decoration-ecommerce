@@ -37,6 +37,10 @@ urlpatterns = [
     path('dashboard/delivery/agents/<int:pk>/update/', views.UpdateDeliveryGuy.as_view(),
          name="delivery-agents-update"),
     path('dashboard/delivery/agents/create/', views.CreateDeliveryGuy.as_view(), name="delivery-agents-create"),
+    path('dashboard/delivery/agents/show-deliveries/<int:pk>/', views.DeliveriesView.as_view(),
+         name="delivery-agents-deliveries"),
+
+    path('dashboard/clients/complaints/list/', views.ComplaintsList.as_view(), name="clients-complaints-list"),
 
     path('dashboard/delivery/companies/', views.ListDeliveryCompanies.as_view(), name="delivery-companies-list"),
     path('dashboard/delivery/companies/create/', views.CreateDeliveryCompany.as_view(),

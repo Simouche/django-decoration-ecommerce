@@ -1,0 +1,46 @@
+{% load i18n %}
+{% load static %}
+
+<table class="table table-data2">
+    <thead>
+    <tr>
+        <th>{% trans "client" %}</th>
+        <th>{% trans "phone" %}</th>
+        <th>{% trans "complaint" %}</th>
+        <th>{% trans "order" %}</th>
+        <th>{% trans "against" %}</th>
+        <th>{% trans "comment" %}</th>
+        <th>{% trans "treated" %}</th>
+        <th>{% trans "date" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for complaint in complaints %}
+        <tr class="tr-shadow">
+            <td>{{ complaint.client }}</td>
+            <td>{{ complaint.client.phones.0 }}</td>
+            <td>{{ complaint.get_complaint_display }}</td>
+            <td>{{ complaint.order.number }}</td>
+            <td>{{ complaint.delivery_guy.name }}</td>
+            <td>{{ complaint.comment }}</td>
+            <td>{{ complaint.treated }}</td>
+            <td>{{ complaint.created_at }}</td>
+        </tr>
+        <tr class="spacer"></tr>
+    {% empty %}
+        <tr class="tr-shadow">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{% trans 'empty' %}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+{% include "pagination_layout.html" with page_obj=page_obj %}

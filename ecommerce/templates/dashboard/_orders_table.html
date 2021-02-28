@@ -1,69 +1,69 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load static %}
-<div class="table-responsive table-responsive-data2">
-    <table class="table table-data2">
-            <thead>
-            <tr>
-                <th>{% trans "Selected" %}</th>
-                <th>{% trans "Number" %}</th>
-                <th>{% trans "Client" %}</th>
-                <th>{% trans "phone" %}</th>
-                <th>{% trans "Items Count" %}</th>
-                <th>{% trans "Total" %}</th>
-                <th>{% trans "date" %}</th>
-                <th>{% trans "assigned to" %}</th>
-                <th class="text-center">{% trans "status" %}</th>
-                <th class="text-center">{% trans "actions" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for order in orders %}
-                <tr class="tr-shadow {% if not order.visible or order.status == 'CA' %} deleted {% endif %}">
-                    <td>
-                        {% if not order.status == 'CA' %}
-                            <div class="switch-wrap d-flex justify-content-between">
-                                <div class="confirm-checkbox">
-                                    <input name="selected-orders" type="checkbox" id="checkbox{{ order.id }}"
-                                           value="{{ order.id }}">
-                                    <label for="checkbox{{ order.id }}"></label>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </td>
-                    <td>{{ order.number }}</td>
-                    <td>{{ order.profile.user.full_name }}</td>
-                    <td><span
-                            class="{% if order.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
+
+<table class="table table-data2">
+    <thead>
+    <tr>
+        <th>{% trans "Selected" %}</th>
+        <th>{% trans "Number" %}</th>
+        <th>{% trans "Client" %}</th>
+        <th>{% trans "phone" %}</th>
+        <th>{% trans "Items Count" %}</th>
+        <th>{% trans "Total" %}</th>
+        <th>{% trans "date" %}</th>
+        <th>{% trans "assigned to" %}</th>
+        <th class="text-center">{% trans "status" %}</th>
+        <th class="text-center">{% trans "actions" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr class="tr-shadow {% if not order.visible or order.status == 'CA' %} deleted {% endif %}">
+            <td>
+                {% if not order.status == 'CA' %}
+                    <div class="switch-wrap d-flex justify-content-between">
+                        <div class="confirm-checkbox">
+                            <input name="selected-orders" type="checkbox" id="checkbox{{ order.id }}"
+                                   value="{{ order.id }}">
+                            <label for="checkbox{{ order.id }}"></label>
+                        </div>
+                    </div>
+                {% endif %}
+            </td>
+            <td>{{ order.number }}</td>
+            <td>{{ order.profile.user.full_name }}</td>
+            <td><span
+                    class="{% if order.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
                         {{ order.profile.user.phones.first|default:'+213799136332' }}</span>
-                    </td>
-                    <td>{{ order.products_count }}</td>
-                    <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
-                    <td>{{ order.created_at }}</td>
-                    <td>{{ order.assigned_to|default:"" }}</td>
-                    <td class="text-center">
-                        <span class="{% if order.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ order.get_status_display }}</span>
-                    </td>
-                    <td>
-                        <div class="table-data-feature">
-                            <button onclick="showOrderDetails('{% url 'ecommerce:orders-order-details' order.pk %}')"
-                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
-                                <i class="fa fa-info"></i>
-                            </button>
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i class="zmdi zmdi-edit"
-                                   onclick="updateOrder({{ order.pk }})"></i>
-                            </button>
-                            {% comment %}                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+            </td>
+            <td>{{ order.products_count }}</td>
+            <td>{{ order.total_sum }} {% trans 'DZD' %}</td>
+            <td>{{ order.created_at }}</td>
+            <td>{{ order.assigned_to|default:"" }}</td>
+            <td class="text-center">
+                <span class="{% if order.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ order.get_status_display }}</span>
+            </td>
+            <td>
+                <div class="table-data-feature">
+                    <button onclick="showOrderDetails('{% url 'ecommerce:orders-order-details' order.pk %}')"
+                            class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                        <i class="fa fa-info"></i>
+                    </button>
+                    <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                        <i class="zmdi zmdi-edit"
+                           onclick="updateOrder({{ order.pk }})"></i>
+                    </button>
+                    {% comment %}                            <button type="button" class="item" data-toggle="modal" data-placement="top"
                                     title="Delete" data-target="#deletemodal" data-id="{{ order.id }}">
                                 <i class="zmdi zmdi-delete"></i>
                             </button>{% endcomment %}
-                        </div>
-                    </td>
-                </tr>
-                <tr class="spacer"></tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% include "pagination_layout.html" with page_obj=page_obj %}
-</div>
+                </div>
+            </td>
+        </tr>
+        <tr class="spacer"></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "pagination_layout.html" with page_obj=page_obj %}
+

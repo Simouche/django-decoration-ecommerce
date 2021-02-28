@@ -12,7 +12,8 @@
     <div class="table-data__tool">
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
-                <select id="status-select" class="js-select2" name="group">
+                <label for="type-select"></label>
+                <select id="type-select" class="js-select2" name="group">
                     <option value="" selected="selected">{% trans "Type" %}</option>
                     <option value="DP">{% trans 'Delivery Problem' %}</option>
                     <option value="PP">{% trans 'Product Problem' %}</option>
@@ -23,7 +24,7 @@
             </div>
         </div>
     </div>
-    <div id="sales-table" class="table-responsive table-responsive-data2">
+    <div id="complaints-table" class="table-responsive table--no-card m-b-40">
         <table class="table table-data2">
             <thead>
             <tr>
@@ -38,55 +39,46 @@
             </tr>
             </thead>
             <tbody>
-            {% for sale in sales %}
+            {% for complaint in complaints %}
                 <tr class="tr-shadow">
-                    <td>
-                        {% if sale.status in 'CO' %}
-                            <div class="switch-wrap d-flex justify-content-between">
-                                <div class="confirm-checkbox">
-                                    <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
-                                           value="{{ sale.id }}">
-                                    <label for="checkbox{{ sale.id }}"></label>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </td>
-                    <td>{{ sale.number }}</td>
-                    <td>{{ sale.profile.user.full_name }}</td>
-                    <td><span
-                            class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
-                        {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
-                    </td>
-                    <td>{{ sale.products_count }}</td>
-                    <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
-                    <td>{{ sale.created_at }}</td>
-                    <td>{{ sale.assigned_to|default:"" }}</td>
-                    <td>{{ sale.get_delivery_guy|default:"" }}</td>
-                    <td class="text-center">
-                        <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
-                    </td>
-                    <td>
-                        <div class="table-data-feature">
-                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
-                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
-                                <i class="fa fa-info"></i>
-                            </button>
-                            <a href="{% url 'ecommerce:print_order' sale.pk %}"
-                               class="item" data-toggle="tooltip" data-placement="top" title="Print">
-                                <i class="fas fa-print"></i>
-                            </a>
-                            {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
-                                <i class="zmdi zmdi-delete"></i>
-                            </button>{% endcomment %}
-                        </div>
-                    </td>
+                    <td>{{ complaint.client }}</td>
+                    <td>{{ complaint.client.phones.0 }}</td>
+                    <td>{{ complaint.get_complaint_display }}</td>
+                    <td>{{ complaint.order.number }}</td>
+                    <td>{{ complaint.delivery_guy.name }}</td>
+                    <td>{{ complaint.comment }}</td>
+                    <td>{{ complaint.treated }}</td>
+                    <td>{{ complaint.created_at }}</td>
                 </tr>
                 <tr class="spacer"></tr>
+            {% empty %}
+                <tr class="tr-shadow">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{% trans 'empty' %}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
             {% endfor %}
             </tbody>
         </table>
         {% include "pagination_layout.html" with page_obj=page_obj %}
     </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/decorationjs/complaints.js' %}"></script>
+    <script type="text/javascript">
+        loadByType({
+            selectId: "#type-select",
+            url: "{% url 'ecommerce:clients-complaints-list' %}",
+            dataTableId: "#complaints-table"
+        })
+    </script>
 
 {% endblock %}

@@ -198,8 +198,8 @@
                             </li>
                         </ul>
                     </li>
-                    <li {% if "index-content" in request.path %} class="active" {% endif %}>
-                        <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
+                    <li {% if "complaints" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:clients-complaints-list'%}">
                             <i class="fas fa-edit"></i>{% trans "Complaints" %}</a>
                     </li>
                 </ul>

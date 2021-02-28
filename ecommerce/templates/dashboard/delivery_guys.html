@@ -15,7 +15,7 @@
             </button>
         </div>
     </div>
-    <div id="companies-table-div" class="table-responsive table-responsive-data2">
+    <div id="companies-table-div" class="table-responsive table--no-card m-b-40">
         <table class="table table-data2" id="companies-table">
             <thead>
             <tr>
@@ -46,6 +46,10 @@
                                     </button>
                                 </div>{% endcomment %}
                             {% endif %}
+                            <button onclick="showDeliveries('{% url 'ecommerce:delivery-agents-deliveries' guy.pk %}')"
+                                    class="item" data-toggle="tooltip" data-placement="top" title="Orders">
+                                <i class="fa fa-info"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -62,6 +66,14 @@
 
     {# create user modal#}
     <div class="modal fade" tabindex="-1" role="dialog" id="create-company-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="create-company-content"></div>
+        </div>
+    </div>
+
+    {# show delivery guy orders modal#}
+    <div class="modal fade" tabindex="-1" role="dialog" id="show-deliveries-modal"
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" id="create-company-content"></div>
@@ -100,19 +112,20 @@
             })
         }
 
-        function showDetails(id) {
+        function showDeliveries(url) {
             $.ajax({
-                type: 'GET',
-                url: `/dashboard/delivery/agents/${id}/update/`,
-                dataType: 'json',
+                type: "GET",
+                url: url,
+                dataType: "json",
                 success: (response) => {
-                    const modal = $("#create-company-modal")
-                    modal.find(".modal-content").html(response)
-                    modal.modal()
+                    const mModal = $("#show-deliveries-modal")
+                    mModal.find(".modal-content").html(response['deliveries'])
+                    mModal.modal()
                 },
                 error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
             })
         }
+
     </script>
 
 {% endblock %}

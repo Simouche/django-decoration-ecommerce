@@ -1,0 +1,35 @@
+{% load static %}
+{% load i18n %}
+
+<div id="deliveries-table" class="table-responsive table--no-card m-b-40">
+    <table class="table table-data2">
+        <thead>
+        <tr>
+            <th>{% trans "number" %}</th>
+            <th>{% trans "city" %}</th>
+            <th>{% trans "phone" %}</th>
+            <th>{% trans "Items Count" %}</th>
+            <th>{% trans "Total" %}</th>
+            <th>{% trans "Delivery Fee" %}</th>
+            <th>{% trans "date" %}</th>
+            <th>{% trans "delivery date" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for delivery in deliveries %}
+            <tr class="tr-shadow">
+                <td>{{ delivery.order.number }}</td>
+                <td>{{ delivery.order.profile.city }}</td>
+                <td>{{ delivery.order.profile.phones.0 }}</td>
+                <td>{{ delivery.order.products_count }}</td>
+                <td>{{ delivery.order.total_sum }}</td>
+                <td>{{ delivery.fee }}</td>
+                <td>{{ delivery.order.created_at }}</td>
+                <td>{{ delivery.delivery_date }}</td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "pagination_layout.html" with page_obj=page_obj %}
+</div>

@@ -67,7 +67,7 @@
             {% endif %}
         </div>
     </div>
-    <div id="sales-table" class="table-responsive table-responsive-data2">
+    <div id="sales-table" class="table-responsive table--no-card m-b-40">
         <table class="table table-data2">
             <thead>
             <tr>
@@ -207,6 +207,12 @@
             url: "{% url 'ecommerce:dashboard-sales' %}",
             dataTableId: "#sales-table",
             responseObjectName: "sales"
+        })
+
+        loadByDeliveryGuy({
+            selectId: "#assign-to-select",
+            url: "{% url 'ecommerce:dashboard-sales' %}",
+            dataTableId: "#sales-table",
         })
 
         function updateOrder(id) {

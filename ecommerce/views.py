@@ -3,7 +3,6 @@ import decimal
 import json
 import random
 
-import pdfkit as pdfkit
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib.admin.views.decorators import staff_member_required
@@ -31,7 +30,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
-from ecommerce.reports import OrderToPDF, render_to_pdf, render_to_pdf2
+from ecommerce.reports import render_to_pdf, render_to_pdf2
 
 
 class Index(TemplateView):
@@ -198,6 +197,8 @@ class DashboardSalesListView(ListView):
             queryset = queryset.filter(profile__city=self.request.GET.get('city'))
         if self.request.GET.get('state', None):
             queryset = queryset.filter(profile__city__state=self.request.GET.get('state'))
+        if self.request.GET.get('delivery_guy', None):
+            queryset = queryset.filter(deliveries__delivery_guys=self.request.GET.get('delivery_guy'))
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -877,6 +878,28 @@ class CreateDeliveryGuy(CreateView):
 
 
 @method_decorator(staff_member_required, name="dispatch")
+class DeliveriesView(ListView):
+    model = Deliveries
+    template_name = "dashboard/deliveries.html"
+    queryset = Deliveries.objects.all()
+    context_object_name = "deliveries"
+
+    def get_queryset(self):
+        queryset = super(DeliveriesView, self).get_queryset()
+        queryset = queryset.filter(delivery_guys=self.kwargs.get('pk'))
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        super(DeliveriesView, self).get(request, *args, **kwargs)
+        context = self.get_context_data()
+        data = dict()
+        data['deliveries'] = render_to_string(self.template_name,
+                                              {'deliveries': context.pop('deliveries', None)},
+                                              request=request)
+        return JsonResponse(data)
+
+
+@method_decorator(staff_member_required, name="dispatch")
 class UpdateDeliveryGuy(UpdateView):
     template_name = "dashboard/update_delivery_guy.html"
     model = DeliveryGuy
@@ -1053,6 +1076,27 @@ def get_file(request, file_name):
 @method_decorator(login_required, name="dispatch")
 class ComplaintsList(ListView):
     model = Complaint
-    template_name = ""
+    template_name = "dashboard/complaints.html"
     queryset = Complaint.objects.filter(visible=True)
     paginate_by = 50
+    context_object_name = "complaints"
+    allow_empty = True
+
+    def get_queryset(self):
+        queryset = super(ComplaintsList, self).get_queryset()
+        if self.request.GET.get('type', None):
+            queryset = queryset.filter(complaint=self.request.GET.get('type', None))
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            super(ComplaintsList, self).get(request, *args, **kwargs)
+            context = self.get_context_data()
+            data = dict()
+            data['complaints'] = render_to_string('dashboard/_complaints_table.html',
+                                                  {'complaints': context.pop('complaints', None),
+                                                   'page_obj': context.pop('page_obj', None)},
+                                                  request=request)
+            return JsonResponse(data)
+        else:
+            return super(ComplaintsList, self).get(request, *args, **kwargs)

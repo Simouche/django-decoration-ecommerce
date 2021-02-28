@@ -1,80 +1,63 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load static %}
-<div id="users-table-div" class="table-responsive table-responsive-data2">
-    <table class="table table-data2" id="products-table">
-        <thead>
-        <tr>
-            <th>
-                {% trans "thumbnail" %}
-            </th>
-            <th>{% trans "name" %}</th>
-            <th>{% trans "description" %}</th>
-            <th>{% trans "price" %}</th>
-            <th>{% trans "stock" %}</th>
-            <th>{% trans "status" %}</th>
-            <th style="text-align:center">{% trans "actions" %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr class="tr-shadow">
-                <td>
-                    {% if product.main_image %}
-                        <img src="{{ product.main_image.url }}" alt="" width="36px">
-                    {% else %}
-                        <img src="{% static 'img/icon/product.png' %}" alt="" width="36px">
+
+<table class="table table-data2" id="products-table">
+    <thead>
+    <tr>
+        <th>
+            {% trans "thumbnail" %}
+        </th>
+        <th>{% trans "name" %}</th>
+        <th>{% trans "description" %}</th>
+        <th>{% trans "price" %}</th>
+        <th>{% trans "stock" %}</th>
+        <th>{% trans "status" %}</th>
+        <th style="text-align:center">{% trans "actions" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr class="tr-shadow">
+            <td>
+                {% if product.main_image %}
+                    <img src="{{ product.main_image.url }}" alt="" width="36px">
+                {% else %}
+                    <img src="{% static 'img/icon/product.png' %}" alt="" width="36px">
+                {% endif %}
+
+            </td>
+            <td>{{ product.name }}</td>
+            <td>
+                <span class="desc"> {{ product.description }}</span>
+            </td>
+            <td> {{ product.price }} {% trans 'DZD' %}</td>
+            <td>{{ product.stock }}</td>
+            <td>{% if product.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
+                <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
+            <td>
+                <div class="table-data-feature row m-0">
+                    {% if product.visible %}
+                        <div class="col-3 pl-1">
+                            <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
+                                    id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Edit">
+                                <i class="zmdi zmdi-edit"></i>
+                            </button>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>
+                        </div>
                     {% endif %}
-
-                </td>
-                <td>{{ product.name }}</td>
-                <td>
-                    <span class="desc"> {{ product.description }}</span>
-                </td>
-                <td> {{ product.price }} {% trans 'DZD' %}</td>
-                <td>{{ product.stock }}</td>
-                <td>{% if product.visible %} <span class="status--process">{% trans 'Available' %}</span> {% else %}
-                    <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
-                <td>
-                    <div class="table-data-feature row m-0">
-                        {% if product.visible %}
-                            <div class="col-3 pl-1">
-                                <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
-                                        id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Edit">
-                                    <i class="zmdi zmdi-edit"></i>
-                                </button>
-                            </div>
-                            <div class="col-3">
-                                <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                        title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
-                                    <i class="zmdi zmdi-delete"></i>
-                                </button>
-                            </div>
-                        {% endif %}
-                    </div>
-                </td>
-            </tr>
-            <tr class="spacer"></tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; {% trans 'first' %}</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">{% trans 'previous' %}</a>
-                {% endif %}
-
-                <span class="current">
-                    {% trans 'Page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}.
-                </span>
-
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">{% trans 'next' %}</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'last' %} &raquo;</a>
-                {% endif %}
-            </span>
-    </div>
-</div>
+                </div>
+            </td>
+        </tr>
+        <tr class="spacer"></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include "pagination_layout.html" with page_obj=page_obj %}

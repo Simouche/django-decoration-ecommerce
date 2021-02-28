@@ -56,10 +56,8 @@ function loadByCity({selectId, callBack, url, dataTableId, responseObjectName = 
             success: (response) => $(dataTableId).html(response[responseObjectName]),
             error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
         })
-
     })
 }
-
 
 function loadByStatusSales({selectId, callBack, url, dataTableId}) {
     $(selectId).on('change', function (object) {
@@ -76,3 +74,4 @@ function loadByStatusSales({selectId, callBack, url, dataTableId}) {
 
     })
 }
+
