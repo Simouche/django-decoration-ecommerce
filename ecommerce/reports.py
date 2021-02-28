@@ -141,8 +141,28 @@ def render_to_pdf(template_src, context_dict=None):
 
     fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
     file = fss.open(name + ".pdf")
+    file_url = "/uploads/invoices/" + name + ".pdf"
 
     return FileResponse(file, as_attachment=True, filename=name + ".pdf")
+
+
+def render_to_pdf2(template_src, context_dict=None):
+    if context_dict is None:
+        context_dict = {}
+
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("utf8")), result, link_callback=fetch_resources)
+    name = uuid.uuid4().__str__().replace("-", "")
+    with open(BASE_DIR / "uploads/invoices/" / (name + ".pdf"), "wb") as f:
+        f.write(result.getvalue())
+
+    fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
+    file = fss.open(name + ".pdf")
+    file_url = name + ".pdf"
+
+    return file_url
 
 
 def fetch_resources(uri, rel):

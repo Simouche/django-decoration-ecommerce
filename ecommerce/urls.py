@@ -17,6 +17,7 @@ urlpatterns = [
     path('dashboard/index-content/<int:pk>/update/', views.UpdateIndexContent.as_view(),
          name='dashboard-update-index-content'),
     path('dashboard/print/<int:order_id>/', views.print_view, name='print_order'),
+    path('dashboard/getfile/<str:file_name>/', views.get_file, name='get_file'),
 
     path('about/', views.Index.as_view(), name='about'),
     path('contact/', views.Index.as_view(), name='contact'),

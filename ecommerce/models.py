@@ -13,8 +13,8 @@ from ecommerce.managers import CustomCategoryManager
 
 class Category(DeletableModel):
     name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
-    name_ar = models.CharField(max_length=50, unique=True, verbose_name=_('Arabic Name'))
-    name_en = models.CharField(max_length=50, unique=True, verbose_name=_('English Name'))
+    name_ar = models.CharField(max_length=50, unique=True, verbose_name=_('Arabic Name'), null=True, blank=True)
+    name_en = models.CharField(max_length=50, unique=True, verbose_name=_('English Name'), null=True, blank=True)
 
     objects = CustomCategoryManager()
 
@@ -28,8 +28,8 @@ class Category(DeletableModel):
 
 class SubCategory(DeletableModel):
     name = models.CharField(max_length=50, verbose_name=_('Name'))
-    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'))
-    name_en = models.CharField(max_length=50, verbose_name=_('English Name'))
+    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'), null=True, blank=True)
+    name_en = models.CharField(max_length=50, verbose_name=_('English Name'), null=True, blank=True)
     category = models.ForeignKey('Category', related_name='sub_categories', verbose_name=_('Category'),
                                  on_delete=do_nothing)
 
@@ -44,17 +44,19 @@ class SubCategory(DeletableModel):
 
 class Product(DeletableModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
-    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'))
-    name_en = models.CharField(max_length=50, verbose_name=_('English Name'))
+    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'), null=True, blank=True)
+    name_en = models.CharField(max_length=50, verbose_name=_('English Name'), null=True, blank=True)
     description = models.TextField(verbose_name=_('Description'))
-    description_ar = models.TextField(verbose_name=_('Arabic Description'))
-    description_en = models.TextField(verbose_name=_('English Description'))
+    description_ar = models.TextField(verbose_name=_('Arabic Description'), null=True, blank=True)
+    description_en = models.TextField(verbose_name=_('English Description'), null=True, blank=True)
     price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
     main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')
     slider = ArrayField(models.CharField(max_length=255, ), null=True, blank=True, default=list)
-    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'))
-    colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'))
-    dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'))
+    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'), null=True,
+                                         blank=True)
+    colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'), null=True,
+                        blank=True)
+    dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'), null=True, blank=True)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
@@ -146,11 +148,13 @@ class Order(DeletableModel):
 
     @property
     def total_sum(self):
-        total = 0
-        for line in self.get_lines:
-            total += line.total
-        total += self.shipping_fee
+        sub_total = self.sub_total
+        total = sub_total + self.shipping_fee
         return total.quantize(decimal.Decimal("0.01"))
+
+    @property
+    def client_total_display(self):
+        return self.total_sum if not self.free_delivery else self.sub_total
 
     @property
     def get_lines(self):
@@ -425,6 +429,8 @@ class IndexContent(BaseModel):
     section5_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section5_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
 
+    assistance_number = models.CharField(max_length=30, verbose_name=_("Assistance Number"), null=True)
+
 
 class Partner(DeletableModel):
     name = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Name"))
@@ -436,3 +442,21 @@ class Partner(DeletableModel):
 
     def __str__(self):
         return f'{self.name}'
+
+
+class Complaint(DeletableModel):
+    COMPLAINTS = (
+        ('DP', _('Delivery Problem')),
+        ('PP', _('Product Problem')),
+        ('SP', _('Service Problem')),
+        ('O', _('Other')),
+    )
+
+    client = models.ForeignKey('accounts.User', related_name="complaints", verbose_name=_('Client'), on_delete=do_nothing)
+    complaint = models.CharField(choices=COMPLAINTS, max_length=2, verbose_name=_("Complaint"))
+    against = models.ForeignKey('DeliveryGuy', related_name="complaints", verbose_name=_('Against'),
+                                on_delete=do_nothing, null=True, blank=True)
+    comment = models.TextField(verbose_name=_('Comment'), max_length=500, null=True, blank=True)
+    treated = models.BooleanField(default=False, verbose_name=_('Treated'), blank=True)
+    order = models.ForeignKey('Order', related_name=_('complaints'), verbose_name=_('Order'), on_delete=do_nothing,
+                              null=True, blank=True)

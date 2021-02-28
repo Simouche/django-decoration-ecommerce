@@ -30,8 +30,8 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
     OrderWithLinesFormSet, CartWithLinesFormSet
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate
-from ecommerce.reports import OrderToPDF, render_to_pdf
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
+from ecommerce.reports import OrderToPDF, render_to_pdf, render_to_pdf2
 
 
 class Index(TemplateView):
@@ -55,7 +55,7 @@ class Dashboard(TemplateView):
         m_kwargs = super(Dashboard, self).get_context_data(**kwargs)
         order_line_lookup = Q(order__status__in=['CO', 'OD', 'D', 'PA'])
         order_lookup = Q(status__in=['CO', 'OD', 'D', 'PA'])
-        m_kwargs["total_users"] = User.objects.filter(user_type="C").count()
+        m_kwargs["total_users"] = User.objects.filter(user_type="C", is_active=True).count() or 0
         m_kwargs["items_sold"] = OrderLine.objects \
                                      .filter(order_line_lookup) \
                                      .aggregate(count=Sum('quantity')).get('count', 0) or 0
@@ -74,6 +74,14 @@ class Dashboard(TemplateView):
                                         quantities=Sum('orders_lines__quantity'), ) \
                                 .filter(order_count__gt=0) \
                                 .order_by("-order_count")[:10]
+        m_kwargs["callers"] = User.objects \
+                                  .filter(user_type="CA", orders__status__in=["CO", "OD", "D", "PA"]) \
+                                  .annotate(orders_count=Count("orders__id")) \
+                                  .order_by("-orders_count")[:10]
+        m_kwargs["delivery_guys"] = DeliveryGuy.objects \
+                                        .filter(deliveries__order__status__in=["D", "PA"]) \
+                                        .annotate(orders_count=Count("deliveries")) \
+                                        .order_by("-orders_count")[:10]
         return m_kwargs
 
 
@@ -988,9 +996,9 @@ def assign_orders_to_delivery_guy(request):
             'delivery_guy': delivery_guy,
             'total': total
         }
-        print(context)
-        pdf = render_to_pdf('dashboard/roadmap_pdf_template.html', context)
-        return pdf
+        pdf = render_to_pdf2('dashboard/roadmap_pdf_template.html', context)
+        response = JsonResponse({"url": pdf})
+        return response
     return JsonResponse({"status": 'Fail'})
 
 
@@ -1032,3 +1040,19 @@ def print_view(request, order_id):
         pdf = render_to_pdf('dashboard/invoice_pdf_template.html', {'order': order})
 
         return pdf
+
+
+@login_required
+def get_file(request, file_name):
+    if request.method == "GET":
+        fss = FileSystemStorage(BASE_DIR / "uploads/invoices")
+        file = fss.open(file_name)
+        return FileResponse(file, as_attachment=True, filename=file_name)
+
+
+@method_decorator(login_required, name="dispatch")
+class ComplaintsList(ListView):
+    model = Complaint
+    template_name = ""
+    queryset = Complaint.objects.filter(visible=True)
+    paginate_by = 50

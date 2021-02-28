@@ -1,0 +1,92 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock styles %}
+
+{% block content %}
+    <h3 class="title-5 m-b-35">{% trans "Sales" %}</h3>
+    <div class="table-data__tool">
+        <div class="table-data__tool-left">
+            <div class="rs-select2--light rs-select2--md">
+                <select id="status-select" class="js-select2" name="group">
+                    <option value="" selected="selected">{% trans "Type" %}</option>
+                    <option value="DP">{% trans 'Delivery Problem' %}</option>
+                    <option value="PP">{% trans 'Product Problem' %}</option>
+                    <option value="SP">{% trans 'Service Problem' %}</option>
+                    <option value="O">{% trans 'Other' %}</option>
+                </select>
+                <div class="dropDownSelect2"></div>
+            </div>
+        </div>
+    </div>
+    <div id="sales-table" class="table-responsive table-responsive-data2">
+        <table class="table table-data2">
+            <thead>
+            <tr>
+                <th>{% trans "client" %}</th>
+                <th>{% trans "phone" %}</th>
+                <th>{% trans "complaint" %}</th>
+                <th>{% trans "order" %}</th>
+                <th>{% trans "against" %}</th>
+                <th>{% trans "comment" %}</th>
+                <th>{% trans "treated" %}</th>
+                <th>{% trans "date" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sale in sales %}
+                <tr class="tr-shadow">
+                    <td>
+                        {% if sale.status in 'CO' %}
+                            <div class="switch-wrap d-flex justify-content-between">
+                                <div class="confirm-checkbox">
+                                    <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
+                                           value="{{ sale.id }}">
+                                    <label for="checkbox{{ sale.id }}"></label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ sale.number }}</td>
+                    <td>{{ sale.profile.user.full_name }}</td>
+                    <td><span
+                            class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
+                        {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
+                    </td>
+                    <td>{{ sale.products_count }}</td>
+                    <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
+                    <td>{{ sale.created_at }}</td>
+                    <td>{{ sale.assigned_to|default:"" }}</td>
+                    <td>{{ sale.get_delivery_guy|default:"" }}</td>
+                    <td class="text-center">
+                        <span class="{% if sale.status == 'CA' %} status--denied {% else %} status--process {% endif %}">{{ sale.get_status_display }}</span>
+                    </td>
+                    <td>
+                        <div class="table-data-feature">
+                            <button onclick="showOrderDetails('{% url 'ecommerce:sales-sale-details' sale.pk %}')"
+                                    class="item" data-toggle="tooltip" data-placement="top" title="Info">
+                                <i class="fa fa-info"></i>
+                            </button>
+                            <a href="{% url 'ecommerce:print_order' sale.pk %}"
+                               class="item" data-toggle="tooltip" data-placement="top" title="Print">
+                                <i class="fas fa-print"></i>
+                            </a>
+                            {% comment %}<button type="button" class="item" data-toggle="modal" data-placement="top"
+                                    title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
+                                <i class="zmdi zmdi-delete"></i>
+                            </button>{% endcomment %}
+                        </div>
+                    </td>
+                </tr>
+                <tr class="spacer"></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "pagination_layout.html" with page_obj=page_obj %}
+    </div>
+
+{% endblock %}

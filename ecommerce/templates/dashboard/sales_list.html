@@ -248,13 +248,14 @@
                 data: data,
                 success: (data) => {
                     console.log("success")
-                    {#$.ajax({#}
-                    {#    type: "GET",#}
-                    {#    url: "{% url 'ecommerce:dashboard-sales' %}",#}
-                    {#    success: (response) => {#}
-                    {#        $("#sales-table").html(response["sales"])#}
-                    {#    }#}
-                    //})
+                    window.open(`/dashboard/getfile/${data['url']}/`)
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'ecommerce:dashboard-sales' %}",
+                        success: (response) => {
+                            $("#sales-table").html(response["sales"])
+                        }
+                    })
                 }
             })
         }

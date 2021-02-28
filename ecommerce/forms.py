@@ -114,7 +114,8 @@ class CreateProductForm(BSModalModelForm):
     class Meta:
         model = Product
         fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price',
-                  'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category', 'free_delivery']
+                  'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category', 'free_delivery',
+                  'reference']
 
 
 class CreateCategoryForm(forms.ModelForm):
