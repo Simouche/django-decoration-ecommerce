@@ -141,7 +141,7 @@ class Order(DeletableModel):
 
     @property
     def sub_total(self):
-        total = 0.0
+        total = decimal.Decimal(0.0)
         for line in self.get_lines:
             total += line.total
         return total.quantize(decimal.Decimal("0.01"))
