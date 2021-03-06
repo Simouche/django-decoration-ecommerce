@@ -70,8 +70,8 @@ class Product(DeletableModel):
     def overall(self):
         return (self.ratings
                 .filter(visible=True)
-                .aggregate(overall=Avg('stars')).get('overall', 0) or decimal.Decimal(0)) \
-                   .quantize(decimal.Decimal("0.0")) or 0
+                .aggregate(overall=Avg('stars')).get('overall', 0.0) or decimal.Decimal(0.0)) \
+                   .quantize(decimal.Decimal("0.0")) or 0.0
 
     @property
     def total_reviews_count(self):
@@ -141,7 +141,7 @@ class Order(DeletableModel):
 
     @property
     def sub_total(self):
-        total = 0
+        total = 0.0
         for line in self.get_lines:
             total += line.total
         return total.quantize(decimal.Decimal("0.01"))
@@ -284,8 +284,8 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0)
-        # .quantize(decimal.Decimal('0.01'))
+        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0.0) \
+            .quantize(decimal.Decimal('0.01'))
 
     @property
     def products_count(self):
@@ -452,7 +452,8 @@ class Complaint(DeletableModel):
         ('O', _('Other')),
     )
 
-    client = models.ForeignKey('accounts.User', related_name="complaints", verbose_name=_('Client'), on_delete=do_nothing)
+    client = models.ForeignKey('accounts.User', related_name="complaints", verbose_name=_('Client'),
+                               on_delete=do_nothing)
     complaint = models.CharField(choices=COMPLAINTS, max_length=2, verbose_name=_("Complaint"))
     against = models.ForeignKey('DeliveryGuy', related_name="complaints", verbose_name=_('Against'),
                                 on_delete=do_nothing, null=True, blank=True)
