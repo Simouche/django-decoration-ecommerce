@@ -44,7 +44,8 @@
                 <div class="dropDownSelect2"></div>
             </div>
         </div>
-        <div class="table-data__tool-right">
+        {% if  user.user_type == 'A' %}
+            <div class="table-data__tool-right">
             <div class="rs-select2--light rs-select2--md">
                 <label for="assign-to-select"></label>
                 <select id="assign-to-select" class="js-select2" name="callers">
@@ -56,11 +57,11 @@
                 <div class="dropDownSelect2"></div>
             </div>
             <button type="button" onclick="assignTo()"
-                    class="au-btn au-btn-icon au-btn--green au-btn--small">{% trans 'Assign to' %}</button>
-            {% if  user.user_type == 'A' %}
-                {% url 'ecommerce:orders-history-export' as url %}
-                {% include "dashboard/exportation_layout.html" with exportation_url=url %}
-            {% endif %}
+                    class="au-btn au-btn-icon au-btn--green au-btn--small">{% trans 'Assign to' %}
+            </button>
+            {% url 'ecommerce:orders-history-export' as url %}
+            {% include "dashboard/exportation_layout.html" with exportation_url=url %}
+        {% endif %}
         </div>
     </div>
     <div id="orders-table" class="table-responsive table--no-card m-b-40">

@@ -134,6 +134,8 @@ class Order(DeletableModel):
     free_delivery = models.BooleanField(default=False, blank=True)
     assigned_to = models.ForeignKey("accounts.User", on_delete=do_nothing, null=True, blank=True,
                                     verbose_name=_("Assigned To"), related_name="orders")
+    note = models.TextField(_('Note'), max_length=1000, null=True, blank=True)
+    delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True)
 
     @property
     def products_count(self):

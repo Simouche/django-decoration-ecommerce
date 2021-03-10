@@ -12,7 +12,7 @@ from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, FileResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -46,7 +46,7 @@ class Index(TemplateView):
         return m_kwargs
 
 
-@method_decorator(super_user_required, name='dispatch')
+@method_decorator(staff_member_required, name='dispatch')
 class Dashboard(TemplateView):
     template_name = "dashboard/dashboard.html"
 
@@ -82,6 +82,19 @@ class Dashboard(TemplateView):
                                         .annotate(orders_count=Count("deliveries")) \
                                         .order_by("-orders_count")[:10]
         return m_kwargs
+
+    def get(self, request, *args, **kwargs):
+        response = super(Dashboard, self).get(request, *args, **kwargs)
+        redirect_result = self.redirect()
+        if redirect_result is not None:
+            return redirect_result
+        return response
+
+    def redirect(self):
+        if self.request.user.user_type == 'S':
+            return redirect("ecommerce:dashboard-products")
+        elif self.request.user.user_type == 'CA':
+            return redirect("ecommerce:orders-history")
 
 
 @method_decorator(staff_member_required(), name='dispatch')
@@ -259,6 +272,8 @@ class DashBoardUpdateSaleStatus(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         order = get_object_or_404(Order, pk=kwargs['pk'])
         order.progress_status()
+        if self.request.user.user_type == 'CA':
+            return reverse("ecommerce:orders-history")
         return reverse("ecommerce:dashboard-sales")
 
 
@@ -639,6 +654,12 @@ class OrderUpdateView(UpdateView, OrdersMixin):
                 lines_form.save()
         return super(OrderUpdateView, self).form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(OrderUpdateView, self).get_form_kwargs()
+        is_caller = self.request.user.user_type == 'CA'
+        kwargs['is_caller'] = is_caller
+        return kwargs
+
     def get(self, request, *args, **kwargs):
         if is_ajax(request):
             self.object = self.get_object()
@@ -1007,6 +1028,7 @@ def assign_orders_to_delivery_guy(request):
     delivery_guy_id = request.POST.get('delivery_guy')
     orders = Order.objects.filter(pk__in=ids)
     delivery_guy = get_object_or_404(DeliveryGuy, pk=delivery_guy_id)
+    Deliveries.objects.filter(order__in=orders).delete()
     deliveries = [Deliveries(order=order, delivery_guys=delivery_guy) for order in orders]
     deliveries = Deliveries.objects.bulk_create(deliveries)
     if deliveries:

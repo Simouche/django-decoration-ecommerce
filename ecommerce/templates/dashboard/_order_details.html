@@ -37,21 +37,23 @@
                 </a>
             </li>
         </ul>
-        <a class="btn w-100"
-           href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}">
-            {% if order.status == 'P' %}
-                {% trans 'Confirm' %}
-            {% elif order.status == 'CO' %}
-                {% trans 'On Delivery' %}
-            {% elif order.status == 'OD' %}
-                {% trans 'Delivered' %}
-            {% elif order.status == 'CA' %}
-                {% trans 'Canceled' %}
-            {% elif order.status == 'D' %}
-                {% trans 'Delivered' %}
-            {% else %}
-                {% trans 'Confirm' %}
-            {% endif %}
-        </a>
+        {% if user.user_type in "SA" or not "sales" in request.path %}
+            <a class="btn w-100"
+               href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}">
+                {% if order.status == 'P' %}
+                    {% trans 'Confirm' %}
+                {% elif order.status == 'CO' %}
+                    {% trans 'On Delivery' %}
+                {% elif order.status == 'OD' %}
+                    {% trans 'Delivered' %}
+                {% elif order.status == 'CA' %}
+                    {% trans 'Canceled' %}
+                {% elif order.status == 'D' %}
+                    {% trans 'Delivered' %}
+                {% else %}
+                    {% trans 'Confirm' %}
+                {% endif %}
+            </a>
+        {% endif %}
     </div>
 </div>

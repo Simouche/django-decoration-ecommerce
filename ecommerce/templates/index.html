@@ -102,7 +102,9 @@
         <!--? Visit Our Tailor Start -->
         <div class="visit-tailor-area fix">
             <!--Right Contents  -->
+            {% if content.section2_image %}
             <div class="tailor-offers" style="background-image: url({{ content.section2_image.url }});"></div>
+            {% endif %}
             <!-- left Contents -->
             <div class="tailor-details">
                 <h2>{{ content.section2_title }}</h2>

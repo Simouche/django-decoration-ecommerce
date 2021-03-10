@@ -9,6 +9,11 @@ from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, I
     DeliveryFee, DeliveryGuy, CartLine, Cart
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
+status_choices = (('P', _('Pending')),
+                  ('RC', _('RECALL')),
+                  ('CO', _('Confirmed')),
+                  ('CA', _('Canceled')),)
+
 
 class CreateOrderForm(forms.ModelForm):
     number = forms.IntegerField(widget=forms.NumberInput(
@@ -19,9 +24,19 @@ class CreateOrderForm(forms.ModelForm):
     ))
     assigned_to = forms.ModelChoiceField(queryset=User.objects.filter(user_type='CA'), required=False)
 
+    def __init__(self, is_caller=False, *args, **kwargs):
+        super(CreateOrderForm, self).__init__(*args, **kwargs)
+        if is_caller:
+            self.status_choices = (('P', _('Pending')),
+                                   ('RC', _('RECALL')),
+                                   ('CO', _('Confirmed')),
+                                   ('CA', _('Canceled')),)
+            self.fields['status'] = forms.ChoiceField(choices=self.status_choices)
+
     class Meta:
+        global status_choices
         model = Order
-        fields = ['profile', 'number', 'status', 'shipping_fee', 'free_delivery', 'assigned_to']
+        fields = ['profile', 'number', 'status', 'shipping_fee', 'free_delivery', 'note', 'delivery_date']
 
 
 class CreateOrderLineForm(forms.ModelForm):
