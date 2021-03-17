@@ -58,7 +58,7 @@ class Product(DeletableModel):
                         blank=True)
     dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'), null=True, blank=True)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
-    stock = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    stock = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
                                  verbose_name=_('Category'), null=True)
     free_delivery = models.BooleanField(default=False, verbose_name=_('Free Delivery'))
@@ -286,8 +286,8 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', 0.0) \
-            .quantize(decimal.Decimal('0.01'))
+        return (self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', decimal.Decimal(
+            0.0)) or decimal.Decimal(0.0)).quantize(decimal.Decimal('0.01'))
 
     @property
     def products_count(self):
@@ -305,7 +305,7 @@ class Cart(DeletableModel):
         return order
 
     def clear_lines(self):
-        self.lines.update(visible=False)
+        self.lines.all().delete()
 
     class Meta:
         verbose_name = _('Cart')

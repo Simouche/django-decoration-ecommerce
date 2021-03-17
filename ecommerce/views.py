@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
-from django.forms import formset_factory
+from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, FileResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -27,10 +27,11 @@ from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet
+    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
 from ecommerce.reports import render_to_pdf, render_to_pdf2
+from django.contrib import messages
 
 
 class Index(TemplateView):
@@ -430,11 +431,34 @@ class CartAddView(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class CartUpdateView(UpdateView):
-    model = CartLine
-    template_name = ""
-    context_object_name = "cart_line"
-    fields = ['product', 'cart', 'quantity']
+class CartUpdateView(FormView):
+    template_name = "cart.html"
+    form_class = CartWithLinesFormSet
+
+    def get_queryset(self):
+        return self.request.user.profile.cart.get_lines
+
+    def get_object(self):
+        return self.request.user.profile.cart
+
+    def get_form_kwargs(self):
+        kwargs = super(CartUpdateView, self).get_form_kwargs()
+        kwargs['instance'] = self.get_object()
+        if self.request.method in ['POST', 'PUT']:
+            kwargs['form_kwargs'] = dict(editable=True)
+            print(self.request.POST)
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super(CartUpdateView, self).form_valid(form)
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy("ecommerce:cart-details", kwargs={"pk": self.request.user.profile.cart.id})
+        return super(CartUpdateView, self).get_success_url()
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(self.get_success_url())
 
 
 @method_decorator(login_required, name='dispatch')
@@ -849,6 +873,14 @@ class CategoryCreateView(CreateView):
                                     request=request)
             return JsonResponse(html, safe=False)
         return super(CategoryCreateView, self).get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, _('Category created successfully'))
+        return super(CategoryCreateView, self).form_valid(form=form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Failed to create a new category.'))
+        return redirect("ecommerce:dashboard-products")
 
 
 @method_decorator(staff_member_required, name='dispatch')

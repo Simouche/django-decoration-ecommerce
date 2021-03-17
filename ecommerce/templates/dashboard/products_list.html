@@ -37,10 +37,12 @@
 
         </div>
         <div class="table-data__tool-right">
-            <button id="create-product" type="button" name="button"
-                    class="au-btn au-btn-icon au-btn--green au-btn--small">
-                <i class="zmdi zmdi-plus"></i>{% trans "product" %}
-            </button>
+            {% if request.user.user_type == 'A' %}
+                <button id="create-product" type="button" name="button"
+                        class="au-btn au-btn-icon au-btn--green au-btn--small">
+                    <i class="zmdi zmdi-plus"></i>{% trans "product" %}
+                </button>
+            {% endif %}
             {% url 'ecommerce:products-list-export' as url %}
             {% include "dashboard/exportation_layout.html" with exportation_url=url %}
         </div>
@@ -81,21 +83,23 @@
                         <span class="status--denied">{% trans 'Deleted' %}</span> {% endif %}</td>
                     <td>
                         <div class="table-data-feature row m-0">
-                            {% if product.visible %}
-                                <div class="col-3 pl-1">
-                                    <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
-                                            id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Edit">
-                                        <i class="zmdi zmdi-edit"></i>
-                                    </button>
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                            title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
-                                        <i class="zmdi zmdi-delete"></i>
-                                    </button>
-                                </div>
+                            {% if request.user.user_type == 'A' %}
+                                {% if product.visible %}
+                                    <div class="col-3 pl-1">
+                                        <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
+                                                id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Edit">
+                                            <i class="zmdi zmdi-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                                title="Delete" data-target="#deletemodal" data-id="{{ product.id }}">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </td>
@@ -161,6 +165,28 @@
         </div>
     </div>
 
+    {% if messages %}
+        {% for message in messages %}
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog modal-{% if message.tags %}{{ message.tags }}{% endif %}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="icon-box m-auto">
+                                <i class="fa {% if message.tags == 'success' %} fa-check-circle {% else %} fa-times {% endif %}"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4>{% if message.tags == 'success' %} {% trans 'Great' %}! {% else %}
+                                trans Oops!  {% endif %}</h4>
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
 {% endblock modals %}
 
 {% block scripts %}
@@ -169,16 +195,20 @@
     <script src="{% static 'js/decorationjs/category.js' %}"></script>
     {# delete product script #}
     <script type="text/javascript">
-        $('#deletemodal').on('show.bs.modal', function (event) {
-                const button = $(event.relatedTarget)
-                const id = button.data('id')
-                document.getElementById("deleteProductLink").onclick = function () {
-                    deleteProduct(`/products/${id}/delete/`, '#products-table', "{{ csrf_token }}")
-                    $('#deletemodal').modal("hide");
-                }
 
+        $(document).ready(function () {
+            $('#myModal').modal('show')
+        })
+
+        $('#deletemodal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget)
+            const id = button.data('id')
+            document.getElementById("deleteProductLink").onclick = function () {
+                deleteProduct(`/products/${id}/delete/`, '#products-table', "{{ csrf_token }}")
+                $('#deletemodal').modal("hide");
             }
-        )
+
+        })
 
         const asyncSuccessMessage1 =
             "<div " +
@@ -284,6 +314,7 @@
             url: "{% url 'ecommerce:dashboard-products' %}",
             dataTableId: '#users-table-div'
         })
+
     </script>
 
 

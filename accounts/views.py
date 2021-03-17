@@ -102,7 +102,7 @@ class ProfileUpdateView(UpdateView):
     model = Profile
     fields = ['photo', 'address', 'city', 'birth_date', 'gender']
     template_name = "profile.html"
-    success_url = "profile-update"
+    success_url = "accounts:profile-update"
     context_object_name = "profile"
 
     def get_context_data(self, **kwargs):
@@ -110,9 +110,12 @@ class ProfileUpdateView(UpdateView):
         context['orders'] = self.request.user.profile.orders.filter(visible=True)
         return context
 
+    def get_success_url(self):
+        return reverse_lazy(self.success_url, kwargs={"pk": self.object.pk})
+
     def form_valid(self, form):
         self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url(), pk=self.object.pk)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 @method_decorator(staff_member_required, name='dispatch')

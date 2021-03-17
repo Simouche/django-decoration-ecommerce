@@ -62,32 +62,32 @@ class CreateProductForm(BSModalModelForm):
         attrs={
             'placeholder': _('Arabic Name')
         }
-    ), label=_('Arabic Name'))
+    ), label=_('Arabic Name'), required=False)
 
     name_en = forms.CharField(widget=forms.TextInput(
         attrs={
             'placeholder': _('English Name')
         }
-    ), label=_('English Name'))
+    ), label=_('English Name'), required=False)
 
     description = forms.CharField(widget=forms.Textarea(
         attrs={
             'placeholder': _('French Description'),
             'size': 20
         }
-    ), label=_('French Description'))
+    ), label=_('French Description'), required=False)
 
     description_ar = forms.CharField(widget=forms.Textarea(
         attrs={
             'placeholder': _('Arabic Description')
         }
-    ), label=_('Arabic Description'))
+    ), label=_('Arabic Description'), required=False)
 
     description_en = forms.CharField(widget=forms.Textarea(
         attrs={
             'placeholder': _('English Description')
         }
-    ), label=_('English Description'))
+    ), label=_('English Description'), required=False)
 
     price = forms.DecimalField(widget=forms.NumberInput(
         attrs={
@@ -104,25 +104,25 @@ class CreateProductForm(BSModalModelForm):
         attrs={
             'placeholder': _('Discount Price')
         }
-    ), label=_('Discount Price'))
+    ), label=_('Discount Price'), required=False)
 
     colors = SimpleArrayField(base_field=forms.CharField(), widget=forms.TextInput(
         attrs={
             'placeholder': _('Available Colors')
         }
-    ), label=_('Available Colors'))
+    ), label=_('Available Colors'), required=False)
 
     dimensions = forms.CharField(widget=forms.TextInput(
         attrs={
             'placeholder': _('Dimensions')
         }
-    ), label=_('Dimensions'))
+    ), label=_('Dimensions'), required=False)
 
     stock = forms.DecimalField(widget=forms.NumberInput(
         attrs={
             'placeholder': _('Stock')
         }
-    ), label=_('Stock'))
+    ), label=_('Stock'), required=False)
 
     category = forms.ModelChoiceField(queryset=SubCategory.objects.filter(visible=True))
 
@@ -208,16 +208,16 @@ class CartLineForm(forms.ModelForm):
     quantity = forms.DecimalField()
     total = forms.DecimalField(required=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, editable=False, **kwargs):
         initial = kwargs.get('initial', {})
         initial['price'] = kwargs.get('instance').product.price
         initial['total'] = kwargs.get('instance').total
         kwargs['initial'] = initial
         super(CartLineForm, self).__init__(*args, **kwargs)
-        self.fields['product'].widget.attrs['readonly'] = True
-        self.fields['product'].widget.attrs['disabled'] = 'disabled'
-        self.fields['price'].widget.attrs['readonly'] = True
-        self.fields['total'].widget.attrs['readonly'] = True
+        if not editable:
+            self.fields['product'].widget.attrs['disabled'] = 'disabled'
+            self.fields['price'].widget.attrs['readonly'] = True
+            self.fields['total'].widget.attrs['readonly'] = True
 
     class Meta:
         model = CartLine

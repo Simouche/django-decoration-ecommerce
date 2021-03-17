@@ -33,7 +33,8 @@
             <div class="container">
                 <div class="cart_inner">
                     <div class="table-responsive">
-                        <form action="">
+                        <form id="cart-form" action="{% url 'ecommerce:cart-update' %}" method="POST">
+                            {% csrf_token %}
                             <table class="table">
                                 {{ cart_lines.management_form }}
                                 {% for form in cart_lines.forms %}
@@ -49,7 +50,7 @@
                                         </thead>
                                         <tbody>
                                     {% endif %}
-                                    <tr class="formset_row">
+                                    <tr class="formset_row formset_row-{{ cart_lines.prefix }}">
                                         {% for field in form.visible_fields %}
                                             <td>
                                                 {# Include the hidden fields in the form #}
@@ -64,6 +65,8 @@
                                                         <div class="product_count">
                                                             {% render_field field class="input-number" %}
                                                         </div>
+                                                    {% elif field.name == "product" %}
+                                                        {% render_field field class="form-control browser-default products" %}
                                                     {% else %}
                                                         {% render_field field class="form-control browser-default" %}
                                                     {% endif %}
@@ -81,8 +84,10 @@
                                 {% endfor %}
                                 <tr class="bottom_button">
                                     <td>
-                                        <a class="btn" href="#">{% trans 'Update Cart' %}</a>
+                                        <button onclick="submitCartUpdate()"
+                                                class="btn">{% trans 'Update Cart' %}</button>
                                     </td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -96,6 +101,7 @@
                                     <td>
                                         <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr class="shipping_area">
                                     <td></td>
@@ -106,6 +112,7 @@
                                     <td>
                                         <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -116,6 +123,7 @@
                                     <td>
                                         <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -142,7 +150,22 @@
 {% endblock content %}
 
 {% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.min.js"></script>
+
     <script type="text/javascript">
 
+        $(document).ready(function () {
+            $('.formset_row-{{ cart_lines.prefix }}').formset({
+                {#addText: '<i class="fas fa-plus"></i> add another',#}
+                deleteText: '<i class="fas fa-trash" style="color: #0b0b0b"></i>',
+                prefix: '{{ form.prefix }}',
+            })
+        })
+
+        function submitCartUpdate() {
+            $("#cart-form").submit(function (event) {
+                $(".products").prop('disabled', '')
+            })
+        }
     </script>
 {% endblock scripts %}

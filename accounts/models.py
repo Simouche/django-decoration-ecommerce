@@ -134,7 +134,7 @@ class State(BaseModel):
     region = models.ForeignKey('Region', verbose_name=_('Region'), on_delete=do_nothing, null=True, blank=True)
 
     def __str__(self):
-        return "{0} {1}".format(self.matricule, self.name)
+        return self.name
 
     class Meta:
         verbose_name = _('State')
@@ -149,7 +149,7 @@ class City(BaseModel):
     state = models.ForeignKey('State', on_delete=models.DO_NOTHING, related_name='cities', verbose_name=_('State'))
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.state}"
 
     class Meta:
         verbose_name = _('City')

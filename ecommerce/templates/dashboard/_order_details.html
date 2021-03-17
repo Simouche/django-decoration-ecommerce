@@ -29,14 +29,14 @@
             </li>
             <li>
                 <a href="#">{% trans 'Shipping' %} {% if order.free_delivery %}({% trans 'free' %}) {% endif %}
-                    <span>{{ order.shipping_fee }}</span>
-                </a>
+                    <span>{{ order.shipping_fee }}</span></a>
             </li>
             <li>
-                <a href="#">{% trans 'Total' %}<span>{{ order.total_sum }} {% trans 'DZD' %}</span>
-                </a>
+                <a href="#">{% trans 'Total' %}<span>{{ order.total_sum }} {% trans 'DZD' %}</span></a>
             </li>
         </ul>
+        {% trans "Not Provided" as not_provided %}
+        <p>{% trans "Address:" %} {{ order.profile.address|default:not_provided }}, {{ order.profile.city|default:not_provided }}.</p>
         {% if user.user_type in "SA" or not "sales" in request.path %}
             <a class="btn w-100"
                href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}">

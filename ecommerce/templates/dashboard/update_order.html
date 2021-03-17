@@ -36,8 +36,7 @@
                         {% render_field field %}
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {% endwith %}
-
-                {% else %}
+                {% elif not field.name == 'assigned_to' %}
                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {% with WIDGET_ERROR_CLASS='is-invalid' %}
                         {% render_field field class="form-control browser-default" %}

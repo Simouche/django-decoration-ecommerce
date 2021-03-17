@@ -52,6 +52,7 @@ urlpatterns = [
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
     path('cart/details/', views.RedirectToCartDetailsView.as_view(), name='cart-details-redirect'),
     path('cart/details/<int:pk>/', views.CartDetailsView.as_view(), name='cart-details'),
+    path('cart/update/', views.CartUpdateView.as_view(), name='cart-update'),
     path('cart/checkout/', views.CartCashOutToOrder.as_view(), name='cart-check-out'),
     path('cart/checkout/confirm/', views.CartCheckOutConfirm.as_view(), name='cart-check-out-confirm'),
     path('cart/get-count/', views.get_cart_count, name='cart-get-count'),
