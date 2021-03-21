@@ -110,7 +110,11 @@
                                         <h5>{% trans 'Delivery' %}</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                                        {% if cart.is_free_delivery %}
+                                            <h5>{% trans 'Free Delivery' %}</h5>
+                                        {% else %}
+                                            <h5>{% trans 'Will be calculated later.' %}</h5>
+                                        {% endif %}
                                     </td>
                                     <td></td>
                                 </tr>

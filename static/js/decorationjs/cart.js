@@ -21,10 +21,11 @@ function addToCart(productID, quantity, cart, url, csrf) {
         data: formData,
         success: function (data, textStatus, jqXHR) {
             refreshCart()
-            alert("added to cart!")
+            $("#successModal").modal()
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(errorThrown)
         }
     })
 }
+

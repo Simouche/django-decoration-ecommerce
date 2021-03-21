@@ -362,7 +362,6 @@ class DeleteProduct(RedirectView):
     pattern_name = "ecommerce:dashboard-products"
 
     def get_redirect_url(self, *args, **kwargs):
-        print(self.request.POST.get('csrfmiddlewaretoken'))
         product = get_object_or_404(Product, pk=kwargs['pk'])
         product.delete()
         return reverse("ecommerce:dashboard-products")
@@ -419,7 +418,6 @@ class CartAddView(CreateView):
         return initials
 
     def form_invalid(self, form):
-        print(form.errors)
         return super(CartAddView, self).form_invalid(form=form)
 
     def form_valid(self, form):
@@ -446,7 +444,6 @@ class CartUpdateView(FormView):
         kwargs['instance'] = self.get_object()
         if self.request.method in ['POST', 'PUT']:
             kwargs['form_kwargs'] = dict(editable=True)
-            print(self.request.POST)
         return kwargs
 
     def form_valid(self, form):
@@ -609,7 +606,6 @@ class OrdersChangeHistory(ListView):
                 queryset = queryset.filter(new_status=self.search_form.cleaned_data.get('to_status'))
             return queryset
         else:
-            print(self.search_form.errors)
             return queryset
 
     def get_queryset(self):
@@ -835,19 +831,14 @@ class CategoriesListView(ListView):
         queries = self.request.GET
         if queries.get('category', None):
             self.queryset = self.queryset.filter(category__category_id=queries.get('category'))
-            print('category', self.queryset)
         if queries.get('sub_category', None):
             self.queryset = self.queryset.filter(category_id=queries.get('sub_category'))
-            print('sub_category', self.queryset)
         if queries.get('color', 'any') and not queries.get('color', 'any') == 'any':
             self.queryset = self.queryset.filter(colors__contains=[queries.get('color')])
-            print('color', self.queryset)
         if queries.get('from', 0):
             self.queryset = self.queryset.filter(price__gte=queries.get('from', 0))
-            print('from', self.queryset)
         if queries.get('to', 0):
             self.queryset = self.queryset.filter(price__lte=queries.get('to', 0))
-            print('to', self.queryset)
         if queries.get('period'):
             integer = 0
             # todo implement the cases for this
@@ -1039,7 +1030,6 @@ class DetailDeliveryCompany(DetailView):
         if is_ajax(request):
             self.object = self.get_object()
             context = self.get_context_data(object=self.object)
-            print(context)
             html = render_to_string(self.template_name,
                                     context=context,
                                     request=request)

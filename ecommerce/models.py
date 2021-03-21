@@ -257,7 +257,7 @@ class Like(DeletableModel):
         verbose_name_plural = _('Likes')
 
 
-class CartLine(DeletableModel):
+class CartLine(BaseModel):
     product = models.ForeignKey('Product', related_name='cart_lines', on_delete=do_nothing)
     cart = models.ForeignKey('Cart', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
@@ -295,7 +295,7 @@ class Cart(DeletableModel):
 
     @property
     def get_lines(self):
-        return self.lines.filter(visible=True)
+        return self.lines.all()
 
     def confirm(self):
         order = Order.objects.create(profile=self.profile)
@@ -306,6 +306,13 @@ class Cart(DeletableModel):
 
     def clear_lines(self):
         self.lines.all().delete()
+
+    @property
+    def is_free_delivery(self):
+        for line in self.get_lines:
+            if line.product.free_delivery:
+                return True
+        return False
 
     class Meta:
         verbose_name = _('Cart')

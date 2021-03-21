@@ -327,6 +327,35 @@
 
 {% endblock content %}
 
+{% block modals %}
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="staticModalLabel"
+         aria-hidden="true"
+         data-backdrop="static">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticModalLabel">{% trans "Success" %}!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% trans "The product has been added to your cart!" %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="goToCart()" type="button"
+                            class="btn btn-secondary" style="background: grey"
+                            data-dismiss="modal">{% trans "Go to cart" %}</button>
+                    <button type="button" class="btn btn-primary" onclick="goToSimilarCategory()"
+                            data-dismiss="modal">{% trans "Continue shopping" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block scripts %}
     <script src="{% static 'js/decorationjs/favorite.js' %}"></script>
 
@@ -343,5 +372,14 @@
             {% endif %}
         }
         inputNumber($('#quantity'));
+
+        function goToCart() {
+            window.location.href = "{% url "ecommerce:cart-details-redirect" %}"
+        }
+
+        function goToSimilarCategory() {
+            window.location.href = "{% url "ecommerce:categories-list" %}?category={{ product.category_id }}"
+        }
+
     </script>
 {% endblock scripts %}
