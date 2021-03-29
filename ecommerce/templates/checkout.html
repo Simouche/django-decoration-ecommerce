@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load widget_tweaks %}
+
+{% block styles %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+{% endblock %}
+
 {% block content %}
     <main>
         <!--? slider Area Start-->
@@ -40,7 +46,54 @@
                 </div>{% endcomment %}
                 <div class="billing_details">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-6">
+                            <h3>{% trans 'Billing Details' %}</h3>
+                            <form id="billing-form" class="row contact_form"
+                                  action="{% url 'ecommerce:cart-check-out-confirm' %}" method="post">
+                                {% csrf_token %}
+
+                                {% if form.non_field_errors %}
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {% for error in form.non_field_errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% endif %}
+
+                                <div class="col-md-6 form-group p_star">
+                                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                                    {% render_field form.first_name class="form-control" %}
+                                </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                                    {% render_field form.last_name class="form-control" %}
+                                </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+                                    {% render_field form.phone_number class="form-control" %}
+                                </div>
+                                <div class="col-md-6 form-group p_star">
+                                    <label for="{{ form.email_address.id_for_label }}">{{ form.email_address.label }}</label>
+                                    {% render_field form.email_address class="form-control" %}
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+                                    {% render_field form.city class="country_select select2" %}
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                                    {% render_field form.address class="form-control" %}
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <label for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
+                                    {% render_field form.note class="form-control" %}
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-6">
                             <div class="order_box">
                                 <h2>{% trans 'Your Order' %}</h2>
                                 <ul class="list">
@@ -64,7 +117,11 @@
                                     </li>
                                     <li>
                                         <a href="#">{% trans 'Shipping' %}
-                                            <span>$50.00</span>
+                                            {% if cart.is_free_delivery %}
+                                                <span>{% trans 'Free Delivery' %}</span>
+                                            {% else %}
+                                                <span>{% trans 'Will be calculated later.' %}</span>
+                                            {% endif %}
                                         </a>
                                     </li>
                                     <li>
@@ -73,13 +130,13 @@
                                     </li>
                                 </ul>
                                 <div class="creat_account checkout-cap">
-                                    <input type="checkbox" id="f-option8" name="selector"/>
+                                    <input type="checkbox" id="f-option8" name="selector" checked="checked"/>
                                     <label for="f-option8">{% trans 'I’ve read and accept the' %} <a
                                             href="#">{% trans 'terms & conditions*' %}</a>
                                     </label>
                                 </div>
-                                <a class="btn w-100"
-                                   href="{% url 'ecommerce:cart-check-out-confirm' %}">{% trans 'Confirm' %}</a>
+                                <button id="confirm-button" class="btn w-100"
+                                        onclick="submitForm()">{% trans 'Confirm' %}</button>
                             </div>
                         </div>
                     </div>
@@ -90,7 +147,7 @@
 
     </main>
     <footer>
-        <{% include 'footer.html' %}
+        {% include 'footer.html' %}
     </footer>
     <!-- Scroll Up -->
     <div id="back-top">
@@ -98,3 +155,18 @@
     </div>
 
 {% endblock content %}
+
+{% block scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        function submitForm() {
+            $("#billing-form").submit()
+        }
+
+        $(document).ready(function () {
+            $('.select2').select2()
+            const element = $('.select2-selection').eq(1)
+            element.addClass("d-none")
+        })
+    </script>
+{% endblock scripts %}

@@ -27,7 +27,7 @@ from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm
+    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
 from ecommerce.reports import render_to_pdf, render_to_pdf2
@@ -469,6 +469,27 @@ class CartRemoveView(DeleteView):
 class CartCashOutToOrder(TemplateView):
     template_name = "checkout.html"
 
+    def get_context_data(self, **kwargs):
+        form = CheckoutForm(initial=self.get_initial())
+        return super(CartCashOutToOrder, self).get_context_data(form=form, **kwargs)
+
+    def get_initial(self) -> dict:
+        first_name = self.request.user.first_name
+        last_name = self.request.user.last_name
+        phone_number = self.request.user.phones[0]
+        email_address = self.request.user.email
+        city = self.request.user.profile.city
+        address = self.request.user.profile.address
+        initials = dict(
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            email_address=email_address,
+            city=city,
+            address=address,
+        )
+        return initials
+
 
 @method_decorator(login_required, name='dispatch')
 class CartCheckOutConfirm(RedirectView):
@@ -476,8 +497,13 @@ class CartCheckOutConfirm(RedirectView):
     permanent = True
 
     def get_redirect_url(self, *args, **kwargs):
-        order = self.request.user.profile.cart.confirm()
-        url = reverse(self.pattern_name, kwargs={'pk': order.id})
+        form = CheckoutForm(self.request.POST)
+        if form.is_valid():
+            form.save(self.user)
+            order = self.request.user.profile.cart.confirm(note=form.cleaned_data.get('note'))
+            url = reverse(self.pattern_name, kwargs={'pk': order.id})
+            return url
+        url = reverse("ecommerce:cart-check-out")
         return url
 
 
@@ -877,7 +903,7 @@ class CategoryCreateView(CreateView):
 @method_decorator(staff_member_required, name='dispatch')
 class SubCategoryCreateView(CreateView):
     model = SubCategory
-    template_name = "dashboard/create_category.html"
+    template_name = "dashboard/create_sub_category.html"
     form_class = CreateSubCategoryForm
     success_url = reverse_lazy("ecommerce:dashboard-products")
 

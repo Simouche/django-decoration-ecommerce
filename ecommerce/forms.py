@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
-from accounts.models import User
+from accounts.models import User, City
 from base_backend import _
 from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
     DeliveryFee, DeliveryGuy, CartLine, Cart
@@ -230,3 +230,23 @@ CartWithLinesFormSet = inlineformset_factory(parent_model=Cart, model=CartLine, 
 class AssignOrdersToCallerForm(forms.Form):
     orders = forms.ModelMultipleChoiceField(queryset=Order.objects.filter(visible=True))
     caller = forms.ModelChoiceField(queryset=User.objects.filter(user_type='CA'))
+
+
+class CheckoutForm(forms.Form):
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    phone_number = forms.CharField(required=False)
+    email_address = forms.EmailField(required=False)
+    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False)
+    address = forms.CharField(widget=forms.Textarea(), required=False)
+    note = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _("Note")}), required=False)
+
+    def save(self, user: User):
+        cd = self.cleaned_data
+        user.first_name = cd.get('first_name', user.first_name)
+        user.last_name = cd.get('last_name', user.last_name)
+        user.phones.append(cd.get('phone_number'))
+        user.profile.city = cd.get('city', user.profile.city)
+        user.profile.address = cd.get('address', user.profile.address)
+        user.profile.save()
+        user.save()

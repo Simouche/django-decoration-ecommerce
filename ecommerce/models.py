@@ -181,6 +181,8 @@ class Order(DeletableModel):
             self.status = 'OD'
         elif self.status == 'OD':
             self.status = 'D'
+        elif self.status == 'D':
+            self.status = 'PA'
         else:
             self.status = 'CO'
         self.save()
@@ -297,8 +299,8 @@ class Cart(DeletableModel):
     def get_lines(self):
         return self.lines.all()
 
-    def confirm(self):
-        order = Order.objects.create(profile=self.profile)
+    def confirm(self, note=None):
+        order = Order.objects.create(profile=self.profile, note=note)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()
