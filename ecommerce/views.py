@@ -499,7 +499,7 @@ class CartCheckOutConfirm(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST)
         if form.is_valid():
-            form.save(self.user)
+            form.save(self.request.user)
             order = self.request.user.profile.cart.confirm(note=form.cleaned_data.get('note'))
             url = reverse(self.pattern_name, kwargs={'pk': order.id})
             return url
