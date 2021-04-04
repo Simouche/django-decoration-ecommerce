@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load static %}
 
+
 {% block content %}
     <!-- DATA TABLE -->
     <h3 class="title-5 m-b-35">{% trans "Users" %}</h3>
@@ -10,7 +11,7 @@
         <div class="table-data__tool-left">
             <div class="rs-select2--light rs-select2--md">
                 <label for="group-select"></label>
-                <select id="group-select" class="js-select2" name="group">
+                <select id="group-select" class="" name="group">
                     <option value="" selected="selected">{% trans "Groups" %}</option>
                     {% for group in groups %}
                         <option value="{{ group.id }}">{{ group.name }}</option>

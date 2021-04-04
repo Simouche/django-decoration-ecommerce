@@ -4,6 +4,7 @@
 {% load static %}
 
 {% block styles %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <style>
         .image-upload > input {
             display: none;
@@ -81,8 +82,8 @@
                                                             {% render_field field class="single-input" %}
                                                         </div>
                                                     {% elif field.name == 'city' %}
-                                                        <div class="rs-select2--light rs-select2--md">
-                                                            {% render_field field class="js-select2 single-input" %}
+                                                        <div class="row col-md-4">
+                                                            {% render_field field class="select2 single-input" %}
                                                             <div class="dropDownSelect2"></div>
                                                         </div>
                                                     {% else %}
@@ -161,3 +162,26 @@
         </section>
     </main>
 {% endblock content %}
+
+{% block modals %}
+    {# order details modal #}
+    <div class="modal fade" tabindex="-1" role="dialog" id="order-details-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content pb-5"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/decorationjs/order.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.select2').select2()
+            const element = $('.select2-selection').eq(1)
+            element.addClass("d-none")
+        })
+    </script>
+{% endblock %}

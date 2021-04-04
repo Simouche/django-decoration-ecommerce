@@ -9772,36 +9772,36 @@ b, sup, sub, u, del {
 }
 
 
-.footer-wrapper .footer-area.footer-padding .container-fluid{
+.footer-wrapper .footer-area.footer-padding .container-fluid {
     padding-left: 8em;
     padding-right: 8em;
 }
 
-.header-area .main-header{
+.header-area .main-header {
     min-height: 99px;
 }
 
-.slicknav_nav{
+.slicknav_nav {
     background: #061b45;
 }
 
-.slicknav_nav a{
+.slicknav_nav a {
     color: white;
 }
 
-.slicknav_menu{
+.slicknav_menu {
     padding-top: 45px;
 }
 
-.slicknav_nav .form-box{
+.slicknav_nav .form-box {
     padding-left: 15px;
 }
 
-.slicknav_nav .account-btn.pl-5{
+.slicknav_nav .account-btn.pl-5 {
     padding: 7px 10px !important;
 }
 
-.slicknav_nav .form-box input{
+.slicknav_nav .form-box input {
     background: none;
     padding: 0px;
     width: 100%;
@@ -9841,19 +9841,19 @@ b, sup, sub, u, del {
     bottom: 70px;
 }
 
-.select-bf{
+.select-bf {
     color: black;
 }
 
-@media only screen and (max-width: 768px){
-    .footer-wrapper .footer-area.footer-padding .container-fluid{
+@media only screen and (max-width: 768px) {
+    .footer-wrapper .footer-area.footer-padding .container-fluid {
         padding-left: 15px;
         padding-right: 15px;
     }
 }
 
-@media only screen and (max-width: 1024px){
-    .header-right1 .card-stor span{
+@media only screen and (max-width: 1024px) {
+    .header-right1 .card-stor span {
         left: 20px;
         bottom: 30px
     }

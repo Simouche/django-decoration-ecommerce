@@ -149,7 +149,7 @@ class City(BaseModel):
     state = models.ForeignKey('State', on_delete=models.DO_NOTHING, related_name='cities', verbose_name=_('State'))
 
     def __str__(self):
-        return f"{self.name} {self.state}"
+        return f"{self.state} {self.name}"
 
     class Meta:
         verbose_name = _('City')

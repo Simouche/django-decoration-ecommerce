@@ -293,7 +293,7 @@ class Cart(DeletableModel):
 
     @property
     def products_count(self):
-        return self.get_lines.aggregate(count=Sum('quantity')).get('count', 0)
+        return self.get_lines.aggregate(count=Sum('quantity')).get('count', 0) or 0
 
     @property
     def get_lines(self):
