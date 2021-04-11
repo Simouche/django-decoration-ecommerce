@@ -48,6 +48,8 @@ urlpatterns = [
     path('dashboard/delivery/companies/<int:pk>/', views.DetailDeliveryCompany.as_view(),
          name="delivery-companies-detail"),
 
+    path('dashboard/recap/delivery-man/', views.DeliveryManRecapView.as_view(), name='delivery-man-recap'),
+
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('cart/remove/', views.CartRemoveView.as_view(), name='cart-remove'),
     path('cart/details/', views.RedirectToCartDetailsView.as_view(), name='cart-details-redirect'),

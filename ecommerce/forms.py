@@ -250,3 +250,17 @@ class CheckoutForm(forms.Form):
         user.profile.address = cd.get('address', user.profile.address)
         user.profile.save()
         user.save()
+
+
+class OrderFilter(forms.Form):
+    FROM_STATUS_CHOICES = (('', _('Status')),) + Order.status_choices
+
+    order = forms.ModelChoiceField(queryset=Order.objects.all(), required=False, empty_label=_('Numero'))
+    user = forms.ModelChoiceField(queryset=User.objects.filter(user_type='C'), required=False, empty_label=_('Client'))
+    delivery_man = forms.ModelChoiceField(queryset=DeliveryGuy.objects.all(), required=False,
+                                          empty_label=_('Delivery Man'))
+    caller = forms.ModelChoiceField(queryset=User.objects.exclude(user_type='C'), required=False,
+                                    empty_label=_('Caller'))
+    start_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
+    end_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
+    status = forms.ChoiceField(choices=FROM_STATUS_CHOICES, required=False)

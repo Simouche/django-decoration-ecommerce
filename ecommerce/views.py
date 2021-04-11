@@ -2,6 +2,7 @@ import csv
 import decimal
 import json
 import random
+from django.utils import timezone
 
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
@@ -25,9 +26,10 @@ from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import get_current_week, is_ajax, handle_uploaded_file
 from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
+from ecommerce import current_week_range
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm
+    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm, OrderFilter
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
 from ecommerce.reports import render_to_pdf, render_to_pdf2
@@ -66,6 +68,28 @@ class Dashboard(TemplateView):
             .filter(order_line_lookup) \
             .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0.0) \
             .quantize(decimal.Decimal("0.01"))
+        m_kwargs['total_orders'] = Order.objects.all().count()
+        m_kwargs['total_delivered_orders'] = Order.objects.filter(status__in=['D', 'PA']).count()
+        m_kwargs['total_canceled_orders'] = Order.objects.filter(status__in=['CA', 'RE', 'R']).count()
+        m_kwargs['total_on_delivery_orders'] = Order.objects.filter(status='OD').count()
+
+        m_kwargs['week_orders'] = Order.objects.filter(created_at__range=current_week_range()).count()
+        m_kwargs['week_delivered_orders'] = Order.objects.filter(created_at__range=current_week_range(),
+                                                                 status__in=['D', 'PA']).count()
+        m_kwargs['week_pending_orders'] = Order.objects.filter(created_at__range=current_week_range(),
+                                                               status='P').count()
+        m_kwargs['week_on_delivery_orders'] = Order.objects.filter(created_at__range=current_week_range(),
+                                                                   status='OD').count()
+
+        today = timezone.now()
+        m_kwargs['today_orders'] = Order.objects.filter(created_at=today).count()
+        m_kwargs['today_delivered_orders'] = Order.objects.filter(created_at=today,
+                                                                  status__in=['D', 'PA']).count()
+        m_kwargs['today_pending_orders'] = Order.objects.filter(created_at=today,
+                                                                status='P').count()
+        m_kwargs['today_on_delivery_orders'] = Order.objects.filter(created_at=today,
+                                                                    status='OD').count()
+
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
@@ -201,8 +225,31 @@ class DashboardSalesListView(ListView):
         "cities": City.objects.all(),
     }
 
+    def filter_queryset(self, queryset) -> QuerySet:
+        self.form = OrderFilter(self.request.GET)
+        if self.form.is_valid():
+            cd = self.form.cleaned_data
+            if cd.get('order'):
+                queryset = queryset.filter(pk=cd.get('order').pk)
+            if cd.get('user'):
+                queryset = queryset.filter(profile__user=cd.get('user'))
+            if cd.get('delivery_man'):
+                queryset = queryset.filter(deliveries__delivery_guys=cd.get('delivery_man'))
+            if cd.get('caller'):
+                queryset = queryset.filter(assigned_to=cd.get('caller'))
+            if cd.get('start_date'):
+                queryset = queryset.filter(created_at__gte=cd.get('start_date'))
+            if cd.get('end_date'):
+                queryset = queryset.filter(created_at__lte=cd.get('end_date'))
+            if cd.get('status'):
+                queryset = queryset.filter(status=cd.get('status'))
+            return queryset
+        else:
+            return queryset
+
     def get_queryset(self):
         queryset = super(DashboardSalesListView, self).get_queryset()
+        queryset = self.filter_queryset(queryset)
         if self.request.user.user_type in ['CA', 'S']:
             queryset = queryset.filter(assigned_to=self.request.user)
         if self.request.GET.get('status', None):
@@ -211,16 +258,16 @@ class DashboardSalesListView(ListView):
             queryset = queryset.filter(profile__city=self.request.GET.get('city'))
         if self.request.GET.get('state', None):
             queryset = queryset.filter(profile__city__state=self.request.GET.get('state'))
-        if self.request.GET.get('delivery_guy', None):
-            queryset = queryset.filter(deliveries__delivery_guys=self.request.GET.get('delivery_guy'))
-        return queryset
+
+        return queryset.distinct()
 
     def get_context_data(self, **kwargs):
-        context = super(DashboardSalesListView, self).get_context_data(**kwargs)
-        context['agents'] = DeliveryGuy.objects.all()
-        return context
+        agents = DeliveryGuy.objects.all()
+
+        return super(DashboardSalesListView, self).get_context_data(agents=agents, form=self.form, **kwargs)
 
     def get(self, request, *args, **kwargs):
+        self.form = OrderFilter()
         if is_ajax(request):
             super(DashboardSalesListView, self).get(request, *args, **kwargs)
             context = self.get_context_data()
@@ -1170,3 +1217,8 @@ class ComplaintsList(ListView):
             return JsonResponse(data)
         else:
             return super(ComplaintsList, self).get(request, *args, **kwargs)
+
+
+@method_decorator(login_required, name='dispatch')
+class DeliveryManRecapView(TemplateView):
+    template_name = "dashboard/delivery_man_recap.html"

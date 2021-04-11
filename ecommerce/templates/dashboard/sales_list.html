@@ -66,6 +66,23 @@
             {% endif %}
         </div>
     </div>
+    <div class=" table-data__tool">
+        <form method="GET" action="{% url 'ecommerce:dashboard-sales' %}" class="form-inline">
+            {% for field in form %}
+                {% if field.name in 'order user delivery_man caller' %}
+                    <div class="rs-select2--light rs-select2--md px-1 pr-1">
+                        {% render_field field class="js-select2 form-control browser-default" %}
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                {% else %}
+                    <div class="form-group px-1 pr-1">
+                        {% render_field field class="form-control browser-default" %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <input type="submit" value="{% trans 'Filter' %}" class="au-btn--submit ml-1">
+        </form>
+    </div>
     <div id="sales-table" class="table-responsive table--no-card m-b-40">
         <table class="table table-data2">
             <thead>

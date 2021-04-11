@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="overview-wrap">
-                <h2 class="title-1">{% trans "Overview" %}</h2>
+                <h2 class="title-1">{% trans "Overall Time Overview" %}</h2>
             </div>
         </div>
     </div>
@@ -75,6 +75,242 @@
                         <div class="text">
                             <h2>{{ earnings }}</h2>
                             <span>{% trans 'Total Earnings' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart4"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-t-25">
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c1">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ total_orders }}</h2>
+                            <span>{% trans "Total Orders" %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart1"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c2">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ total_delivered_orders }}</h2>
+                            <span>{% trans 'Total Delivered Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart2"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c3">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-calendar-note"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ total_canceled_orders }}</h2>
+                            <span>{% trans 'Total Canceled Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart3"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c4">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-money"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ total_on_delivery_orders }}</h2>
+                            <span>{% trans 'Total On Delivery Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart4"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="overview-wrap">
+                <h2 class="title-1">{% trans "This Week" %}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row m-t-25">
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c1">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ week_orders }}</h2>
+                            <span>{% trans "Total Orders" %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart1"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c2">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ week_delivered_orders }}</h2>
+                            <span>{% trans 'Delivered Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart2"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c3">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-calendar-note"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ week_pending_orders }}</h2>
+                            <span>{% trans 'Pending Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart3"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c4">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-money"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ week_on_delivery_orders }}</h2>
+                            <span>{% trans 'On Delivery Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart4"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="overview-wrap">
+                <h2 class="title-1">{% trans "Today" %}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row m-t-25">
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c1">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-account-o"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ today_orders }}</h2>
+                            <span>{% trans "Total Orders" %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart1"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c2">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ today_delivered_orders }}</h2>
+                            <span>{% trans 'Delivered Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart2"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c3">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-calendar-note"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ today_pending_orders }}</h2>
+                            <span>{% trans 'Pending Orders' %}</span>
+                        </div>
+                    </div>
+                    <div class="overview-chart">
+                        {#                        <canvas id="widgetChart3"></canvas>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="overview-item overview-item--c4">
+                <div class="overview__inner">
+                    <div class="overview-box clearfix">
+                        <div class="icon">
+                            <i class="zmdi zmdi-money"></i>
+                        </div>
+                        <div class="text">
+                            <h2>{{ today_on_delivery_orders }}</h2>
+                            <span>{% trans 'On Delivery Orders' %}</span>
                         </div>
                     </div>
                     <div class="overview-chart">
