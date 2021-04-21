@@ -160,7 +160,7 @@ class Order(DeletableModel):
 
     @property
     def get_lines(self):
-        return self.lines.filter()
+        return self.lines.all()
 
     @staticmethod
     def generate_number():

@@ -39,12 +39,12 @@
                                         <i class="zmdi zmdi-edit"></i>
                                     </button>
                                 </div>
-                                {% comment %}<div class="col-3">
-                                    <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                            title="Delete" data-target="#deletemodal" data-id="{{ guy.id }}">
-                                        <i class="zmdi zmdi-delete"></i>
+                                <div class="col-3">
+                                    <button onclick="showRecap('{% url 'ecommerce:delivery-man-recap' %}?pk={{ guy.pk }}')"
+                                            class="item" data-toggle="tooltip" data-placement="top" title="Recap">
+                                        <i class="fa fa-sync"></i>
                                     </button>
-                                </div>{% endcomment %}
+                                </div>
                             {% endif %}
                             <button onclick="showDeliveries('{% url 'ecommerce:delivery-agents-deliveries' guy.pk %}')"
                                     class="item" data-toggle="tooltip" data-placement="top" title="Orders">
@@ -64,7 +64,7 @@
 
 {% block modals %}
 
-    {# create user modal#}
+    {# create company modal#}
     <div class="modal fade" tabindex="-1" role="dialog" id="create-company-modal"
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg " role="document">
@@ -77,6 +77,14 @@
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" id="create-company-content"></div>
+        </div>
+    </div>
+
+    {# show delivery guy recap #}
+    <div class="modal fade" tabindex="-1" role="dialog" id="show-recap-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="show-recap-content"></div>
         </div>
     </div>
 
@@ -120,6 +128,20 @@
                 success: (response) => {
                     const mModal = $("#show-deliveries-modal")
                     mModal.find(".modal-content").html(response['deliveries'])
+                    mModal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+
+        function showRecap(url) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: (response) => {
+                    const mModal = $("#show-recap-modal")
+                    mModal.find(".modal-content").html(response['html'])
                     mModal.modal()
                 },
                 error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)

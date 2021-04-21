@@ -1222,3 +1222,30 @@ class ComplaintsList(ListView):
 @method_decorator(login_required, name='dispatch')
 class DeliveryManRecapView(TemplateView):
     template_name = "dashboard/delivery_man_recap.html"
+
+    def get_context_data(self, **kwargs):
+        delivery_man = get_object_or_404(DeliveryGuy, pk=self.request.GET.get('pk'))
+        deliveries = delivery_man.deliveries.filter(order__status__in=['OD'])
+        orders = [delivery.order for delivery in deliveries]
+        products = {}
+        for order in orders:
+            for line in order.get_lines:
+                product = line.product.name
+                if products.get(product, None):
+                    products[product] += line.quantity
+                else:
+                    products[product] = line.quantity
+
+        delivered_deliveries = delivery_man.deliveries.filter(order__status__in=['D'])
+        money = 0
+        for delivery in delivered_deliveries:
+            money += delivery.order.total_sum
+
+        return super(DeliveryManRecapView, self).get_context_data(money=money, products=products,
+                                                                  delivery_man=delivery_man, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        data = dict()
+        data['html'] = render_to_string(self.template_name, context, request=request)
+        return JsonResponse(data)

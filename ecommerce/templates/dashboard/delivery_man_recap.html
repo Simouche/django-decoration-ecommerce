@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load i18n %}
+{% load static %}
 
-</body>
-</html>
+<div id="companies-table-div" class="table-responsive table--no-card m-b-40">
+    <table class="table table-data2" id="companies-table">
+        <thead>
+        <tr>
+            <th>{% trans "produit" %}</th>
+            <th>{% trans "quantity" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tuple in products.items %}
+            <tr class="tr-shadow">
+                <td>{{ tuple.0 }}</td>
+                <td>{{ tuple.1 }}</td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h4>Caisse livreur: {{ money }} DZD</h4>
+</div>
+
