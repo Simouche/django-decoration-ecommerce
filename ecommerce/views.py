@@ -242,7 +242,7 @@ class DashboardSalesListView(ListView):
             if cd.get('end_date'):
                 queryset = queryset.filter(created_at__lte=cd.get('end_date'))
             if cd.get('status'):
-                queryset = queryset.filter(status=cd.get('status'))
+                queryset = queryset.filter(status__in=cd.get('status'))
             return queryset
         else:
             return queryset

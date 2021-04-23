@@ -253,7 +253,7 @@ class CheckoutForm(forms.Form):
 
 
 class OrderFilter(forms.Form):
-    FROM_STATUS_CHOICES = (('', _('Status')),) + Order.status_choices
+    FROM_STATUS_CHOICES = Order.status_choices
 
     order = forms.ModelChoiceField(queryset=Order.objects.all(), required=False, empty_label=_('Numero'))
     user = forms.ModelChoiceField(queryset=User.objects.filter(user_type='C'), required=False, empty_label=_('Client'))
@@ -263,4 +263,4 @@ class OrderFilter(forms.Form):
                                     empty_label=_('Caller'))
     start_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
     end_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
-    status = forms.ChoiceField(choices=FROM_STATUS_CHOICES, required=False)
+    status = forms.MultipleChoiceField(choices=FROM_STATUS_CHOICES, required=False)
