@@ -120,7 +120,11 @@
                                             {% if cart.is_free_delivery %}
                                                 <span>{% trans 'Free Delivery' %}</span>
                                             {% else %}
-                                                <span>{% trans 'Will be calculated later.' %}</span>
+                                                {% if cart.delivery_fee != -1 %}
+                                                    <span>{{ cart.delivery_fee }} DZD</span>
+                                                {% else %}
+                                                    <span>{% trans 'Will be calculated later.' %}</span>
+                                                {% endif %}
                                             {% endif %}
                                         </a>
                                     </li>

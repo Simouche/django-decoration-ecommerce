@@ -99,7 +99,7 @@
                                         <h5>{% trans 'Subtotal' %}</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                                        <h5>{{ cart.sub_total }} {% trans 'DZD' %}</h5>
                                     </td>
                                     <td></td>
                                 </tr>
@@ -113,7 +113,11 @@
                                         {% if cart.is_free_delivery %}
                                             <h5>{% trans 'Free Delivery' %}</h5>
                                         {% else %}
-                                            <h5>{% trans 'Will be calculated later.' %}</h5>
+                                            {% if cart.delivery_fee != -1 %}
+                                                <span>{{ cart.delivery_fee }} DZD</span>
+                                            {% else %}
+                                                <a href="{% url 'accounts:profile-details' user.profile.id %}"></a>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                     <td></td>

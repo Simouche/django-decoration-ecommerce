@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
 from django.db.models import Model, Sum, Avg, F
 
+from accounts.models import State
 from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
 from base_backend import _
 
@@ -56,6 +57,7 @@ class Product(DeletableModel):
                                          blank=True)
     colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'), null=True,
                         blank=True)
+    weight = models.PositiveIntegerField(verbose_name=_('Weight'), default=100)
     dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'), null=True, blank=True)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
@@ -166,6 +168,10 @@ class Order(DeletableModel):
     def generate_number():
         from random import randint
         return randint(11111, 99999)
+
+    @property
+    def get_delivery_fee(self):
+        return self.shipping_fee if not self.free_delivery else 0
 
     def __str__(self):
         return '{}'.format(self.number)
@@ -288,8 +294,18 @@ class Cart(DeletableModel):
 
     @property
     def total_sum(self):
-        return (self.lines.aggregate(total=Sum(F('quantity') * F('product__price'))).get('total', decimal.Decimal(
-            0.0)) or decimal.Decimal(0.0)).quantize(decimal.Decimal('0.01'))
+        lines_total = self.sub_total
+        delivery_fee = self.delivery_fee
+        if delivery_fee != -1:
+            total = lines_total + decimal.Decimal(self.delivery_fee)
+        else:
+            total = lines_total
+        return total
+
+    @property
+    def sub_total(self):
+        return (self.lines.aggregate(total=Sum(F('quantity') * F('product__price')))
+                .get('total', decimal.Decimal(0.0)) or decimal.Decimal(0.0)).quantize(decimal.Decimal('0.01'))
 
     @property
     def products_count(self):
@@ -299,8 +315,41 @@ class Cart(DeletableModel):
     def get_lines(self):
         return self.lines.all()
 
+    @property
+    def is_free_delivery(self) -> bool:
+        return self.get_lines.filter(product__free_delivery=True).exists()
+
+    @property
+    def delivery_fee(self):
+        if self.profile.city:
+            alger_blida_boumerdes = list(State.objects.filter(name__in=['Alger', 'Blida', 'Boumerdes'])
+                                         .values_list('id', flat=True))
+            if self.profile.city.state_id in alger_blida_boumerdes:
+                settings = Settings.objects.all().first()
+                if settings:
+                    return settings.standard_delivery_fee
+                return 500
+
+            total_weight = 0
+            for line in self.get_lines:
+                total_weight += line.product.weight
+
+            fee = 0
+            delivery_company = DeliveryCompany.objects.get(default=True)
+            state_fee = DeliveryFee.objects.get(state=self.profile.city.state_id, company=delivery_company)
+            base_fee = state_fee.fee if state_fee else 500
+            extra_weight = total_weight - delivery_company.weight_threshold
+            if extra_weight > 0:
+                fee = base_fee + (extra_weight * 100)
+            else:
+                fee = base_fee
+
+            return fee
+        else:
+            return -1
+
     def confirm(self, note=None):
-        order = Order.objects.create(profile=self.profile, note=note)
+        order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()
@@ -348,6 +397,7 @@ class DeliveryCompany(DeletableModel):
     company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
     weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
     base_fee = models.PositiveIntegerField(verbose_name=_('Base Fee'), default=0, blank=True)
+    default = models.BooleanField(default=False, verbose_name=_('Default'))
 
     @property
     def delivery_guys_count(self) -> int:
@@ -472,3 +522,9 @@ class Complaint(DeletableModel):
     treated = models.BooleanField(default=False, verbose_name=_('Treated'), blank=True)
     order = models.ForeignKey('Order', related_name=_('complaints'), verbose_name=_('Order'), on_delete=do_nothing,
                               null=True, blank=True)
+
+
+class Settings(BaseModel):
+    standard_delivery_fee = models.PositiveIntegerField(verbose_name=_('Standard Delivery Fee'),
+                                                        help_text=_('Delivery feed for Alger, Boumerdes and Blida'),
+                                                        default=500)
