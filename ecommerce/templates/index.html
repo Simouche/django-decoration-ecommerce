@@ -13,7 +13,7 @@
             <div class="slider-active">
                 <div class="single-slider hero-overly1 slider-height d-flex align-items-center slider-bg1"
                      style="background-image: url({{ content.card1_image.url }})">
-                    <div class="container"  >
+                    <div class="container">
                         <div class="row">
                             <div class="col-xl-6 col-lg-8 col-md-8">
                                 {% if content.card1_visibility %}
@@ -304,9 +304,9 @@
                                     </div>
                                     <!-- social -->
                                     <div class="footer-social">
-                                        <a href="#"><i class="fab fa-twitter"></i></a>
-                                        <a href="https://www.facebook.com/Samy-Deco-100478425194898"><i class="fab fa-facebook-f"></i></a>
-                                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                        <a href="{{ content.twitter }}"><i class="fab fa-twitter"></i></a>
+                                        <a href="{{ content.facebook }}"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="{{ content.Instagram }}"><i class="fab fa-instagram"></i></a>
                                     </div>
                                 </div>
                             </div>

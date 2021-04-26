@@ -104,15 +104,13 @@
             {% for sale in sales %}
                 <tr class="tr-shadow {% if not sale.visible or sale.status == 'CA' %} deleted {% elif sale.status == 'PA' %}  completed {% endif %}">
                     <td>
-                        {% if sale.status in 'CO' %}
-                            <div class="switch-wrap d-flex justify-content-between">
-                                <div class="confirm-checkbox">
-                                    <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
-                                           value="{{ sale.id }}">
-                                    <label for="checkbox{{ sale.id }}"></label>
-                                </div>
+                        <div class="switch-wrap d-flex justify-content-between">
+                            <div class="confirm-checkbox">
+                                <input name="selected-orders" type="checkbox" id="checkbox{{ sale.id }}"
+                                       value="{{ sale.id }}">
+                                <label for="checkbox{{ sale.id }}"></label>
                             </div>
-                        {% endif %}
+                        </div>
                     </td>
                     <td>{{ sale.number }}</td>
                     <td>{{ sale.profile.user.full_name }}</td>

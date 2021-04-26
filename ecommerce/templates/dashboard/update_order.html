@@ -58,6 +58,7 @@
         {{ lines_form.management_form }}
 
         {% for form in lines_form.forms %}
+            {{ form.id }}
             {% if forloop.first %}
                 <thead>
                 <tr>
@@ -66,8 +67,9 @@
                     {% endfor %}
                 </tr>
                 </thead>
+                <tbody>
             {% endif %}
-            <tr class="formset_row">
+            <tr class="form-group formset_row-{{ lines_form.prefix }}">
                 {% for field in form.visible_fields %}
                     <td>
                         {# Include the hidden fields in the form #}
@@ -91,6 +93,7 @@
                 {% endfor %}
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 
 
@@ -100,11 +103,13 @@
     </div>
 </form>
 
-<script src="{% static 'formset/jquery.formset.js' %}"></script>
+{#<script src="{% static 'formset/jquery.formset.js' %}"></script>#}
 <script type="text/javascript">
-    $('.formset_row').formset({
-        addText: 'add',
-        deleteText: 'remove',
-        prefix: 'lines'
-    });
+    $(document).ready(function () {
+        $('.formset_row-{{ lines_form.prefix }}').formset({
+            addText: '<i class="fas fa-plus" style="color: #0b0b0b"></i> <span style="color: #0b0b0b">{% trans 'Add' %}</span>',
+            deleteText: '<i class="fas fa-trash" style="color: #0b0b0b"></i>',
+            prefix: '{{ lines_form.prefix }}'
+        })
+    })
 </script>

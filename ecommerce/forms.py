@@ -48,7 +48,7 @@ class CreateOrderLineForm(forms.ModelForm):
 
 
 OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, form=CreateOrderLineForm,
-                                              can_delete=True, extra=0)
+                                              can_delete=True)
 
 
 class CreateProductForm(BSModalModelForm):
@@ -178,7 +178,8 @@ class IndexContentForm(forms.ModelForm):
                   'card1_image', 'section1_title', 'section1_text', 'section1_categories', 'section2_title',
                   'section2_text', 'section2_button_text', 'section2_image', 'section3_title', 'section3_text',
                   'section3_button_text', 'section4_title', 'section4_text', 'section4_button_text', 'section4_image1',
-                  'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', ]
+                  'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', 'facebook', 'Instagram',
+                  'twitter']
 
 
 class CreateDeliveryCompanyForm(forms.ModelForm):

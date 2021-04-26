@@ -217,7 +217,7 @@ class DashboardSalesListView(ListView):
     model = Order
     context_object_name = "sales"
     page_kwarg = 'page'
-    paginate_by = 50
+    paginate_by = 25
     allow_empty = True
     ordering = ['-created_at']
     extra_context = {

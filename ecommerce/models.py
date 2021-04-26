@@ -126,6 +126,7 @@ class Order(DeletableModel):
                       ('D', _('Delivered')),
                       ('R', _('Returned')),
                       ('RE', _('Refund')),
+                      ('DE', _('Delayed')),
                       ('PA', _('Paid')),
                       ('NA', _('No Answer')),)
 
@@ -491,6 +492,10 @@ class IndexContent(BaseModel):
     section5_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
 
     assistance_number = models.CharField(max_length=30, verbose_name=_("Assistance Number"), null=True)
+
+    facebook = models.URLField(verbose_name='Facebook', default="https://www.facebook.com", blank=True)
+    Instagram = models.URLField(verbose_name='Instagram', default="https://www.instagram.com", blank=True)
+    twitter = models.URLField(verbose_name='Twitter', default="https://www.twitter.com", blank=True)
 
 
 class Partner(DeletableModel):
