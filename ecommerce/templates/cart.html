@@ -116,7 +116,7 @@
                                             {% if cart.delivery_fee != -1 %}
                                                 <span>{{ cart.delivery_fee }} DZD</span>
                                             {% else %}
-                                                <a href="{% url 'accounts:profile-details' user.profile.id %}"></a>
+                                                <a href="{% url 'accounts:profile-details' user.profile.id %}">{% trans "Please add an address to your profile." %}</a>
                                             {% endif %}
                                         {% endif %}
                                     </td>
@@ -129,7 +129,7 @@
                                         <h5>{% trans 'Total' %}</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ cart.total_sum }} {% trans 'DZD' %}</h5>
+                                        <h5>{{ cart.total_sum_client }} {% trans 'DZD' %}</h5>
                                     </td>
                                     <td></td>
                                 </tr>

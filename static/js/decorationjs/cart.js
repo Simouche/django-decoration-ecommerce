@@ -13,8 +13,9 @@ function refreshCart() {
 
 refreshCart()
 
-function addToCart(productID, quantity, cart, url, csrf) {
-    const formData = {product: productID, quantity: quantity, cart: cart, csrfmiddlewaretoken: csrf}
+function addToCart(productID, quantity, cart, url, csrf, size) {
+    const formData = {product: productID, quantity: quantity, cart: cart, csrfmiddlewaretoken: csrf, size}
+    console.log(formData)
     $.ajax({
         url: url,
         type: "POST",

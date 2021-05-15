@@ -51,7 +51,7 @@
                     <div class="col-lg-5 offset-lg-1">
                         <div class="s_product_text">
                             <h3>{{ product.name }}</h3>
-                            <h2>{{ product.price }} {% trans 'DZD' %}</h2>
+                            <h2><span id="price-value">{{ product.get_price }}</span> {% trans 'DZD' %}</h2>
                             <ul class="list">
                                 <li>
                                     <a class="active"
@@ -66,16 +66,37 @@
                             <p>
                                 {{ product.description }}
                             </p>
+
+                            {% if product.has_sizes %}
+                                <h4>{% trans 'Size' %}</h4>
+                                <div>
+                                    <label for="sizes">{% comment %}{% trans 'Size' %}{% endcomment %}</label>
+                                    <select name="sizes" id="sizes" onchange="onSizeChanged()">
+                                        {% for size in product.sizes.all %}
+                                            <option value="{{ size.id }}" data-price="{{ size.price }}"
+                                                    data-available="{{ size.available }}"
+                                                    {% if size.default %}selected{% endif %}>{{ size.size }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+
+
+
                             <div class="card_area">
+                                <h4>{% trans 'Quantity' %}</h4>
                                 <div class="product_count d-inline-block">
                                     <span class="inumber-decrement"> <i class="ti-minus"></i></span>
                                     <input id="quantity" class="input-number" type="text" value="0">
                                     <span class="number-increment"> <i class="ti-plus"></i></span>
                                 </div>
-                                <div class="add_to_cart">
-                                    <button id="add-to-cart" href="#" class="btn">{% trans 'add to cart' %}</button>
-                                    {# <button id="add-to-fav" class="like_us"><i class="ti-heart"></i></button>#}
-                                </div>
+                            </div>
+
+
+                            <div class="add_to_cart">
+                                <button id="add-to-cart" onclick="addToCartEvent()"
+                                        class="btn">{% trans 'add to cart' %}</button>
+                                {# <button id="add-to-fav" class="like_us"><i class="ti-heart"></i></button>#}
                             </div>
                         </div>
                     </div>
@@ -91,11 +112,11 @@
                         <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
                            aria-selected="true">{% trans 'Description' %}</a>
                     </li>
-                    <li class="nav-item">
+                    {% comment %}                    <li class="nav-item">
                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
                            aria-controls="profile"
                            aria-selected="false">{% trans 'Specification' %}</a>
-                    </li>
+                    </li>{% endcomment %}
                     <li class="nav-item">
                         <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
                            aria-controls="review"
@@ -108,7 +129,7 @@
                             {{ product.description }}
                         </p>
                     </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    {% comment %} <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         {# TODO implement this #}
                         <div class="table-responsive">
                             <table class="table">
@@ -180,7 +201,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div>{% endcomment %}
                     <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
                         <div class="row">
                             <div class="col-lg-6">
@@ -363,14 +384,21 @@
         {% comment %}document.getElementById('add-to-fav').onclick = function () {
             addToFavorite({{ product.id }}, {{ request.user.profile.id }}, '{% url 'ecommerce:favorite-add' %}', '{{ csrf_token }}')
         }{% endcomment %}
-        document.getElementById('add-to-cart').onclick = function () {
+
+        function addToCartEvent() {
             {% if not user.is_authenticated %}
                 window.location.href = "{% url 'ecommerce:login-required' %}?next={{ request.path }}"
             {% else %}
+                {% if product.has_sizes %}
+                    const size = $('#sizes').val()
+                {% else %}
+                    const size = null
+                {% endif %}
                 addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
-                    '{{ csrf_token }}')
+                    '{{ csrf_token }}', size)
             {% endif %}
         }
+
         inputNumber($('#quantity'));
 
         function goToCart() {
@@ -379,6 +407,12 @@
 
         function goToSimilarCategory() {
             window.location.href = "{% url "ecommerce:categories-list" %}?category={{ product.category_id }}"
+        }
+
+        function onSizeChanged() {
+            const size = $("#sizes option:selected")
+            const price = size.data("price")
+            $('#price-value').text(price)
         }
 
     </script>

@@ -29,7 +29,7 @@ from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce import current_week_range
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm, OrderFilter
+    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm, OrderFilter, ProductWithSizesFormset
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
 from ecommerce.reports import render_to_pdf, render_to_pdf2
@@ -378,19 +378,39 @@ class CreateProduct(BSModalCreateView):
     template_name = "dashboard/create_product.html"
     success_message = _("Product Created Successfully")
     form_class = CreateProductForm
+    formset_class = ProductWithSizesFormset
+
+    def get_form(self, form_class=None):
+        """Return an instance of the form to be used in this view."""
+        if form_class is None:
+            form_class = self.get_form_class()
+        kwargs = self.get_form_kwargs()
+        if kwargs.get('request'):
+            kwargs.pop('request')
+        self.formset = self.formset_class(**kwargs)
+        return form_class(**self.get_form_kwargs())
+
+    def get_context_data(self, **kwargs):
+        kwargs = super(CreateProduct, self).get_context_data()
+        formset = self.formset
+        kwargs['formset'] = formset
+        return kwargs
 
     def form_valid(self, form):
+        response = super(CreateProduct, self).form_valid(form=form)
         if self.request.POST.get('asyncUpdate', None):
-            response = super(CreateProduct, self).form_valid(form=form)
             images = self.request.FILES.getlist('media')
             for image in images:
                 path = MEDIA_ROOT + '/products/' + image.name
                 url = MEDIA_URL + 'products/' + image.name
                 handle_uploaded_file(image, path)
                 self.object.slider.append(url)
-            self.object.save()
-            return response
-        return super(CreateProduct, self).form_valid(form)
+        self.object.save()
+        if self.formset.is_valid():
+            with transaction.atomic():
+                self.formset.instance = self.object
+                self.formset.save()
+        return response
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -401,6 +421,31 @@ class UpdateProduct(BSModalUpdateView):
     success_url = reverse_lazy("ecommerce:dashboard-products")
     template_name = "dashboard/create_product.html"
     queryset = Product.objects.filter(visible=True)
+    formset_class = ProductWithSizesFormset
+
+    def get_context_data(self, **kwargs):
+        kwargs = super(UpdateProduct, self).get_context_data()
+        formset = self.formset
+        kwargs['formset'] = formset
+        return kwargs
+
+    def get_form(self, form_class=None):
+        """Return an instance of the form to be used in this view."""
+        if form_class is None:
+            form_class = self.get_form_class()
+        kwargs = self.get_form_kwargs()
+        if kwargs.get('request'):
+            kwargs.pop('request')
+        self.formset = self.formset_class(**kwargs)
+        return form_class(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        response = super(UpdateProduct, self).form_valid(form)
+        if self.formset.is_valid():
+            with transaction.atomic():
+                self.formset.instance = self.object
+                self.formset.save()
+        return response
 
 
 @method_decorator(staff_member_required, name='dispatch')
@@ -455,7 +500,7 @@ class CartDetailsView(DetailView, CartMixin):
 class CartAddView(CreateView):
     model = CartLine
     context_object_name = "cart_line"
-    fields = ['product', 'cart', 'quantity']
+    fields = ['product', 'cart', 'quantity', 'size']
     template_name = "index.html"
     success_url = reverse_lazy('ecommerce:index')
 

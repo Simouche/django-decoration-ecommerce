@@ -48,13 +48,53 @@
                     <label for="media">{% trans 'Other Pictures' %}</label>
                     {% with WIDGET_ERROR_CLASS='is-invalid' %}
                         <input accept="image/*" class="form-control browser-default" type="file" name="media" id="media"
-                                   multiple="multiple" {% comment %}onchange="readURL2(this);"{% endcomment %}/>
+                               multiple="multiple" {% comment %}onchange="readURL2(this);"{% endcomment %}/>
                         <div style="margin:2px" class="otherimg"></div>
                     {% endwith %}
                 </div>
             {% endif %}
         {% endfor %}
     </div>
+    <h3>{% trans "Sizes" %}</h3>
+    <table class="table">
+        {{ formset.management_form }}
+        {% for form in formset.forms %}
+            {{ form.id }}
+            {% if forloop.first %}
+                <thead>
+                <tr>
+                    {% for field in form.invisible_fields %}
+                        <th>{{ field.label|capfirst }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+            {% endif %}
+            <tr class="form-group formset_row-{{ formset.prefix }}">
+                {% for field in form.visible_fields %}
+                    <td>
+                        {% if forloop.first %}
+                            {% for hidden_field in form.hidden_fields %}
+                                {{ hidden_field }}
+                            {% endfor %}
+                        {% endif %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                            {% render_field field class='form-control browser-default' %}
+                        {% endwith %}
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback help-block">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
@@ -62,3 +102,13 @@
     </div>
 
 </form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.formset_row-{{ formset.prefix }}').formset({
+            addText: '<i class="fas fa-plus" style="color: #0b0b0b"></i> <span style="color: #0b0b0b">{% trans 'Add' %}</span>',
+            deleteText: '<i class="fas fa-trash" style="color: #0b0b0b"></i>',
+            prefix: '{{ formset.prefix }}'
+        })
+    })
+</script>

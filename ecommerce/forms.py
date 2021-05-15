@@ -6,7 +6,7 @@ from django.forms import inlineformset_factory
 from accounts.models import User, City
 from base_backend import _
 from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
-    DeliveryFee, DeliveryGuy, CartLine, Cart
+    DeliveryFee, DeliveryGuy, CartLine, Cart, ProductSize
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
 status_choices = (('P', _('Pending')),
@@ -54,40 +54,16 @@ OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLin
 class CreateProductForm(BSModalModelForm):
     name = forms.CharField(widget=forms.TextInput(
         attrs={
-            'placeholder': _('French Name'),
+            'placeholder': _('Name'),
         }
-    ), label=_('French Name'))
-
-    name_ar = forms.CharField(widget=forms.TextInput(
-        attrs={
-            'placeholder': _('Arabic Name')
-        }
-    ), label=_('Arabic Name'), required=False)
-
-    name_en = forms.CharField(widget=forms.TextInput(
-        attrs={
-            'placeholder': _('English Name')
-        }
-    ), label=_('English Name'), required=False)
+    ), label=_('Name'))
 
     description = forms.CharField(widget=forms.Textarea(
         attrs={
-            'placeholder': _('French Description'),
+            'placeholder': _('Description'),
             'size': 20
         }
-    ), label=_('French Description'), required=False)
-
-    description_ar = forms.CharField(widget=forms.Textarea(
-        attrs={
-            'placeholder': _('Arabic Description')
-        }
-    ), label=_('Arabic Description'), required=False)
-
-    description_en = forms.CharField(widget=forms.Textarea(
-        attrs={
-            'placeholder': _('English Description')
-        }
-    ), label=_('English Description'), required=False)
+    ), label=_('Description'), required=False)
 
     price = forms.DecimalField(widget=forms.NumberInput(
         attrs={
@@ -106,18 +82,6 @@ class CreateProductForm(BSModalModelForm):
         }
     ), label=_('Discount Price'), required=False)
 
-    colors = SimpleArrayField(base_field=forms.CharField(), widget=forms.TextInput(
-        attrs={
-            'placeholder': _('Available Colors')
-        }
-    ), label=_('Available Colors'), required=False)
-
-    dimensions = forms.CharField(widget=forms.TextInput(
-        attrs={
-            'placeholder': _('Dimensions')
-        }
-    ), label=_('Dimensions'), required=False)
-
     stock = forms.DecimalField(widget=forms.NumberInput(
         attrs={
             'placeholder': _('Stock')
@@ -128,25 +92,30 @@ class CreateProductForm(BSModalModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'name_ar', 'name_en', 'description', 'description_ar', 'description_en', 'price',
-                  'main_image', 'discount_price', 'colors', 'dimensions', 'stock', 'category', 'free_delivery',
+        fields = ['name', 'description', 'price',
+                  'main_image', 'discount_price', 'stock', 'category', 'free_delivery',
                   'reference']
+
+
+ProductWithSizesFormset = inlineformset_factory(parent_model=Product, model=ProductSize,
+                                                fields=('size', 'price', 'default', 'available'), can_delete=True,
+                                                extra=1)
 
 
 class CreateCategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'name_ar', 'name_en']
+        fields = ['name', ]
 
 
 class CreateSubCategoryForm(forms.ModelForm):
     class Meta:
         model = SubCategory
-        fields = ['name', 'name_en', 'name_ar', 'category']
+        fields = ['name', 'category']
 
 
 CategoryWithSubCatsFormSet = inlineformset_factory(parent_model=Category, model=SubCategory,
-                                                   fields=['name', 'name_en', 'name_ar'], can_delete=True, extra=1)
+                                                   fields=['name', ], can_delete=True, extra=1)
 
 
 class SearchOrderStatusChangeHistory(forms.Form):
@@ -211,7 +180,7 @@ class CartLineForm(forms.ModelForm):
 
     def __init__(self, *args, editable=False, **kwargs):
         initial = kwargs.get('initial', {})
-        initial['price'] = kwargs.get('instance').product.price
+        initial['price'] = kwargs.get('instance').product_price
         initial['total'] = kwargs.get('instance').total
         kwargs['initial'] = initial
         super(CartLineForm, self).__init__(*args, **kwargs)

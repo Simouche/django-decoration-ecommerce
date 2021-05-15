@@ -13,9 +13,7 @@ from ecommerce.managers import CustomCategoryManager
 
 
 class Category(DeletableModel):
-    name = models.CharField(max_length=50, unique=True, verbose_name=_('Name'))
-    name_ar = models.CharField(max_length=50, unique=True, verbose_name=_('Arabic Name'), null=True, blank=True)
-    name_en = models.CharField(max_length=50, unique=True, verbose_name=_('English Name'), null=True, blank=True)
+    name = models.CharField(max_length=50, verbose_name=_('Name'))
 
     objects = CustomCategoryManager()
 
@@ -23,21 +21,21 @@ class Category(DeletableModel):
         return self.name
 
     class Meta:
+        ordering = ('name',)
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
 
 
 class SubCategory(DeletableModel):
     name = models.CharField(max_length=50, verbose_name=_('Name'))
-    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'), null=True, blank=True)
-    name_en = models.CharField(max_length=50, verbose_name=_('English Name'), null=True, blank=True)
     category = models.ForeignKey('Category', related_name='sub_categories', verbose_name=_('Category'),
-                                 on_delete=do_nothing)
+                                 on_delete=cascade)
 
     def __str__(self):
         return self.name
 
     class Meta:
+        ordering = ('name',)
         unique_together = (('name', 'category'),)
         verbose_name = _('Sub-Category')
         verbose_name_plural = _('Sub-Categories')
@@ -45,20 +43,13 @@ class SubCategory(DeletableModel):
 
 class Product(DeletableModel):
     name = models.CharField(max_length=50, verbose_name=_('name'))
-    name_ar = models.CharField(max_length=50, verbose_name=_('Arabic Name'), null=True, blank=True)
-    name_en = models.CharField(max_length=50, verbose_name=_('English Name'), null=True, blank=True)
     description = models.TextField(verbose_name=_('Description'))
-    description_ar = models.TextField(verbose_name=_('Arabic Description'), null=True, blank=True)
-    description_en = models.TextField(verbose_name=_('English Description'), null=True, blank=True)
     price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
     main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')
     slider = ArrayField(models.CharField(max_length=255, ), null=True, blank=True, default=list)
-    discount_price = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Discount Price'), null=True,
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Discount Price'), null=True,
                                          blank=True)
-    colors = ArrayField(base_field=models.CharField(max_length=20), verbose_name=_('Available Colors'), null=True,
-                        blank=True)
     weight = models.PositiveIntegerField(verbose_name=_('Weight'), default=100)
-    dimensions = models.CharField(max_length=30, verbose_name=_('Dimensions'), null=True, blank=True)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
@@ -87,16 +78,42 @@ class Product(DeletableModel):
                 self.ratings.filter(visible=True, stars__in=[3.1, 4]).count(),
                 self.ratings.filter(visible=True, stars__in=[4.1, 5.1]).count()]
 
+    @property
+    def get_price(self):
+        if self.has_sizes:
+            return self.sizes.filter(default=True).first().price
+        return self.price
+
+    @property
+    def has_sizes(self):
+        return self.sizes.all().count() != 0
+
     class Meta:
+        ordering = ('name',)
         verbose_name = _('Product')
         verbose_name_plural = _('Products')
+
+
+class ProductSize(BaseModel):
+    size = models.CharField(verbose_name=_('Size'), max_length=255)
+    price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name=_('Product'), related_name="sizes")
+    default = models.BooleanField(default=True)
+    available = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "{} = {}".format(self.size, self.price)
+
+    class Meta:
+        verbose_name = _('Size')
+        verbose_name_plural = _('Sizes')
 
 
 class OrderLine(BaseModel):
     product = models.ForeignKey('Product', related_name='orders_lines', on_delete=do_nothing)
     order = models.ForeignKey('Order', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
-    on_discount = models.BooleanField(default=False, verbose_name=_('On Discount'))
+    size = models.ForeignKey('ProductSize', on_delete=models.SET_NULL, verbose_name=_('Size'), null=True, blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.quantity, self.product)
@@ -270,9 +287,18 @@ class CartLine(BaseModel):
     product = models.ForeignKey('Product', related_name='cart_lines', on_delete=do_nothing)
     cart = models.ForeignKey('Cart', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
+    size = models.ForeignKey('ProductSize', on_delete=models.SET_NULL, verbose_name=_('Size'), null=True, blank=True)
 
     def _total_sum(self):
+        if self.size:
+            return self.size.price * self.quantity
         return self.product.price * self.quantity
+
+    @property
+    def product_price(self):
+        if self.size:
+            return self.size.price
+        return self.product.price
 
     @property
     def total_sum(self):
@@ -283,7 +309,7 @@ class CartLine(BaseModel):
         return self.total_sum
 
     def to_order_line(self, order):
-        return OrderLine.objects.create(product=self.product, quantity=self.quantity, order=order)
+        return OrderLine.objects.create(product=self.product, quantity=self.quantity, order=order, size=self.size)
 
     class Meta:
         verbose_name = _('Cart Line')
@@ -304,9 +330,17 @@ class Cart(DeletableModel):
         return total
 
     @property
+    def total_sum_client(self):
+        if self.is_free_delivery:
+            return self.sub_total
+        return self.total_sum
+
+    @property
     def sub_total(self):
-        return (self.lines.aggregate(total=Sum(F('quantity') * F('product__price')))
-                .get('total', decimal.Decimal(0.0)) or decimal.Decimal(0.0)).quantize(decimal.Decimal('0.01'))
+        sum = 0
+        for line in self.get_lines:
+            sum += line.total
+        return sum
 
     @property
     def products_count(self):
@@ -358,13 +392,6 @@ class Cart(DeletableModel):
 
     def clear_lines(self):
         self.lines.all().delete()
-
-    @property
-    def is_free_delivery(self):
-        for line in self.get_lines:
-            if line.product.free_delivery:
-                return True
-        return False
 
     class Meta:
         verbose_name = _('Cart')
