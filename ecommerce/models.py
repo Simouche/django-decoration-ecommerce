@@ -120,6 +120,8 @@ class OrderLine(BaseModel):
 
     @property
     def total(self):
+        if self.size:
+            return (self.size.price * self.quantity).quantize(decimal.Decimal("0.01"))
         return (self.product.price * self.quantity).quantize(decimal.Decimal("0.01"))
 
     class Meta:
@@ -173,6 +175,12 @@ class Order(DeletableModel):
         sub_total = self.sub_total
         total = sub_total + self.shipping_fee
         return total.quantize(decimal.Decimal("0.01"))
+
+    @property
+    def total_sum_client(self):
+        if self.free_delivery:
+            return self.sub_total
+        return self.total_sum
 
     @property
     def client_total_display(self):
@@ -384,7 +392,8 @@ class Cart(DeletableModel):
             return -1
 
     def confirm(self, note=None):
-        order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee)
+        order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee,
+                                     free_delivery=self.is_free_delivery)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()

@@ -1284,10 +1284,15 @@ class DeliveryManRecapView(TemplateView):
         delivered_deliveries = delivery_man.deliveries.filter(order__status__in=['D'])
         money = 0
         for delivery in delivered_deliveries:
-            money += delivery.order.total_sum
+            money += delivery.order.client_total_display
+
+        delivery_money = 0
+        for delivery in delivered_deliveries:
+            delivery_money += delivery.order.shipping_fee
 
         return super(DeliveryManRecapView, self).get_context_data(money=money, products=products,
-                                                                  delivery_man=delivery_man, **kwargs)
+                                                                  delivery_man=delivery_man,
+                                                                  delivery_money=delivery_money, **kwargs)
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()

@@ -57,14 +57,14 @@
                 <div class="row menu-wrapper align-items-center justify-content-between">
                     <!-- Logo -->
                     <div class="logo">
-                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.png' %}" alt=""
+                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.svg' %}" alt=""
                                                                    height="64px"></a>
                     </div>
                     <!-- Logo-2 -->
                     <div class="logo2">
-                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.png' %}"
+                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/Asset 2.png' %}"
                                                                    alt=""
-                                                                   height="64px"></a>
+                                                                   height="16px"></a>
                     </div>
                     <!-- Main-menu -->
                     <div class="main-menu  d-none d-lg-block header-right1" style="width: 100%">
@@ -121,7 +121,7 @@
                                             <span id="cart_count">0</span></a>
                                     </div>
                                 </li>
-                                <li class="ml-15">
+                                {% comment %}<li class="ml-15">
                                     <form id="form-lang" action="{% url 'set_language' %}" method="post">
                                         {% csrf_token %}
                                         <input type="hidden" name="next" value="{{ redirect_to }}">
@@ -139,7 +139,7 @@
                                             </select>
                                         </div>
                                     </form>
-                                </li>
+                                </li>{% endcomment %}
                             </ul>
                         </nav>
                     </div>

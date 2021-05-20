@@ -20,5 +20,7 @@
                        style="color: darkblue">{% trans 'last' %} &raquo;</a>
                 {% endif %}
             </span>
-    <span style="margin-left: 70%;">{{ page_obj.end_index|subtract:page_obj.start_index|add:1 }} {% trans 'Elements' %}</span>
+{% with page_obj.start_index as start_index %}
+    <span style="margin-left: 70%;">{{ page_obj.end_index|subtract:start_index|add:1 }} {% trans 'Elements' %}</span>
+{% endwith %}
 </div>
