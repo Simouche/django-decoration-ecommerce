@@ -190,6 +190,10 @@
                             <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
                                 <i class="fas fa-edit"></i>{% trans "Home Page" %}</a>
                         </li>
+                        <li {% if "settings" in request.path %} class="active" {% endif %}>
+                            <a href="{% url 'ecommerce:dashboard-update-settings' 1 %}">
+                                <i class="fas fa-edit"></i>{% trans "Settings" %}</a>
+                        </li>
                         <li class="has-sub">
                             <a class="js-arrow" href="#"><i class="fas fa-map-marker-alt"></i>{% trans 'Places' %}</a>
                             <ul class="navbar__sub-list list-unstyled js-sub-list">

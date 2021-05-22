@@ -16,7 +16,10 @@ urlpatterns = [
          name='dashboard-sales-update-status'),
     path('dashboard/index-content/<int:pk>/update/', views.UpdateIndexContent.as_view(),
          name='dashboard-update-index-content'),
+    path('dashboard/settings/<int:pk>/update/', views.UpdateSettings.as_view(),
+         name='dashboard-update-settings'),
     path('dashboard/print/<int:order_id>/', views.print_view, name='print_order'),
+    path('dashboard/print/orders/', views.print_view, name='print_orders'),
     path('dashboard/getfile/<str:file_name>/', views.get_file, name='get_file'),
 
     path('about/', views.Index.as_view(), name='about'),

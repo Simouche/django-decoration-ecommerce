@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {#    <meta http-equiv="X-UA-Compatible" content="IE=edge">#}
+    {#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+    <title>Invoice</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-size: 1.4em;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .col-2, .col-1 {
+            display: block;
+            width: 100%;
+            /*height: 400px;*/
+        }
+
+        .col-10 {
+            flex: 10;
+        }
+
+        .col-2 {
+            flex: 2;
+        }
+
+        .col-1 {
+            flex: 1;
+        }
+
+        hr {
+            width: 95%;
+            margin-right: 0;
+            border-width: 2px;
+            border-color: black;
+        }
+
+        .border {
+            border: 2px solid black;
+        }
+
+        .border-right {
+            border-right: 2px solid black;
+        }
+
+        .p-1 {
+            padding: 10px;
+        }
+
+        .m-1 {
+            margin: 10px !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .border-bottom {
+            border-bottom: 2px solid black;
+            width: 95%;
+            margin: auto;
+        }
+
+        .x-2 {
+            font-size: 3em;
+        }
+
+        .p-2 {
+            padding: 20px;
+        }
+
+        .p-absolute {
+            position: relative;
+        }
+
+        .p-absolute img {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: 33%;
+        }
+
+        .p-absolute p {
+            padding-left: 50px;
+        }
+
+        .p-absolute img + p {
+            display: inline-block;
+        }
+
+        .vertical-text {
+
+            writing-mode: vertical-lr;
+
+        }
+
+        .page {
+            width: 21cm;
+            min-height: 29.7cm;
+            {#padding: 2cm;#}
+            {#margin: 1cm auto;#}
+            {#border-radius: 5px;#}
+        }
+
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            .page {
+                margin: 0;
+                border: initial;
+                border-radius: initial;
+                width: initial;
+                min-height: initial;
+                box-shadow: initial;
+                background: initial;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+{% for order in orders %}
+    {% include 'dashboard/invoice/invoice1_element.html' with order=order settings=settings %}
+
+{% endfor %}
+<div>
+    {#    <p class="text-center">Societe de livraision ZRexpres.fr / RC : 16/00-5128041d18</p>#}
+</div>
+<script type="text/javascript">
+    (function () {
+        print()
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+{% load static %}
+<div class="page">
+    <div class="container">
+        <div class="col-2 border-right p-2">
+            <div class="container">
+                <div class="col-1 p-1 p-absolute"><img src="{% static 'invoice/time.png' %}" alt="" srcset=""
+                                                       height="20px"
+                                                       width="50px">
+                    <p>{{ order.delivery_date }}</p></div>
+                <div class="col-1 p-1 p-absolute"><img src="{% static 'invoice/note.png' %}" alt="" srcset=""
+                                                       height="40px"
+                                                       width="40px">
+                    <p>AUCONFORT</p></div>
+            </div>
+            <div class="container">
+                <div class="col-1 p-1 p-absolute"><img src="{% static 'invoice/cell-phone.png' %}" alt="" srcset="">
+                    <p>N° Service</p></div>
+                <div class="col-1 p-1">{{ settings.assistance_number }}</div>
+            </div>
+            <hr>
+            <div>
+                <div class="p-absolute"><img src="{% static 'invoice/user.jpg' %}" alt="" srcset="" height="40px"
+                                             width="40px">
+                    <p>{{ order.profile.user.full_name }}</p></div>
+                <div class="p-absolute"><img src="{% static 'invoice/phone.jpg' %}" alt="" srcset="" height="40px"
+                                             width="40px">
+                    <p>{{ order.profile.user.phones.0 }}</p></div>
+                <div class="p-absolute"><img src="{% static 'invoice/note.png' %}" alt="" srcset="" height="40px"
+                                             width="40px">
+                    <p>{{ order.profile.address }}</p></div>
+            </div>
+            <hr>
+            <div class="container">
+                <div class="vertical-text col-1">
+                    {#<p>Devloppe par Pico Solution</p>#}
+                </div>
+                <div class="col-10">
+                    {% for line in order.get_lines %}
+                        <p>{{ line.display_quantity }} {{ line.product.name }} {% if size %}
+                            -
+                        {% endif %}  {{ size.size }}</p>
+                    {% endfor %}
+
+                    <div class="container bg-blue m-1">
+                        <div class="col-1 border m-1 p-1">Reporte Le</div>
+                        <div class="col-1 border m-1 p-1">N.R.P</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-1 text-center">
+            <p>Domicile</p>
+            <div></div>
+            {#        <h2>ZR3247109214</h2>#}
+            <h1 class="x-2">{{ order.profile.city.state.code_postal }}</h1>
+            <h2>{{ order.profile.city.state }}</h2>
+            <h2>{{ order.profile.city.name }}</h2>
+            <h2>{{ order.total_sum_client }} DZD</h2>
+            {#        <p>Alger</p>#}
+        </div>
+    </div>
+    <hr class="border-bottom">
+</div>

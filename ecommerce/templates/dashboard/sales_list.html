@@ -63,6 +63,8 @@
                         class="au-btn au-btn-icon au-btn--green au-btn--small">{% trans 'Assign to' %}</button>
                 {% url 'ecommerce:dashboard-sales-export' as url %}
                 {% include "dashboard/exportation_layout.html" with exportation_url=url %}
+                <button id="print-button" onclick="print()"
+                        class="au-btn au-btn-icon au-btn--blue au-btn--small">{% trans 'print' %}</button>
             {% endif %}
         </div>
     </div>
@@ -132,7 +134,7 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            <a href="{% url 'ecommerce:print_order' sale.pk %}"
+                            <a href="{% url 'ecommerce:print_order' sale.pk %}" target="_blank"
                                class="item" data-toggle="tooltip" data-placement="top" title="Print">
                                 <i class="fas fa-print"></i>
                             </a>
@@ -262,22 +264,25 @@
                 delivery_guy: agentsSelect.val(),
                 orders: ids
             }
+            const url = "{% url "ecommerce:orders-assignment-delivery" %}?delivery_guy=" + agentsSelect.val() + "&orders=" + ids
+            window.open(url, '_blank')
             $.ajax({
-                type: "POST",
-                url: "{% url "ecommerce:orders-assignment-delivery" %}",
-                data: data,
-                success: (data) => {
-                    console.log("success")
-                    window.open(`/dashboard/getfile/${data['url']}/`)
-                    $.ajax({
-                        type: "GET",
-                        url: "{% url 'ecommerce:dashboard-sales' %}",
-                        success: (response) => {
-                            $("#sales-table").html(response["sales"])
-                        }
-                    })
+                type: "GET",
+                url: "{% url 'ecommerce:dashboard-sales' %}",
+                success: (response) => {
+                    $("#sales-table").html(response["sales"])
                 }
             })
+        }
+
+        function print() {
+            const ids = []
+            const agentsSelect = $("#assign-to-select")
+            $("input:checkbox[name=selected-orders]:checked").each(function () {
+                ids.push($(this).val())
+            })
+            const url = "{% url "ecommerce:print_orders" %}?orders=" + ids
+            window.open(url, '_blank')
         }
 
     </script>

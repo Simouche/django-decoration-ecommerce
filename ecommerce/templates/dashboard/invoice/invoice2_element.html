@@ -1,0 +1,59 @@
+<div class="text-center col-1 border-right p-1">
+    <div></div>
+    <div class="ch-p">
+        <p>RC : {{ settings.rc|default:"" }}</p>
+        <p>NIF : {{ settings.nif|default:"" }}</p>
+        <p>AI : {{ settings.ai|default:"" }}</p>
+    </div>
+    {#        <p>Societe de livraision ZRexpres</p>#}
+    <div class="ch-p">
+        <p>Numerdo service client</p>
+        <p>{{ settings.assistance_number }}</p>
+    </div>
+</div>
+<div class="col-4 border-right p-1">
+    <div class="container">
+        <div class="col-1">{{ order.delivery_date }}</div>
+        {#            <div class="col-1">00324</div>#}
+        {#            <div class="col-1">2476</div>#}
+        {#            <div class="col-1">ZR3247109214</div>#}
+        <div class="col-1">AUCONFORT</div>
+        {#            <div class="col-1">Center</div>#}
+    </div>
+    <hr>
+    <div class="container ch-p p-1">
+        <div class="col-4">
+            <div class="container">
+                <p class="col-1">Client : </p>
+                <p class="col-4">{{ order.profile.user.full_name }}</p>
+            </div>
+            <div class="container">
+                <p class="col-1">Tel : </p>
+                <p class="col-4">{{ order.profile.user.phones.0 }}</p>
+            </div>
+            <div class="container">
+                <p class="col-1">Adress : </p>
+                <p class="col-4">{{ order.profile.address }}</p>
+            </div>
+            <div class="container">
+                <p class="col-1">Note : </p>
+                <p class="col-4">{{ order.note }}</p>
+            </div>
+        </div>
+        <div class="col-1 m-0 d-block border-left border-bottom-2 p-1">
+            {{ order.profile.city.state }}
+        </div>
+    </div>
+    {% for line in order.get_lines %}
+    <p>{{ line.display_quantity }} {{ line.product.name }} {% if size %}
+        -
+    {% endif %}  {{ size.size }}</p>
+{% endfor %}
+    <h2 class="text-right">{{ order.total_sum_client }} DZD</h2>
+
+</div>
+<div class="col-1 text-center p-1">
+    <h1 class="x-2 border d-inline-block p-1 mb-0">16</h1>
+    <h2>{{ order.profile.city.state }}</h2>
+    <h2>{{ order.profile.city.name }}</h2>
+</div>

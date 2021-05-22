@@ -81,8 +81,6 @@
                                 </div>
                             {% endif %}
 
-
-
                             <div class="card_area">
                                 <h4>{% trans 'Quantity' %}</h4>
                                 <div class="product_count d-inline-block">
@@ -91,8 +89,6 @@
                                     <span class="number-increment"> <i class="ti-plus"></i></span>
                                 </div>
                             </div>
-
-
                             <div class="add_to_cart">
                                 <button id="add-to-cart" onclick="addToCartEvent()"
                                         class="btn">{% trans 'add to cart' %}</button>
@@ -100,6 +96,26 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <h2>{% trans 'Similar Products' %}</h2>
+                <div class="row">
+                    {% for product in products %}
+                        <a href="{% url 'ecommerce:products-product-details' product.pk %}">
+                            <div class="col-lg-4 col-md-6 col-sm-6  mr-50">
+                                <div class="single-new-arrival mb-50 text-center">
+                                    <div class="popular-img">
+                                        <img src="{{ product.main_image.url }}" alt="" height="300px">
+                                    </div>
+                                    <div class="popular-caption">
+                                        <h3>
+                                            <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
+                                        </h3>
+                                        <span>{{ product.get_price }} {% trans 'DZD' %}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
         </div>

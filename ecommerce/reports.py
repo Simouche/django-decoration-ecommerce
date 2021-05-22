@@ -1,10 +1,11 @@
+import io
 import os
 import uuid
 from io import BytesIO
 
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, FileResponse
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
@@ -132,11 +133,11 @@ def render_to_pdf(template_src, context_dict=None):
         context_dict = {}
 
     template = get_template(template_src)
-    html = template.render(context_dict)
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html.encode("utf8")), result, link_callback=fetch_resources)
+    html = render_to_string(template_src, context_dict, context_dict.get('request'))
+    result = io.StringIO()
     name = uuid.uuid4().__str__().replace("-", "")
-    with open(BASE_DIR / "uploads/invoices/" / (name + ".pdf"), "wb") as f:
+    pdf = pisa.pisaDocument(io.StringIO(html.encode("UTF-8")), result, link_callback=fetch_resources)
+    with open(BASE_DIR / "uploads/invoices/" / (name + ".pdf"), "w") as f:
         f.write(result.getvalue())
 
     fss = FileSystemStorage(BASE_DIR / "uploads/invoices")

@@ -1,7 +1,7 @@
 {% extends 'dashboard/base_dashboard.html' %}
 {% load static %}
 {% load i18n %}
-
+{% load widget_tweaks %}
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock styles %}
@@ -63,6 +63,23 @@
             {% include "dashboard/exportation_layout.html" with exportation_url=url %}
         {% endif %}
         </div>
+    </div>
+    <div class=" table-data__tool">
+        <form method="GET" action="{% url 'ecommerce:dashboard-sales' %}" class="form-inline">
+            {% for field in form %}
+                {% if field.name in 'order user delivery_man caller status' %}
+                    <div class="rs-select2--light rs-select2--md px-1 pr-1">
+                        {% render_field field class="js-select2 form-control browser-default" %}
+                        <div class="dropDownSelect2"></div>
+                    </div>
+                {% else %}
+                    <div class="form-group px-1 pr-1">
+                        {% render_field field class="form-control browser-default" %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <input type="submit" value="{% trans 'Filter' %}" class="au-btn--submit ml-1">
+        </form>
     </div>
     <div id="orders-table" class="table-responsive table--no-card m-b-40">
         <table class="table table-data2">

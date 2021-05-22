@@ -124,6 +124,10 @@ class OrderLine(BaseModel):
             return (self.size.price * self.quantity).quantize(decimal.Decimal("0.01"))
         return (self.product.price * self.quantity).quantize(decimal.Decimal("0.01"))
 
+    @property
+    def display_quantity(self):
+        return str(self.quantity).split(".")[0]
+
     class Meta:
         verbose_name = _('Order Line')
         verbose_name_plural = _('Order Lines')
@@ -569,3 +573,6 @@ class Settings(BaseModel):
     standard_delivery_fee = models.PositiveIntegerField(verbose_name=_('Standard Delivery Fee'),
                                                         help_text=_('Delivery feed for Alger, Boumerdes and Blida'),
                                                         default=500)
+    rc = models.CharField(max_length=255, blank=True, verbose_name=_('RC'))
+    nif = models.CharField(max_length=255, blank=True, verbose_name=_('NIF'))
+    ai = models.CharField(max_length=255, blank=True, verbose_name=_('AI'))

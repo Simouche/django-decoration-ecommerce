@@ -148,7 +148,7 @@ class IndexContentForm(forms.ModelForm):
                   'section2_text', 'section2_button_text', 'section2_image', 'section3_title', 'section3_text',
                   'section3_button_text', 'section4_title', 'section4_text', 'section4_button_text', 'section4_image1',
                   'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', 'facebook', 'Instagram',
-                  'twitter']
+                  'twitter', 'assistance_number']
 
 
 class CreateDeliveryCompanyForm(forms.ModelForm):

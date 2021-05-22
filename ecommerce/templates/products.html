@@ -47,19 +47,21 @@
                              aria-labelledby="nav-Sofa-tab">
                             <div class="row">
                                 {% for product in products %}
-                                    <div class="col-lg-4 col-md-6 col-sm-6">
-                                        <div class="single-new-arrival mb-50 text-center">
-                                            <div class="popular-img">
-                                                <img src="{{ product.main_image.url }}" alt="" height="300px">
-                                            </div>
-                                            <div class="popular-caption">
-                                                <h3>
-                                                    <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
-                                                </h3>
-                                                <span>{{ product.price }} {% trans 'DZD' %}</span>
+                                    <a href="{% url 'ecommerce:products-product-details' product.pk %}">
+                                        <div class="col-lg-4 col-md-6 col-sm-6">
+                                            <div class="single-new-arrival mb-50 text-center">
+                                                <div class="popular-img">
+                                                    <img src="{{ product.main_image.url }}" alt="" height="300px">
+                                                </div>
+                                                <div class="popular-caption">
+                                                    <h3>
+                                                        <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
+                                                    </h3>
+                                                    <span>{{ product.get_price }} {% trans 'DZD' %}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 {% endfor %}
                             </div>
                             {% include "pagination_layout.html" with page_obj=page_obj %}

@@ -3,7 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver, Signal
 
 from accounts.models import Profile
-from ecommerce.models import Cart, Order, OrderStatusChange, IndexContent, OrderLine
+from ecommerce.models import Cart, Order, OrderStatusChange, IndexContent, OrderLine, Settings
 
 order_line_deleted = Signal()
 
@@ -58,6 +58,9 @@ def get_request():
 def prepare_index_content():
     if not IndexContent.objects.filter(pk=1).exists():
         IndexContent.objects.create()
+
+    if not Settings.objects.filter(pk=1).exists():
+        Settings.objects.create()
 
 
 try:

@@ -13,7 +13,7 @@ from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
 from django.forms import formset_factory, modelformset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, FileResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -31,7 +31,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
     OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm, OrderFilter, ProductWithSizesFormset
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings
 from ecommerce.reports import render_to_pdf, render_to_pdf2
 from django.contrib import messages
 
@@ -213,7 +213,7 @@ def export_products_excel(request):
 @method_decorator(staff_member_required(), name='dispatch')
 class DashboardSalesListView(ListView):
     template_name = "dashboard/sales_list.html"
-    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D', 'R', 'RE', 'PA'], visible=True)
+    queryset = Order.objects.filter(status__in=['CO', 'OD', 'D', 'R', 'RE', 'PA', 'DE'], visible=True)
     model = Order
     context_object_name = "sales"
     page_kwarg = 'page'
@@ -356,6 +356,7 @@ class ViewProductDetailsView(DetailView):
         if product and self.request.user.is_authenticated:
             m_context['is_favorite'] = product.id in self.request.user.profile.favorites.all().values_list('product',
                                                                                                            flat=True)
+        m_context['products'] = self.queryset.filter(category=product.category).order_by("?")[:3]
         return m_context
 
 
@@ -615,13 +616,35 @@ class OrdersHistory(ListView, OrdersMixin):
     ordering = "-created_at"
     queryset = Order.objects.filter(visible=True)
     context_object_name = "orders"
-    paginate_by = 10
+    paginate_by = 25
     paginate_orphans = True
     allow_empty = True
     extra_context = {
         "states": State.objects.all(),
         "cities": City.objects.all(),
     }
+
+    def filter_queryset(self, queryset) -> QuerySet:
+        self.form = OrderFilter(self.request.GET)
+        if self.form.is_valid():
+            cd = self.form.cleaned_data
+            if cd.get('order'):
+                queryset = queryset.filter(pk=cd.get('order').pk)
+            if cd.get('user'):
+                queryset = queryset.filter(profile__user=cd.get('user'))
+            if cd.get('delivery_man'):
+                queryset = queryset.filter(deliveries__delivery_guys=cd.get('delivery_man'))
+            if cd.get('caller'):
+                queryset = queryset.filter(assigned_to=cd.get('caller'))
+            if cd.get('start_date'):
+                queryset = queryset.filter(created_at__gte=cd.get('start_date'))
+            if cd.get('end_date'):
+                queryset = queryset.filter(created_at__lte=cd.get('end_date'))
+            if cd.get('status'):
+                queryset = queryset.filter(status__in=cd.get('status'))
+            return queryset
+        else:
+            return queryset
 
     def get_template_names(self):
         names = []
@@ -633,6 +656,7 @@ class OrdersHistory(ListView, OrdersMixin):
 
     def get_queryset(self):
         queryset = super(OrdersHistory, self).get_queryset()
+        queryset = self.filter_queryset(queryset)
         if self.request.GET.get('status', None):
             queryset = queryset.filter(status=self.request.GET.get('status', None))
         if self.request.GET.get('state', None):
@@ -642,7 +666,7 @@ class OrdersHistory(ListView, OrdersMixin):
         return self.my_get_queryset(queryset)
 
     def get_context_data(self, **kwargs):
-        context = super(OrdersHistory, self).get_context_data(**kwargs)
+        context = super(OrdersHistory, self).get_context_data(form=self.form, **kwargs)
         total = 0
         if kwargs.get('object_list'):
             for order in kwargs.get('object_list'):
@@ -652,6 +676,7 @@ class OrdersHistory(ListView, OrdersMixin):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.form = OrderFilter()
         if is_ajax(request):
             super(OrdersHistory, self).get(request, *args, **kwargs)
             context = self.get_context_data()
@@ -1021,6 +1046,17 @@ class UpdateIndexContent(UpdateView):
         return reverse_lazy("ecommerce:dashboard-update-index-content", kwargs={"pk": 1})
 
 
+@method_decorator(permission_required("ecommerce.add_settings"), name='dispatch')
+class UpdateSettings(UpdateView):
+    model = Settings
+    template_name = "dashboard/settings_form.html"
+    context_object_name = "settings"
+    fields = ['standard_delivery_fee', 'rc', 'nif', 'ai']
+
+    def get_success_url(self):
+        return reverse_lazy("ecommerce:dashboard-update-settings", kwargs={"pk": 1})
+
+
 @method_decorator(staff_member_required, name="dispatch")
 class CreateDeliveryGuy(CreateView):
     model = DeliveryGuy
@@ -1162,31 +1198,6 @@ def assign_orders_to_caller(request):
     return JsonResponse({"status": 'Success'})
 
 
-@login_required()
-def assign_orders_to_delivery_guy(request):
-    ids = request.POST.getlist('orders[]')
-    delivery_guy_id = request.POST.get('delivery_guy')
-    orders = Order.objects.filter(pk__in=ids)
-    delivery_guy = get_object_or_404(DeliveryGuy, pk=delivery_guy_id)
-    Deliveries.objects.filter(order__in=orders).delete()
-    deliveries = [Deliveries(order=order, delivery_guys=delivery_guy) for order in orders]
-    deliveries = Deliveries.objects.bulk_create(deliveries)
-    if deliveries:
-        orders.update(status='OD')
-        total = 0
-        for order in orders:
-            total += order.total_sum
-        context = {
-            'orders': orders,
-            'delivery_guy': delivery_guy,
-            'total': total
-        }
-        pdf = render_to_pdf2('dashboard/roadmap_pdf_template.html', context)
-        response = JsonResponse({"url": pdf})
-        return response
-    return JsonResponse({"status": 'Fail'})
-
-
 @method_decorator(login_required, name="dispatch")
 class AddReview(CreateView):
     model = Rate
@@ -1214,17 +1225,44 @@ class LoginRequired(RedirectView):
         return super(LoginRequired, self).get_redirect_url(*args, **kwargs)
 
 
+@login_required()
+def assign_orders_to_delivery_guy(request):
+    ids = request.GET.getlist('orders')
+    ids = ids[0].split(",")
+    delivery_guy_id = request.GET.get('delivery_guy')
+    orders = Order.objects.filter(pk__in=ids)
+    delivery_guy = get_object_or_404(DeliveryGuy, pk=delivery_guy_id)
+    Deliveries.objects.filter(order__in=orders).delete()
+    deliveries = [Deliveries(order=order, delivery_guys=delivery_guy) for order in orders]
+    deliveries = Deliveries.objects.bulk_create(deliveries)
+    if deliveries:
+        orders.update(status='OD')
+        index = IndexContent.objects.all().first()
+        settings = Settings.objects.all().first()
+        settings.assistance_number = index.assistance_number
+        context = {
+            'orders': orders,
+            'settings': settings
+        }
+        return render(request, 'dashboard/invoice/invoice2.html',
+                      context)
+    return JsonResponse({"status": 'Fail'})
+
+
 @login_required
-def print_view(request, order_id):
+def print_view(request, order_id=None):
     if request.method == "GET":
-        if order_id is None:
-            return JsonResponse({"message": "no order id provided"})
-
-        order = get_object_or_404(Order, pk=order_id)
-
-        pdf = render_to_pdf('dashboard/invoice_pdf_template.html', {'order': order})
-
-        return pdf
+        if order_id is not None:
+            order = [get_object_or_404(Order, pk=order_id)]
+        else:
+            ids = request.GET.getlist('orders')
+            ids = ids[0].split(",")
+            order = get_list_or_404(Order, pk__in=ids)
+        index = IndexContent.objects.all().first()
+        settings = Settings.objects.all().first()
+        settings.assistance_number = index.assistance_number
+        return render(request, 'dashboard/invoice/invoice1.html',
+                      {'orders': order, 'settings': settings})
 
 
 @login_required
