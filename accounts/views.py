@@ -28,9 +28,23 @@ class RegisterView(FormView):
     form_class = RegistrationForm
     initial = {'user_type': 'C'}
 
+    def get_success_url(self):
+        if self.request.GET.get('next'):
+            self.success_url = self.request.GET.get('next')
+            return super(RegisterView, self).get_success_url()
+        else:
+            return super(RegisterView, self).get_success_url()
+
     def form_valid(self, form):
         form.save()
+        user = authenticate(self.request, username=form.cleaned_data.get('username'),
+                            password=form.cleaned_data.get('password'))
+        login(self.request, user)
         return redirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        next = self.request.GET.get('next')
+        return super(RegisterView, self).get_context_data(next=next, **kwargs)
 
 
 class LoginView(View):
@@ -43,7 +57,7 @@ class LoginView(View):
             return redirect('ecommerce:index')
 
         login_form = LoginForm()
-        context = dict(login_form=login_form)
+        context = dict(login_form=login_form, next=self.request.GET.get('next'))
         return render(request, self.template_name, context)
 
     def post(self, request):

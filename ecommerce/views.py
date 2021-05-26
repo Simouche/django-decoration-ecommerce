@@ -2,20 +2,21 @@ import csv
 import decimal
 import json
 import random
-from django.utils import timezone
 
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
-from django.forms import formset_factory, modelformset_factory
+from django.forms import formset_factory
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse, FileResponse
 from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
@@ -29,11 +30,9 @@ from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce import current_week_range
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, CartLineForm, CheckoutForm, OrderFilter, ProductWithSizesFormset
+    OrderWithLinesFormSet, CartWithLinesFormSet, CheckoutForm, OrderFilter, ProductWithSizesFormset
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings
-from ecommerce.reports import render_to_pdf, render_to_pdf2
-from django.contrib import messages
 
 
 class Index(TemplateView):
@@ -357,7 +356,14 @@ class ViewProductDetailsView(DetailView):
             m_context['is_favorite'] = product.id in self.request.user.profile.favorites.all().values_list('product',
                                                                                                            flat=True)
         m_context['products'] = self.queryset.filter(category=product.category).order_by("?")[:3]
+        m_context['cart_id'] = self.get_cart().id
         return m_context
+
+    def get_cart(self) -> Cart:
+        if self.request.user.is_authenticated:
+            return self.request.user.profile.cart
+        else:
+            return Cart.objects.get(identifier=self.request.session.get('cart_id'))
 
 
 class ProductsListView(ListView):
@@ -463,22 +469,24 @@ class DeleteProduct(RedirectView):
 # cart
 class CartMixin:
     def my_get_queryset(self, queryset):
-        if self.request.user.is_staff:
+        if self.request.user.is_staff or not self.request.user.is_authenticated:
             return queryset
         return queryset.filter(profile=self.request.user.profile)
 
 
-@method_decorator(login_required, name='dispatch')
 class RedirectToCartDetailsView(RedirectView):
     permanent = True
     pattern_name = 'ecommerce:cart-details'
 
     def get_redirect_url(self, *args, **kwargs):
-        url = reverse(self.pattern_name, kwargs={'pk': self.request.user.profile.cart.id})
+        if self.request.user.is_authenticated:
+            cart_id = self.request.user.profile.cart.id
+        else:
+            cart_id = Cart.objects.get(identifier=self.request.session.get('cart_id')).id
+        url = reverse(self.pattern_name, kwargs={'pk': cart_id})
         return url
 
 
-@method_decorator(login_required, name='dispatch')
 class CartDetailsView(DetailView, CartMixin):
     model = Cart
     template_name = "cart.html"
@@ -489,6 +497,11 @@ class CartDetailsView(DetailView, CartMixin):
         queryset = super(CartDetailsView, self).get_queryset()
         return self.my_get_queryset(queryset)
 
+    def get_object(self, queryset=None):
+        if self.request.user.is_authenticated:
+            return super(CartDetailsView, self).get_object(queryset=queryset)
+        return Cart.objects.get(identifier=self.request.session.get('cart_id'))
+
     def get_context_data(self, **kwargs):
         return super(CartDetailsView, self).get_context_data(cart_lines=self.get_form(), **kwargs)
 
@@ -497,7 +510,6 @@ class CartDetailsView(DetailView, CartMixin):
         return cart_lines
 
 
-@method_decorator(login_required, name='dispatch')
 class CartAddView(CreateView):
     model = CartLine
     context_object_name = "cart_line"
@@ -505,12 +517,19 @@ class CartAddView(CreateView):
     template_name = "index.html"
     success_url = reverse_lazy('ecommerce:index')
 
-    def get_initial(self):
+    def get_initial(self) -> dict:
         initials = super(CartAddView, self).get_initial()
-        initials['cart'] = self.request.user.profile.cart
+        initials['cart'] = self.get_cart()
         return initials
 
+    def get_cart(self) -> Cart:
+        if self.request.user.is_authenticated:
+            return self.request.user.profile.cart
+        else:
+            return Cart.objects.get(identifier=self.request.session.get('cart_id'))
+
     def form_invalid(self, form):
+        print(form.errors)
         return super(CartAddView, self).form_invalid(form=form)
 
     def form_valid(self, form):
@@ -949,10 +968,13 @@ class FavoriteListView(ListView):
         return queryset.filter(profile=self.request.user.profile)
 
 
-@login_required()
 def get_cart_count(request):
     try:
-        return JsonResponse({'count': request.user.profile.cart.get_lines.count()})
+        if request.user.is_authenticated:
+            count = request.user.profile.cart.get_lines.count()
+        else:
+            count = Cart.objects.get(identifier=request.session.get('cart_id')).get_lines.count()
+        return JsonResponse({'count': count})
     except Exception:
         return JsonResponse({'count': 0})
 

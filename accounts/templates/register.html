@@ -53,7 +53,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-6 col-lg-8">
-                    <form class="form" action="{% url 'accounts:register' %}" method="post" role="form">
+                    <form class="form" action="{% url 'accounts:register' %}?next={{ next }}" method="post" role="form">
                         {% csrf_token %}
                         {% if messages %}
                             <div class="form-group row">

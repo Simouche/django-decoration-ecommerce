@@ -308,9 +308,12 @@
                                     </div>
                                     <!-- social -->
                                     <div class="footer-social">
-                                        <a href="{{ content.twitter }}"><i class="fab fa-twitter"></i></a>
-                                        <a href="{{ content.facebook }}"><i class="fab fa-facebook-f"></i></a>
-                                        <a href="{{ content.Instagram }}"><i class="fab fa-instagram"></i></a>
+                                        <a href="{{ content.twitter }}" target="_blank"><i
+                                                class="fab fa-twitter"></i></a>
+                                        <a href="{{ content.facebook }}" target="_blank"><i
+                                                class="fab fa-facebook-f"></i></a>
+                                        <a href="{{ content.Instagram }}" target="_blank"><i
+                                                class="fab fa-instagram"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -333,9 +336,11 @@
                                     <div class="footer-tittle">
                                         <h4>{% trans "Shop Category" %}</h4>
                                         <ul>
-                                            <li><a href="#">Image Licensin</a></li>
-                                            <li><a href="#">Style Guide</a></li>
-                                            <li><a href="#">Privacy Policy</a></li>
+                                            {% for cat in popular_cats %}
+                                                <li>
+                                                    <a href="{% url "ecommerce:categories-list" %}?category={{ cat.0.id }}"></a>{{ cat.0.name }}
+                                                </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </div>
@@ -343,7 +348,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
                                 <div class="single-footer-caption mb-50">
                                     <div class="footer-tittle">
-                                        <h4>{% trans "Pertners" %}</h4>
+                                        <h4>{% trans "Partners" %}</h4>
                                         <ul>
                                             <li><a href="#">Image Licensin</a></li>
                                             <li><a href="#">Style Guide</a></li>

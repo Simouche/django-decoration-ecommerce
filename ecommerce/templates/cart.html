@@ -92,7 +92,7 @@
                                     <td></td>
                                     <td></td>
                                 </tr>
-                                <tr>
+                                {% comment %}                                <tr>
                                     <td></td>
                                     <td></td>
                                     <td>
@@ -102,8 +102,8 @@
                                         <h5>{{ cart.sub_total }} {% trans 'DZD' %}</h5>
                                     </td>
                                     <td></td>
-                                </tr>
-                                <tr class="shipping_area">
+                                </tr>{% endcomment %}
+                                {% comment %}                                <tr class="shipping_area">
                                     <td></td>
                                     <td></td>
                                     <td>
@@ -121,7 +121,7 @@
                                         {% endif %}
                                     </td>
                                     <td></td>
-                                </tr>
+                                </tr>{% endcomment %}
                                 <tr>
                                     <td></td>
                                     <td></td>

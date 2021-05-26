@@ -41,7 +41,7 @@ class User(AbstractUser):
     visible = models.BooleanField(default=True)
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["first_name", "last_name", 'user_type', 'phones', 'email']
+    REQUIRED_FIELDS = ["first_name", "last_name", 'user_type', 'phones']
 
     @property
     def full_name(self):

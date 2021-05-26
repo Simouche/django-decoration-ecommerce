@@ -1,4 +1,5 @@
 import decimal
+import uuid
 
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
@@ -329,7 +330,8 @@ class CartLine(BaseModel):
 
 
 class Cart(DeletableModel):
-    profile = models.OneToOneField('accounts.Profile', related_name='cart', on_delete=do_nothing)
+    profile = models.OneToOneField('accounts.Profile', related_name='cart', on_delete=do_nothing, null=True, blank=True)
+    identifier = models.UUIDField(null=True, blank=True, unique=True, verbose_name=_('Identifier'), default=uuid.uuid4)
 
     @property
     def total_sum(self):
@@ -368,7 +370,7 @@ class Cart(DeletableModel):
 
     @property
     def delivery_fee(self):
-        if self.profile.city:
+        if self.profile and self.profile.city:
             alger_blida_boumerdes = list(State.objects.filter(name__in=['Alger', 'Blida', 'Boumerdes'])
                                          .values_list('id', flat=True))
             if self.profile.city.state_id in alger_blida_boumerdes:
@@ -500,6 +502,7 @@ class IndexContent(BaseModel):
     card1_title = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Title"))
     card1_content = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     card1_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    card1_button_link = models.URLField(verbose_name=_('Button Link'), null=True, blank=True)
     card1_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
 
     # section 1 attrs
@@ -512,17 +515,20 @@ class IndexContent(BaseModel):
     section2_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
     section2_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section2_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section2_button_link = models.URLField(verbose_name=_('Button Link'), null=True, blank=True)
     section2_image = models.ImageField(verbose_name=_("Image"), null=True, blank=True, upload_to='index')
 
     # section 3 attrs
     section3_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
     section3_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section3_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section3_button_link = models.URLField(verbose_name=_('Button Link'), null=True, blank=True)
 
     # section 4 attrs
     section4_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
     section4_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section4_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section4_button_link = models.URLField(verbose_name=_('Button Link'), null=True, blank=True)
     section4_image1 = models.ImageField(null=True, blank=True, verbose_name=_("Image 1"), upload_to='index')
     section4_image2 = models.ImageField(null=True, blank=True, verbose_name=_("Image 2"), upload_to='index')
 
@@ -530,6 +536,7 @@ class IndexContent(BaseModel):
     section5_title = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Title"))
     section5_text = models.TextField(null=True, blank=True, verbose_name=_("Content Text"))
     section5_button_text = models.CharField(max_length=20, null=True, blank=True, verbose_name=_("Button Text"))
+    section5_button_link = models.URLField(verbose_name=_('Button Link'), null=True, blank=True)
 
     assistance_number = models.CharField(max_length=30, verbose_name=_("Assistance Number"), null=True)
 

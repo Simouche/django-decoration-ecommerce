@@ -97,25 +97,27 @@
                         </div>
                     </div>
                 </div>
-                <h2>{% trans 'Similar Products' %}</h2>
-                <div class="row">
-                    {% for product in products %}
-                        <a href="{% url 'ecommerce:products-product-details' product.pk %}">
-                            <div class="col-lg-4 col-md-6 col-sm-6  mr-50">
-                                <div class="single-new-arrival mb-50 text-center">
-                                    <div class="popular-img">
-                                        <img src="{{ product.main_image.url }}" alt="" height="300px">
-                                    </div>
-                                    <div class="popular-caption">
-                                        <h3>
-                                            <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
-                                        </h3>
-                                        <span>{{ product.get_price }} {% trans 'DZD' %}</span>
+                <div class="mt-200">
+                    <h2>{% trans 'Similar Products' %}</h2>
+                    <div class="row">
+                        {% for product in products %}
+                            <a href="{% url 'ecommerce:products-product-details' product.pk %}">
+                                <div class="col-lg-4 col-md-6 col-sm-6  mr-50">
+                                    <div class="single-new-arrival mb-50 text-center">
+                                        <div class="popular-img">
+                                            <img src="{{ product.main_image.url }}" alt="" height="300px">
+                                        </div>
+                                        <div class="popular-caption">
+                                            <h3>
+                                                <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
+                                            </h3>
+                                            <span>{{ product.get_price }} {% trans 'DZD' %}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    {% endfor %}
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -402,17 +404,15 @@
         }{% endcomment %}
 
         function addToCartEvent() {
-            {% if not user.is_authenticated %}
-                window.location.href = "{% url 'ecommerce:login-required' %}?next={{ request.path }}"
+
+            {% if product.has_sizes %}
+                const size = $('#sizes').val()
             {% else %}
-                {% if product.has_sizes %}
-                    const size = $('#sizes').val()
-                {% else %}
-                    const size = null
-                {% endif %}
-                addToCart({{ product.id }}, document.getElementById("quantity").value, {{ request.user.profile.cart.id }}, '{% url 'ecommerce:cart-add' %}',
-                    '{{ csrf_token }}', size)
+                const size = null
             {% endif %}
+            addToCart({{ product.id }}, document.getElementById("quantity").value, '{% url 'ecommerce:cart-add' %}',
+                '{{ csrf_token }}', '{{ cart_id }}', size)
+
         }
 
         inputNumber($('#quantity'));

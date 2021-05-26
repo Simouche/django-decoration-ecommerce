@@ -133,7 +133,7 @@
                             <!-- form Footer -->
                             <div class="login-footer">
                                 <p>{% trans "Don’t have an account?" %} <a
-                                        href="{% url 'accounts:register' %}">{% trans "Sign Up" %}</a> {% trans "here" %}
+                                        href="{% url 'accounts:register' %}?next={{ next }}">{% trans "Sign Up" %}</a> {% trans "here" %}
                                 </p>
                                 <button type="submit" class="submit-btn3">{% trans "LOGIN" %}</button>
                             </div>

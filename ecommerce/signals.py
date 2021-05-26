@@ -2,16 +2,9 @@ from django.db.models import F
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver, Signal
 
-from accounts.models import Profile
-from ecommerce.models import Cart, Order, OrderStatusChange, IndexContent, OrderLine, Settings
+from ecommerce.models import Order, OrderStatusChange, IndexContent, OrderLine, Settings
 
 order_line_deleted = Signal()
-
-
-@receiver(post_save, sender=Profile)
-def user_profile_created_signal(sender, instance, created, raw, **kwargs):
-    if created and not raw:
-        Cart.objects.create(profile=instance)
 
 
 @receiver(pre_save, sender=Order)

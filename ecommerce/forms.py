@@ -144,10 +144,14 @@ class IndexContentForm(forms.ModelForm):
     class Meta:
         model = IndexContent
         fields = ['card1_visibility', 'card1_header', 'card1_title', 'card1_content', 'card1_button_text',
+                  'card1_button_link',
                   'card1_image', 'section1_title', 'section1_text', 'section1_categories', 'section2_title',
-                  'section2_text', 'section2_button_text', 'section2_image', 'section3_title', 'section3_text',
-                  'section3_button_text', 'section4_title', 'section4_text', 'section4_button_text', 'section4_image1',
-                  'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', 'facebook', 'Instagram',
+                  'section2_text', 'section2_button_text', 'section2_button_link', 'section2_image', 'section3_title',
+                  'section3_text',
+                  'section3_button_text', 'section3_button_link', 'section4_title', 'section4_text',
+                  'section4_button_text', 'section4_button_link', 'section4_image1',
+                  'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', 'section5_button_link',
+                  'facebook', 'Instagram',
                   'twitter', 'assistance_number']
 
 
