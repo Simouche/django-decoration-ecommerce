@@ -124,7 +124,7 @@
                                                     <span id="delivery-fee">{{ user.profile.cart.delivery_fee|default:"0" }} {% trans 'DZD' %}</span>
 
                                                 {% else %}
-                                                    <span>{% trans 'Will be calculated later.' %}</span>
+                                                    <span id="delivery-fee">{% trans 'Will be calculated later.' %}</span>
                                                 {% endif %}
                                             {% endif %}
                                         </a>
@@ -176,11 +176,9 @@
         })
 
         function onCityChange(e) {
-            console.log("******************************")
             {% if user.profile.cart.is_free_delivery %}
                 return
             {% endif %}
-            console.log("*********************************")
             const val = $('#id_city').val()
             const data = {city_id: val}
             $.ajax({

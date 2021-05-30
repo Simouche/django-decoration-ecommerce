@@ -57,7 +57,7 @@ class LoginView(View):
             return redirect('ecommerce:index')
 
         login_form = LoginForm()
-        context = dict(login_form=login_form, next=self.request.GET.get('next'))
+        context = dict(login_form=login_form, next=self.request.GET.get('next'), form=RegistrationForm())
         return render(request, self.template_name, context)
 
     def post(self, request):
@@ -87,7 +87,7 @@ class LoginView(View):
                         login_form.add_error(None, _("Your account isn't activated, an admin will activate it soon."))
                 else:
                     login_form.add_error(None, _('Invalid username/password'))
-                context = dict(login_form=login_form)
+                context = dict(login_form=login_form, next=self.request.GET.get('next'))
                 return render(request, self.template_name, context)
 
 
