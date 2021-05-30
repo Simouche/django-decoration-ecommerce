@@ -190,6 +190,14 @@
                             <a href="{% url 'ecommerce:dashboard-update-index-content' 1 %}">
                                 <i class="fas fa-edit"></i>{% trans "Home Page" %}</a>
                         </li>
+                        <li {% if "quick" in request.path %} class="active" {% endif %}>
+                            <a href="{% url 'ecommerce:dashboard-quick-links-create' %}">
+                                <i class="fas fa-edit"></i>{% trans "Quick Links" %}</a>
+                        </li>
+                        <li {% if "partner" in request.path %} class="active" {% endif %}>
+                            <a href="{% url 'ecommerce:dashboard-partners-create' %}">
+                                <i class="fas fa-edit"></i>{% trans "Partners" %}</a>
+                        </li>
                         <li {% if "settings" in request.path %} class="active" {% endif %}>
                             <a href="{% url 'ecommerce:dashboard-update-settings' 1 %}">
                                 <i class="fas fa-edit"></i>{% trans "Settings" %}</a>

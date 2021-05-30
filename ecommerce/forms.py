@@ -1,12 +1,11 @@
 from bootstrap_modal_forms.forms import BSModalModelForm
 from django import forms
-from django.contrib.postgres.forms import SimpleArrayField
 from django.forms import inlineformset_factory
 
 from accounts.models import User, City
 from base_backend import _
 from ecommerce.models import Order, OrderLine, Product, SubCategory, Category, IndexContent, DeliveryCompany, \
-    DeliveryFee, DeliveryGuy, CartLine, Cart, ProductSize
+    DeliveryFee, DeliveryGuy, CartLine, Cart, ProductSize, QuickLink, Partner
 from ecommerce.widgets import BootstrapTimePickerInput, BootstrapDatePickerInput
 
 status_choices = (('P', _('Pending')),
@@ -153,6 +152,18 @@ class IndexContentForm(forms.ModelForm):
                   'section4_image2', 'section5_title', 'section5_text', 'section5_button_text', 'section5_button_link',
                   'facebook', 'Instagram',
                   'twitter', 'assistance_number']
+
+
+class QuickLinkForm(forms.ModelForm):
+    class Meta:
+        model = QuickLink
+        fields = ['name', 'url']
+
+
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name', 'url']
 
 
 class CreateDeliveryCompanyForm(forms.ModelForm):

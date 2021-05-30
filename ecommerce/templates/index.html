@@ -112,7 +112,8 @@
             <div class="tailor-details">
                 <h2>{{ content.section2_title }}</h2>
                 <p>{{ content.section2_text }}</p>
-                <a href="#" class="btn">{{ content.section2_button_text }}</a>
+                <a href="{{ content.section2_button_link|default:"#" }}"
+                   class="btn">{{ content.section2_button_text }}</a>
             </div>
 
         </div>
@@ -137,7 +138,7 @@
                                 <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                      data-wow-delay=".1s">
                                     <div class="popular-img">
-                                        <img src="{{ product.main_image.url }}" alt="">
+                                        <img height="400px" src="{{ product.main_image.url }}" alt="">
                                     </div>
                                     <div class="popular-caption">
                                         <h3>
@@ -170,7 +171,8 @@
                                 <img src="{% static 'img/gallery/insta.png' %}" alt="">
                                 <h2>{{ content.section4_title }}</h2>
                                 <P class="mb-35">{{ content.section4_text }}</P>
-                                <a href="products.html" class="border-btn">{{ content.section4_button_text }}</a>
+                                <a href="{{ content.section4_button_link|default:"#" }}"
+                                   class="border-btn">{{ content.section4_button_text }}</a>
                             </div>
                         </div>
                     </div>
@@ -213,7 +215,7 @@
                             <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                  data-wow-delay=".1s">
                                 <div class="popular-img">
-                                    <img src="{{ product.main_image.url }}" alt="">
+                                    <img height="400px" src="{{ product.main_image.url }}" alt="">
                                 </div>
                                 <div class="popular-caption">
                                     <h3>
@@ -228,7 +230,8 @@
                 <!-- Button -->
                 <div class="row justify-content-center">
                     <div class="room-btn">
-                        <a href="products.html" class="border-btn">{{ content.section5_button_text }}</a>
+                        <a href="{{ content.section5_button_link|default:"#" }}"
+                           class="border-btn">{{ content.section5_button_text }}</a>
                     </div>
                 </div>
             </div>
@@ -324,9 +327,9 @@
                                     <div class="footer-tittle">
                                         <h4>{% trans "Quick links" %}</h4>
                                         <ul>
-                                            <li><a href="#">Image Licensin</a></li>
-                                            <li><a href="#">Style Guide</a></li>
-                                            <li><a href="#">Privacy Policy</a></li>
+                                            {% for link in links %}
+                                                <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </div>
@@ -338,7 +341,7 @@
                                         <ul>
                                             {% for cat in popular_cats %}
                                                 <li>
-                                                    <a href="{% url "ecommerce:categories-list" %}?category={{ cat.0.id }}"></a>{{ cat.0.name }}
+                                                    <a href="{% url "ecommerce:categories-list" %}?category={{ cat.0.id }}">{{ cat.0.name }}</a>
                                                 </li>
                                             {% endfor %}
                                         </ul>
@@ -350,9 +353,9 @@
                                     <div class="footer-tittle">
                                         <h4>{% trans "Partners" %}</h4>
                                         <ul>
-                                            <li><a href="#">Image Licensin</a></li>
-                                            <li><a href="#">Style Guide</a></li>
-                                            <li><a href="#">Privacy Policy</a></li>
+                                            {% for partner in partners %}
+                                                <li><a href="{{ partner.url }}">{{ partner.name }}</a></li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                                 </div>

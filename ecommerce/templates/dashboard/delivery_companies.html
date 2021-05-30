@@ -50,7 +50,7 @@
                                 <div class="col-3 pl-1">
                                     <button {% comment %}data-id="{% url 'ecommerce:products-product-update' company.id %}"{% endcomment %}
                                             id="update-company{{ company.id }}" class="item" data-toggle="tooltip"
-                                            data-placement="top"
+                                            data-placement="top" onclick="updateCompany({{ company.id }})"
                                             title="Edit">
                                         <i class="zmdi zmdi-edit"></i>
                                     </button>
@@ -92,6 +92,20 @@
             $.ajax({
                 type: 'GET',
                 url: '{% url 'ecommerce:delivery-companies-create' %}',
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#create-company-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
+
+        function updateCompany(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/dashboard/delivery/companies/${id}/update/`,
                 dataType: 'json',
                 success: (response) => {
                     const modal = $("#create-company-modal")

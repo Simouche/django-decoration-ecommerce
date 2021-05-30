@@ -30,9 +30,11 @@ from decoration.settings import MEDIA_ROOT, MEDIA_URL, BASE_DIR
 from ecommerce import current_week_range
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
-    OrderWithLinesFormSet, CartWithLinesFormSet, CheckoutForm, OrderFilter, ProductWithSizesFormset
+    OrderWithLinesFormSet, CartWithLinesFormSet, CheckoutForm, OrderFilter, ProductWithSizesFormset, QuickLinkForm, \
+    PartnerForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
-    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings
+    OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings, DeliveryFee, \
+    Partner, QuickLink
 
 
 class Index(TemplateView):
@@ -45,6 +47,8 @@ class Index(TemplateView):
         m_kwargs['top_pick'] = Product.objects.filter(visible=True).annotate(pick_count=Count('orders_lines')).order_by(
             '-pick_count')[:3]
         m_kwargs["content"] = IndexContent.objects.all().first()
+        m_kwargs['partners'] = Partner.objects.all().order_by('-created_at')[:3]
+        m_kwargs['links'] = QuickLink.objects.all().order_by('-created_at')[:3]
         return m_kwargs
 
 
@@ -1068,6 +1072,22 @@ class UpdateIndexContent(UpdateView):
         return reverse_lazy("ecommerce:dashboard-update-index-content", kwargs={"pk": 1})
 
 
+@method_decorator(permission_required("ecommerce.add_quicklink"), name='dispatch')
+class CreateQuickLink(CreateView):
+    model = QuickLink
+    form_class = QuickLinkForm
+    template_name = "dashboard/create_quick_links.html"
+    success_url = reverse_lazy("ecommerce:dashboard")
+
+
+@method_decorator(permission_required("ecommerce.add_partner"), name='dispatch')
+class CreatePartner(CreateView):
+    model = Partner
+    form_class = PartnerForm
+    template_name = "dashboard/create_partner.html"
+    success_url = reverse_lazy("ecommerce:dashboard")
+
+
 @method_decorator(permission_required("ecommerce.add_settings"), name='dispatch')
 class UpdateSettings(UpdateView):
     model = Settings
@@ -1152,7 +1172,7 @@ class CreateDeliveryCompany(CreateView):
     model = DeliveryCompany
     success_url = reverse_lazy("ecommerce:delivery-companies-list")
     template_name = "dashboard/create_company.html"
-    fields = ['company_name', 'weight_threshold', 'base_fee']
+    fields = ['company_name', 'weight_threshold', 'base_fee', 'default']
 
     def get_context_data(self, **kwargs):
         data = super(CreateDeliveryCompany, self).get_context_data(**kwargs)
@@ -1161,7 +1181,7 @@ class CreateDeliveryCompany(CreateView):
         else:
             form = CompanyFeesFormset()
             for i, j in enumerate(form.extra_forms):
-                form.forms[i].initial['state'] = i + 49
+                form.forms[i].initial['state'] = i + 1
             data['fees_form'] = form
         return data
 
@@ -1173,17 +1193,58 @@ class CreateDeliveryCompany(CreateView):
             if fees_form.is_valid():
                 fees_form.instance = self.object
                 fees_form.save()
+        if self.object.default == True:
+            DeliveryCompany.objects.exclude(pk=self.object.pk).update(default=False)
         return super(CreateDeliveryCompany, self).form_valid(form)
 
     def get(self, request, *args, **kwargs):
+        response = super(CreateDeliveryCompany, self).get(request, *args, **kwargs)
         if is_ajax(request):
-            self.object = None
             context = self.get_context_data()
             html = render_to_string(self.template_name,
                                     context=context,
                                     request=request)
             return JsonResponse(html, safe=False)
-        return super(CreateDeliveryCompany, self).get(request, *args, **kwargs)
+        return response
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class UpdateDeliveryCompany(UpdateView):
+    success_url = reverse_lazy("ecommerce:delivery-companies-list")
+    model = DeliveryCompany
+    template_name = "dashboard/create_company.html"
+    fields = ['company_name', 'weight_threshold', 'base_fee', 'default']
+
+    def get_context_data(self, **kwargs):
+        data = super(UpdateDeliveryCompany, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['fees_form'] = CompanyFeesFormset(instance=self.object, data=self.request.POST)
+        else:
+            form = CompanyFeesFormset(instance=self.object)
+            data['fees_form'] = form
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        fees_form = context['fees_form']
+        with transaction.atomic():
+            self.object = form.save()
+            if fees_form.is_valid():
+                fees_form.instance = self.object
+                fees_form.save()
+        if self.object.default == True:
+            DeliveryCompany.objects.exclude(pk=self.object.pk).update(default=False)
+        return super(UpdateDeliveryCompany, self).form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        response = super(UpdateDeliveryCompany, self).get(request, *args, **kwargs)
+        if is_ajax(request):
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return response
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -1359,3 +1420,36 @@ class DeliveryManRecapView(TemplateView):
         data = dict()
         data['html'] = render_to_string(self.template_name, context, request=request)
         return JsonResponse(data)
+
+
+@login_required
+def calculate_delivery_fee(request):
+    city_id = request.GET.get('city_id')
+    city = get_object_or_404(City, pk=city_id)
+    base_fee = None
+    if city.name in ['Alger', 'Blida', 'Boumerdes']:
+        settings = Settings.objects.all().first()
+        if settings:
+            return settings.standard_delivery_fee
+        base_fee = 500
+
+    if request.user.is_authenticated:
+        cart = request.user.profile.cart
+    else:
+        cart = Cart.objects.get(identifier=request.session.get('cart_id'))
+
+    total_weight = 0
+    for line in cart.get_lines:
+        total_weight += line.product.weight
+
+    delivery_company = DeliveryCompany.objects.get(default=True)
+    state_fee = DeliveryFee.objects.get(state=city.state_id, company=delivery_company)
+    if not base_fee:
+        base_fee = state_fee.fee if state_fee else 500
+    extra_weight = total_weight - delivery_company.weight_threshold
+    if extra_weight > 0:
+        fee = base_fee + (extra_weight * delivery_company.base_fee)
+    else:
+        fee = base_fee
+
+    return JsonResponse({"fee": fee, "total": cart.total_sum_client_ajax(fee=fee)})

@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="col-md-12 form-group p_star">
                                     <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
-                                    {% render_field form.city class="country_select select2" %}
+                                    {% render_field form.city class="country_select select2" onchange="onCityChange()" %}
                                 </div>
                                 <div class="col-md-12 form-group p_star">
                                     <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
@@ -121,7 +121,8 @@
                                                 <span>{% trans 'Free Delivery' %}</span>
                                             {% else %}
                                                 {% if user.profile.cart.delivery_fee != -1 %}
-                                                    <span>{{ user.profile.cart.delivery_fee|default:"0" }} DZD</span>
+                                                    <span id="delivery-fee">{{ user.profile.cart.delivery_fee|default:"0" }} {% trans 'DZD' %}</span>
+
                                                 {% else %}
                                                     <span>{% trans 'Will be calculated later.' %}</span>
                                                 {% endif %}
@@ -129,7 +130,8 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">{% trans 'Total' %}<span>{{ user.profile.cart.total_sum_client }} {% trans 'DZD' %}</span>
+                                        <a href="#">{% trans 'Total' %}<span
+                                                id="total-fee">{{ user.profile.cart.total_sum_client }} {% trans 'DZD' %}</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -172,5 +174,24 @@
             const element = $('.select2-selection').eq(1)
             element.addClass("d-none")
         })
+
+        function onCityChange(e) {
+            console.log("******************************")
+            {% if user.profile.cart.is_free_delivery %}
+                return
+            {% endif %}
+            console.log("*********************************")
+            const val = $('#id_city').val()
+            const data = {city_id: val}
+            $.ajax({
+                url: "{% url "ecommerce:calculate-delivery-fee" %}",
+                type: "GET",
+                data: data,
+                success: (data) => {
+                    $('#delivery-fee').html(data['fee'] + " {% trans 'DZD' %}")
+                    $('#total-fee').html(data['total'] + " {% trans 'DZD' %}")
+                }
+            })
+        }
     </script>
 {% endblock scripts %}

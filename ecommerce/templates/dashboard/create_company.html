@@ -2,7 +2,10 @@
 {% load i18n %}
 {% load static %}
 
-<form action="{% url "ecommerce:delivery-companies-create" %}" method="POST">
+<form action="
+
+        {% if view.object %}{% url "ecommerce:delivery-companies-update" view.object.pk %}{% else %}{% url "ecommerce:delivery-companies-create" %}{% endif %}"
+      method="POST">
     {% csrf_token %}
     <div class="modal-header">
         <h5 class="modal-title" id="scrollmodalLabel">{% trans 'Create New Company' %}</h5>

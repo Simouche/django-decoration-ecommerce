@@ -4,6 +4,7 @@ import uuid
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
 from django.db.models import Model, Sum, Avg, F
+from django.utils import timezone
 
 from accounts.models import State
 from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
@@ -349,6 +350,11 @@ class Cart(DeletableModel):
             return self.sub_total
         return self.total_sum
 
+    def total_sum_client_ajax(self, fee=0):
+        if self.is_free_delivery:
+            return self.sub_total
+        return self.total_sum - decimal.Decimal(self.delivery_fee) + fee
+
     @property
     def sub_total(self):
         sum = 0
@@ -399,11 +405,14 @@ class Cart(DeletableModel):
 
     def confirm(self, note=None):
         order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee,
-                                     free_delivery=self.is_free_delivery)
+                                     free_delivery=self.is_free_delivery, delivery_date=self.get_tomorrow_date())
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()
         return order
+
+    def get_tomorrow_date(self):
+        return timezone.datetime.today() + timezone.timedelta(days=1)
 
     def clear_lines(self):
         self.lines.all().delete()
@@ -439,7 +448,7 @@ class ProductOnSeasonalDiscount(DeletableModel):
 class DeliveryCompany(DeletableModel):
     company_name = models.CharField(unique=True, verbose_name=_('Company Name'), max_length=255)
     weight_threshold = models.PositiveIntegerField(verbose_name=_('Weight Threshold'), default=0, blank=True)
-    base_fee = models.PositiveIntegerField(verbose_name=_('Base Fee'), default=0, blank=True)
+    base_fee = models.PositiveIntegerField(verbose_name=_('Fee per 1kg'), default=0, blank=True)
     default = models.BooleanField(default=False, verbose_name=_('Default'))
 
     @property
@@ -552,6 +561,18 @@ class Partner(DeletableModel):
     class Meta:
         verbose_name = _('Partner')
         verbose_name_plural = _('Partners')
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class QuickLink(DeletableModel):
+    url = models.URLField(null=True, blank=True, verbose_name=_("URL"))
+    name = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Name"))
+
+    class Meta:
+        verbose_name = _('Quick Link')
+        verbose_name_plural = _('Quick Links')
 
     def __str__(self):
         return f'{self.name}'

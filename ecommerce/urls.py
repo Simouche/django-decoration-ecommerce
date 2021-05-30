@@ -16,6 +16,10 @@ urlpatterns = [
          name='dashboard-sales-update-status'),
     path('dashboard/index-content/<int:pk>/update/', views.UpdateIndexContent.as_view(),
          name='dashboard-update-index-content'),
+    path('dashboard/quick-links/create/', views.CreateQuickLink.as_view(),
+         name='dashboard-quick-links-create'),
+    path('dashboard/partners/create/', views.CreatePartner.as_view(),
+         name='dashboard-partners-create'),
     path('dashboard/settings/<int:pk>/update/', views.UpdateSettings.as_view(),
          name='dashboard-update-settings'),
     path('dashboard/print/<int:order_id>/', views.print_view, name='print_order'),
@@ -50,6 +54,8 @@ urlpatterns = [
          name="delivery-companies-create"),
     path('dashboard/delivery/companies/<int:pk>/', views.DetailDeliveryCompany.as_view(),
          name="delivery-companies-detail"),
+    path('dashboard/delivery/companies/<int:pk>/update/', views.UpdateDeliveryCompany.as_view(),
+         name="delivery-companies-update"),
 
     path('dashboard/recap/delivery-man/', views.DeliveryManRecapView.as_view(), name='delivery-man-recap'),
 
@@ -59,6 +65,7 @@ urlpatterns = [
     path('cart/details/<int:pk>/', views.CartDetailsView.as_view(), name='cart-details'),
     path('cart/update/', views.CartUpdateView.as_view(), name='cart-update'),
     path('cart/checkout/', views.CartCashOutToOrder.as_view(), name='cart-check-out'),
+    path('cart/checkout/delivery-fee/', views.calculate_delivery_fee, name='calculate-delivery-fee'),
     path('cart/checkout/confirm/', views.CartCheckOutConfirm.as_view(), name='cart-check-out-confirm'),
     path('cart/get-count/', views.get_cart_count, name='cart-get-count'),
 
@@ -81,5 +88,6 @@ urlpatterns = [
 
     path('reviews/add/', views.AddReview.as_view(), name='review-add'),
 
-    path('login-required/', views.LoginRequired.as_view(), name='login-required')
+    path('login-required/', views.LoginRequired.as_view(), name='login-required'),
+
 ]
