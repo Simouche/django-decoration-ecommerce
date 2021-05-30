@@ -15,4 +15,4 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
                 request.user.profile.cart
             except Exception:
                 profile = request.user.profile
-                profile.cart = Cart.objects.filter(identifier=request.session.get('cart_id')).update(profile=profile)
+                Cart.objects.filter(identifier=request.session.get('cart_id')).update(profile=profile)
