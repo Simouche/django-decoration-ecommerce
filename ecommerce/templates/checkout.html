@@ -188,6 +188,8 @@
                 success: (data) => {
                     $('#delivery-fee').html(data['fee'] + " {% trans 'DZD' %}")
                     $('#total-fee').html(data['total'] + " {% trans 'DZD' %}")
+                }, error: (response) => {
+                    console.log(response)
                 }
             })
         }
