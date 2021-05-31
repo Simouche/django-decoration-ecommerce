@@ -44,7 +44,9 @@ class RegisterView(FormView):
 
     def get_context_data(self, **kwargs):
         next = self.request.GET.get('next')
-        return super(RegisterView, self).get_context_data(next=next, **kwargs)
+        if next:
+            return super(RegisterView, self).get_context_data(next=next, **kwargs)
+        return super(RegisterView, self).get_context_data(**kwargs)
 
 
 class LoginView(View):
