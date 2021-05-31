@@ -398,7 +398,7 @@ class Cart(DeletableModel):
             base_fee = state_fee.fee if state_fee else 500
             extra_weight = total_weight - delivery_company.weight_threshold
             if extra_weight > 0:
-                fee = base_fee + (extra_weight * 100)
+                fee = base_fee + (extra_weight * delivery_company.base_fee)
             else:
                 fee = base_fee
 

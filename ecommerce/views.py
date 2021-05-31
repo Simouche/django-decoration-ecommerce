@@ -1430,8 +1430,9 @@ def calculate_delivery_fee(request):
     if city.name in ['Alger', 'Blida', 'Boumerdes']:
         settings = Settings.objects.all().first()
         if settings:
-            return settings.standard_delivery_fee
-        base_fee = 500
+            base_fee = settings.standard_delivery_fee
+        else:
+            base_fee = 500
 
     if request.user.is_authenticated:
         cart = request.user.profile.cart
