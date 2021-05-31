@@ -392,9 +392,9 @@ class Cart(DeletableModel):
             fee = 0
             delivery_company = DeliveryCompany.objects.get(default=True)
             try:
-                state_fee = DeliveryFee.objects.get(state=city.state_id, company=delivery_company)
+                state_fee = DeliveryFee.objects.get(state=self.profile.city.state_id, company=delivery_company)
             except Exception:
-                state_fee = 500
+                state_fee = None
             base_fee = state_fee.fee if state_fee else 500
             extra_weight = total_weight - delivery_company.weight_threshold
             if extra_weight > 0:

@@ -1446,7 +1446,7 @@ def calculate_delivery_fee(request):
     try:
         state_fee = DeliveryFee.objects.get(state=city.state_id, company=delivery_company)
     except Exception:
-        state_fee = 500
+        state_fee = None
     if not base_fee:
         base_fee = state_fee.fee if state_fee else 500
     extra_weight = total_weight - delivery_company.weight_threshold
