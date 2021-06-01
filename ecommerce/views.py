@@ -414,11 +414,11 @@ class CreateProduct(BSModalCreateView):
                 url = MEDIA_URL + 'products/' + image.name
                 handle_uploaded_file(image, path)
                 self.object.slider.append(url)
-        self.object.save()
-        if self.formset.is_valid():
-            with transaction.atomic():
-                self.formset.instance = self.object
-                self.formset.save()
+            self.object.save()
+            if self.formset.is_valid():
+                with transaction.atomic():
+                    self.formset.instance = self.object
+                    self.formset.save()
         return response
 
 
