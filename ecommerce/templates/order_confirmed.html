@@ -62,14 +62,10 @@
                                     </li>
                                     <li>
                                         <a href="#">{% trans 'Delivery' %}
-                                           {% if order.free_delivery %}
+                                            {% if order.free_delivery %}
                                                 <span>{% trans 'Free Delivery' %}</span>
                                             {% else %}
-                                                {% if order.shipping_fee != -1 %}
-                                                    <span>{{ order.shipping_fee|default:"0" }} DZD</span>
-                                                {% else %}
-                                                    <span>{% trans 'Will be calculated later.' %}</span>
-                                                {% endif %}
+                                                <span>{{ order.shipping_fee|default:"0" }} DZD</span>
                                             {% endif %}
                                         </a>
                                     </li>

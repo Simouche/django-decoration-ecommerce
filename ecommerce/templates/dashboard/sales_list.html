@@ -93,6 +93,7 @@
                 <th>{% trans "Number" %}</th>
                 <th>{% trans "Client" %}</th>
                 <th>{% trans "phone" %}</th>
+                <th>{% trans "city" %}</th>
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
                 <th>{% trans "date" %}</th>
@@ -120,6 +121,7 @@
                             class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
                         {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
                     </td>
+                    <td>{{ sale.profile.city }}</td>
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.created_at }}</td>

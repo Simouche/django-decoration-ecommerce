@@ -2,15 +2,19 @@ from django.db.models import F
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver, Signal
 
+from ecommerce import get_tomorrow_date
 from ecommerce.models import Order, OrderStatusChange, IndexContent, OrderLine, Settings
 
 order_line_deleted = Signal()
 
 
 @receiver(pre_save, sender=Order)
-def order_pre_creation_signal(sender, instance, raw, **kwargs):
+def order_pre_creation_signal(sender, instance: Order, raw, **kwargs):
     if not instance.pk:
         instance.number = Order.generate_number()
+
+    if instance.status == 'CO':
+        instance.delivery_date = get_tomorrow_date()
 
 
 @receiver(post_save, sender=Order)

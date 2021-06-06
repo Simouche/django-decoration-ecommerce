@@ -52,6 +52,14 @@ class Index(TemplateView):
         return m_kwargs
 
 
+class Contact(TemplateView):
+    template_name = "contact.html"
+
+
+class About(TemplateView):
+    template_name = "about.html"
+
+
 @method_decorator(staff_member_required, name='dispatch')
 class Dashboard(TemplateView):
     template_name = "dashboard/dashboard.html"

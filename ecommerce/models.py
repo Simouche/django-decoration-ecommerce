@@ -555,6 +555,10 @@ class IndexContent(BaseModel):
     facebook = models.URLField(verbose_name='Facebook', default="https://www.facebook.com", blank=True)
     Instagram = models.URLField(verbose_name='Instagram', default="https://www.instagram.com", blank=True)
     twitter = models.URLField(verbose_name='Twitter', default="https://www.twitter.com", blank=True)
+    youtube = models.URLField(verbose_name='Youtube', default="https://www.youtube.com", blank=True)
+    tumblr = models.URLField(verbose_name='Tumblr', default="https://www.tumblr.com", blank=True)
+    pintrest = models.URLField(verbose_name='Pintrest', default="https://www.pintrest.com", blank=True)
+
 
 
 class Partner(DeletableModel):

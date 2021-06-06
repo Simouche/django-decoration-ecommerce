@@ -7,3 +7,7 @@ def current_week_range():
     start_week = date - timezone.timedelta(date.weekday() + 1)
     end_week = start_week + timezone.timedelta(7)
     return start_week, end_week
+
+
+def get_tomorrow_date():
+    return timezone.datetime.today() + timezone.timedelta(days=1)

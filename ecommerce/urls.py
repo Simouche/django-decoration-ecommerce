@@ -26,8 +26,8 @@ urlpatterns = [
     path('dashboard/print/orders/', views.print_view, name='print_orders'),
     path('dashboard/getfile/<str:file_name>/', views.get_file, name='get_file'),
 
-    path('about/', views.Index.as_view(), name='about'),
-    path('contact/', views.Index.as_view(), name='contact'),
+    path('about/', views.About.as_view(), name='about'),
+    path('contact/', views.Contact.as_view(), name='contact'),
 
     path('products/list/', views.ProductsListView.as_view(), name='products-list'),
     path('products/list/export/', views.export_products_excel, name='products-list-export'),
