@@ -249,9 +249,9 @@ class DashboardSalesListView(ListView):
             if cd.get('caller'):
                 queryset = queryset.filter(assigned_to=cd.get('caller'))
             if cd.get('start_date'):
-                queryset = queryset.filter(created_at__gte=cd.get('start_date'))
+                queryset = queryset.filter(delivery_date__gte=cd.get('start_date'))
             if cd.get('end_date'):
-                queryset = queryset.filter(created_at__lte=cd.get('end_date'))
+                queryset = queryset.filter(delivery_date__lte=cd.get('end_date'))
             if cd.get('status'):
                 queryset = queryset.filter(status__in=cd.get('status'))
             return queryset
@@ -1439,8 +1439,6 @@ def calculate_delivery_fee(request):
         settings = Settings.objects.all().first()
         if settings:
             base_fee = settings.standard_delivery_fee
-        else:
-            base_fee = 500
 
     if request.user.is_authenticated:
         cart = request.user.profile.cart

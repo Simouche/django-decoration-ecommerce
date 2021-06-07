@@ -140,7 +140,7 @@
                             <a class="btn"
                                href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
                             <a class="btn checkout_btn"
-                               {% if user.profile.cart.products_count != 0 %}href="{% url 'ecommerce:cart-check-out' %}" {% endif %}
+                               {% if cart.products_count != 0 %}href="{% url 'ecommerce:cart-check-out' %}" {% endif %}
                             >{% trans 'Proceed to checkout' %}</a>
                         </div>
                     </div>

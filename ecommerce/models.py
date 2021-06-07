@@ -408,7 +408,7 @@ class Cart(DeletableModel):
 
     def confirm(self, note=None):
         order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee,
-                                     free_delivery=self.is_free_delivery, delivery_date=self.get_tomorrow_date())
+                                     free_delivery=self.is_free_delivery)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()

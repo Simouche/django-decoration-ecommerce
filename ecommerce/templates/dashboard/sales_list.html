@@ -96,7 +96,7 @@
                 <th>{% trans "city" %}</th>
                 <th>{% trans "Items Count" %}</th>
                 <th>{% trans "Total" %}</th>
-                <th>{% trans "date" %}</th>
+                <th>{% trans "delivery date" %}</th>
                 <th>{% trans "caller" %}</th>
                 <th>{% trans "delivery" %}</th>
                 <th class="text-center">{% trans "status" %}</th>
@@ -124,7 +124,7 @@
                     <td>{{ sale.profile.city }}</td>
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
-                    <td>{{ sale.created_at }}</td>
+                    <td>{{ sale.delivery_date|default:"_" }}</td>
                     <td>{{ sale.assigned_to|default:"" }}</td>
                     <td>{{ sale.get_delivery_guy|default:"" }}</td>
                     <td class="text-center">
