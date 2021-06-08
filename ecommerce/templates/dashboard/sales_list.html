@@ -136,6 +136,10 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
+                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                <i class="zmdi zmdi-edit"
+                                   onclick="updateOrder({{ sale.pk }})"></i>
+                            </button>
                             <a href="{% url 'ecommerce:print_order' sale.pk %}" target="_blank"
                                class="item" data-toggle="tooltip" data-placement="top" title="Print">
                                 <i class="fas fa-print"></i>
@@ -165,6 +169,16 @@
             <div class="modal-content pb-5"></div>
         </div>
     </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="change-order-status-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content pb-5">
+
+            </div>
+        </div>
+    </div>
+
 
     <!-- delete user modal -->
     <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
@@ -285,6 +299,20 @@
             })
             const url = "{% url "ecommerce:print_orders" %}?orders=" + ids
             window.open(url, '_blank')
+        }
+
+        function updateOrder(id) {
+            $.ajax({
+                type: 'GET',
+                url: `/orders/${id}/update/`,
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#change-order-status-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
         }
 
     </script>

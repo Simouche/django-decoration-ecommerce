@@ -55,6 +55,12 @@ class Index(TemplateView):
 class Contact(TemplateView):
     template_name = "contact.html"
 
+    def get_context_data(self, **kwargs):
+        return super(Contact, self).get_context_data(settings=Settings.objects.all().first(), **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
 
 class About(TemplateView):
     template_name = "about.html"
@@ -1101,7 +1107,7 @@ class UpdateSettings(UpdateView):
     model = Settings
     template_name = "dashboard/settings_form.html"
     context_object_name = "settings"
-    fields = ['standard_delivery_fee', 'rc', 'nif', 'ai']
+    fields = ['standard_delivery_fee', 'rc', 'nif', 'ai', 'address', 'assistance_number', 'assistance_email']
 
     def get_success_url(self):
         return reverse_lazy("ecommerce:dashboard-update-settings", kwargs={"pk": 1})

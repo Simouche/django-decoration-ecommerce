@@ -560,7 +560,6 @@ class IndexContent(BaseModel):
     pintrest = models.URLField(verbose_name='Pintrest', default="https://www.pintrest.com", blank=True)
 
 
-
 class Partner(DeletableModel):
     name = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Name"))
     url = models.URLField(null=True, blank=True, verbose_name=_("URL"))
@@ -611,3 +610,7 @@ class Settings(BaseModel):
     rc = models.CharField(max_length=255, blank=True, verbose_name=_('RC'), default="sdfqsdfqsdfqsdfqsdf")
     nif = models.CharField(max_length=255, blank=True, verbose_name=_('NIF'), default="sdfqsdfqsdfqsdfqsdf")
     ai = models.CharField(max_length=255, blank=True, verbose_name=_('AI'), default="sdfqsdfqsdfqsdfqsdf")
+
+    address = models.CharField(max_length=255, verbose_name=_('Address'), blank=True)
+    assistance_number = models.CharField(max_length=255, verbose_name=_('Assistance Number'), blank=True)
+    assistance_email = models.CharField(max_length=255, verbose_name=_('Assistance Email'), blank=True)

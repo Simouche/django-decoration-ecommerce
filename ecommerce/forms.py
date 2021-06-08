@@ -47,7 +47,7 @@ class CreateOrderLineForm(forms.ModelForm):
 
 
 OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, form=CreateOrderLineForm,
-                                              can_delete=True)
+                                              can_delete=True, extra=0)
 
 
 class CreateProductForm(BSModalModelForm):
