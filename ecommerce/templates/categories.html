@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load widget_tweaks %}
 {% block content %}
     <main>
         <!--? slider Area Start-->
@@ -63,24 +64,14 @@
                                         <div class="col-12">
                                             <!-- Select State items start -->
                                             <div class="select-categories">
-                                                <select name="category">
-                                                    <option value="">{% trans 'Category' %}</option>
-                                                    {% for category in categories %}
-                                                        <option value="{{ category.pk }}">{{ category.name|slice:"0:10" }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                {% render_field form.category %}
                                             </div>
                                             <!--  Select State items End-->
                                         </div>
                                         <div class="col-12">
                                             <!-- Select km items start -->
                                             <div class="select-categories">
-                                                <select name="sub_category">
-                                                    <option value="">{% trans 'Sub Category' %}</option>
-                                                    {% for sub_cat in sub_categories %}
-                                                        <option value="{{ sub_cat.pk }}">{{ sub_cat.name|slice:"0:10" }}</option>
-                                                    {% endfor %}
-                                                </select>
+                                                {% render_field form.sub_category %}
                                             </div>
                                             <!--  Select km items End-->
                                         </div>
@@ -129,30 +120,7 @@
                                     <div class="small-tittle">
                                         <h4>{% trans 'Latest Product' %}</h4>
                                     </div>
-                                    <label class="container">{% trans 'Any' %}
-                                        <input type="radio" checked="checked active" name="period" value="0">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">{% trans 'Today' %}
-                                        <input type="radio" name="period" value="1">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">{% trans 'Last 2 days' %}
-                                        <input type="radio" name="period" value="2">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">{% trans 'Last 5 days' %}
-                                        <input type="radio" name="period" value="3">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">{% trans 'Last 10 days' %}
-                                        <input type="radio" name="period" value="4">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container">{% trans 'Last 15 days' %}
-                                        <input type="radio" name="period" value="5">
-                                        <span class="checkmark"></span>
-                                    </label>
+                                    {% render_field form.latest_product %}
                                 </div>
                                 <!-- Check box /-->
                                 <div class="row justify-content-center">
@@ -173,14 +141,14 @@
                                 <div class="count-job mb-35">
                                     <span>{{ products.count }} {% trans 'Product found' %}</span>
                                     <!-- Select job items start -->
-                                    <div class="select-cat">
-                                        <span>{% trans 'Sort by' %}</span>
-                                        <select name="select">
-                                            <option value="name">{% trans 'Name' %}</option>
-                                            <option value="price_high">{% trans 'Highest Price' %}</option>
-                                            <option value="price_low">{% trans 'Lowest Price' %}</option>
-                                        </select>
-                                    </div>
+{#                                    <div class="select-cat">#}
+{#                                        <span>{% trans 'Sort by' %}</span>#}
+{#                                        <select name="select">#}
+{#                                            <option value="name">{% trans 'Name' %}</option>#}
+{#                                            <option value="price_high">{% trans 'Highest Price' %}</option>#}
+{#                                            <option value="price_low">{% trans 'Lowest Price' %}</option>#}
+{#                                        </select>#}
+{#                                    </div>#}
                                     <!--  Select job items End-->
                                 </div>
                             </div>

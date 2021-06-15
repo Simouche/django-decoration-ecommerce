@@ -51,7 +51,7 @@ class Product(DeletableModel):
     slider = ArrayField(models.CharField(max_length=255, ), null=True, blank=True, default=list)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Discount Price'), null=True,
                                          blank=True)
-    weight = models.PositiveIntegerField(verbose_name=_('Weight'), default=100)
+    weight = models.PositiveIntegerField(verbose_name=_('Weight'), default=1)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',

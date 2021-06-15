@@ -248,3 +248,24 @@ class OrderFilter(forms.Form):
     start_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
     end_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
     status = forms.MultipleChoiceField(choices=FROM_STATUS_CHOICES, required=False)
+
+
+class FilterForm(forms.Form):
+    latest_product_choices = (
+        ('any', _('Any')),
+        ('t', _('Today')),
+        ('d2', _('Last 2 Days')),
+        ('d5', _('Last 5 Days')),
+        ('d10', _('Last 10 Days')),
+        ('d15', _('Last 15 Days')),
+    )
+
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.filter(sub_categories__products__isnull=False).distinct(),
+        required=False,
+        empty_label=_('Category'))
+    sub_category = forms.ModelChoiceField(queryset=SubCategory.objects.filter(products__isnull=False).distinct(),
+                                          required=False,
+                                          empty_label=_('Sub-Category'))
+    latest_product = forms.ChoiceField(choices=latest_product_choices, widget=forms.RadioSelect,
+                                       initial='any', required=False)

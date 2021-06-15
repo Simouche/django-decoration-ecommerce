@@ -31,7 +31,7 @@ from ecommerce import current_week_range
 from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCategoryForm, CreateSubCategoryForm, \
     SearchOrderStatusChangeHistory, IndexContentForm, CompanyFeesFormset, CreateDeliveryGuyForm, CreateOrderForm, \
     OrderWithLinesFormSet, CartWithLinesFormSet, CheckoutForm, OrderFilter, ProductWithSizesFormset, QuickLinkForm, \
-    PartnerForm
+    PartnerForm, FilterForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings, DeliveryFee, \
     Partner, QuickLink
@@ -1002,32 +1002,44 @@ class CategoriesListView(ListView):
     context_object_name = 'products'
     queryset = Product.objects.filter(visible=True)
     template_name = "categories.html"
-    paginate_by = 21
-    page_kwarg = 'page'
-    paginate_orphans = True
+    # paginate_by = 21
+    # page_kwarg = 'page'
+    # paginate_orphans = True
     extra_context = {'categories': Category.objects.filter(visible=True),
                      'sub_categories': SubCategory.objects.filter(visible=True)}
     allow_empty = True
     ordering = 'pk'
 
-    def search(self):
-        queries = self.request.GET
-        if queries.get('category', None):
-            self.queryset = self.queryset.filter(category__category_id=queries.get('category'))
-        if queries.get('sub_category', None):
-            self.queryset = self.queryset.filter(category_id=queries.get('sub_category'))
-        if queries.get('color', 'any') and not queries.get('color', 'any') == 'any':
-            self.queryset = self.queryset.filter(colors__contains=[queries.get('color')])
-        if queries.get('from', 0):
-            self.queryset = self.queryset.filter(price__gte=queries.get('from', 0))
-        if queries.get('to', 0):
-            self.queryset = self.queryset.filter(price__lte=queries.get('to', 0))
-        if queries.get('period'):
-            integer = 0
-            # todo implement the cases for this
+    def search(self, queryset):
+        if self.form.is_valid():
+            print("form valid")
+            cd = self.form.cleaned_data
+            if cd.get('category', None):
+                queryset = queryset.filter(category__category_id=cd.get('category'))
+            if cd.get('sub_category', None):
+                queryset = queryset.filter(category_id=cd.get('sub_category'))
+            if cd.get('color', 'any') and not cd.get('color', 'any') == 'any':
+                queryset = queryset.filter(colors__contains=[cd.get('color')])
+            if self.request.GET.get('from', 0):
+                queryset = queryset.filter(price__gte=self.request.GET.get('from', 0))
+            if self.request.GET.get('to', 0):
+                queryset = queryset.filter(price__lte=self.request.GET.get('to', 0))
+            if cd.get('period'):
+                integer = 0
+                # todo implement the cases for this
+
+        return queryset
+
+    def get_queryset(self):
+        queryset = super(CategoriesListView, self).get_queryset()
+        queryset = self.search(queryset)
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        return super(CategoriesListView, self).get_context_data(form=self.form)
 
     def get(self, request, *args, **kwargs):
-        self.search()
+        self.form = FilterForm(request.GET)
         return super(CategoriesListView, self).get(request, *args, **kwargs)
 
 
