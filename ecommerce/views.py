@@ -1359,6 +1359,22 @@ def assign_orders_to_delivery_guy(request):
 
 
 @login_required
+def print_route_sheet(request):
+    ids = request.GET.getlist('orders')
+    ids = ids[0].split(",")
+    orders = get_list_or_404(Order, pk__in=ids)
+    index = IndexContent.objects.all().first()
+    settings = Settings.objects.all().first()
+    settings.assistance_number = index.assistance_number
+    context = {
+        'orders': orders,
+        'settings': settings
+    }
+    return render(request, 'dashboard/invoice/invoice2.html',
+                  context)
+
+
+@login_required
 def print_view(request, order_id=None):
     if request.method == "GET":
         if order_id is not None:

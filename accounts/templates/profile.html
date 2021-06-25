@@ -9,6 +9,20 @@
         .image-upload > input {
             display: none;
         }
+
+        .image-upload {
+            color: white;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none;
+        }
+
+        .image-upload a {
+            cursor: default;
+            pointer-events: none;
+        }
+
     </style>
 {% endblock %}
 
@@ -71,7 +85,7 @@
                                                 {% with WIDGET_ERROR_CLASS='is-invalid' %}
                                                     {% if field.name == 'photo' %}
                                                         <div class="image-upload">
-                                                            <img width="100"
+                                                            <img width="100" id="output"
                                                                  alt="{% trans "Profile Picture" %}"
                                                                     {% if profile.get_photo %}
                                                                  src="{{ profile.get_photo }}"
@@ -79,7 +93,7 @@
                                                                  src="{% static 'img/icon/avatar.jpg' %}"
                                                                     {% endif %}
                                                             />
-                                                            {% render_field field class="single-input" %}
+                                                            {% render_field field class="single-input" onchange='document.getElementById(`output`).src = window.URL.createObjectURL(this.files[0])' %}
                                                         </div>
                                                     {% elif field.name == 'city' %}
                                                         <div class="row col-md-4">

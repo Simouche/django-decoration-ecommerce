@@ -24,6 +24,7 @@ urlpatterns = [
          name='dashboard-update-settings'),
     path('dashboard/print/<int:order_id>/', views.print_view, name='print_order'),
     path('dashboard/print/orders/', views.print_view, name='print_orders'),
+    path('dashboard/print/orders/route-sheet/', views.print_route_sheet, name='print_route_sheet'),
     path('dashboard/getfile/<str:file_name>/', views.get_file, name='get_file'),
 
     path('about/', views.About.as_view(), name='about'),

@@ -8,7 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Samy Deco</title>
+    <title>Auconfort</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest">
@@ -57,15 +57,16 @@
                 <div class="row menu-wrapper align-items-center justify-content-between">
                     <!-- Logo -->
                     <div class="logo">
-                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.svg' %}" alt=""
+                        <a href="{% url 'ecommerce:index' %}"><img id="karim-logo" src="{% static '1x/logo.svg' %}"
+                                                                   alt=""
                                                                    height="64px"></a>
                     </div>
-                    <!-- Logo-2 -->
+                    {% comment %}<!-- Logo-2 -->
                     <div class="logo2">
-                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/Asset 2.png' %}"
+                        <a href="{% url 'ecommerce:index' %}"><img src="{% static '1x/logo.svg' %}"
                                                                    alt=""
                                                                    height="16px"></a>
-                    </div>
+                    </div>{% endcomment %}
                     <!-- Main-menu -->
                     <div class="main-menu  d-none d-lg-block header-right1" style="width: 100%">
                         <nav>
@@ -217,7 +218,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-analytics.js"></script>
 
-<script>
+<script type="text/javascript">
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
@@ -232,6 +233,22 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
+
+    window.onscroll = function () {
+        growShrinkLogo()
+    };
+
+    function growShrinkLogo() {
+        var Logo = document.getElementById("karim-logo")
+        if (document.body.scrollTop > 5 || document.documentElement.scrollTop > 5) {
+            Logo.style.height = '29px';
+            Logo.style.marginTop = '32px';
+        } else {
+            Logo.style.height = '64px';
+            Logo.style.marginTop = '0px';
+        }
+    }
+
 </script>
 
 </body>

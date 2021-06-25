@@ -241,26 +241,6 @@
             responseObjectName: "sales"
         })
 
-        loadByDeliveryGuy({
-            selectId: "#assign-to-select",
-            url: "{% url 'ecommerce:dashboard-sales' %}",
-            dataTableId: "#sales-table",
-        })
-
-        function updateOrder(id) {
-            $.ajax({
-                type: 'GET',
-                url: `/orders/${id}/update/`,
-                dataType: 'json',
-                success: (response) => {
-                    const modal = $("#change-order-status-modal")
-                    modal.find(".modal-content").html(response)
-                    modal.modal()
-                },
-                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
-            })
-        }
-
         function assignTo() {
             const ids = []
             const agentsSelect = $("#assign-to-select")
@@ -298,7 +278,9 @@
                 ids.push($(this).val())
             })
             const url = "{% url "ecommerce:print_orders" %}?orders=" + ids
+            const url2 = "{% url "ecommerce:print_route_sheet" %}?orders=" + ids
             window.open(url, '_blank')
+            window.open(url2, '_blank')
         }
 
         function updateOrder(id) {

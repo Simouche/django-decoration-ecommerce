@@ -2826,6 +2826,7 @@ hr {
 }
 
 .header-sticky.sticky-bar {
+    z-index: 99;
     background: #21345e;
     padding-left: 85px;
     padding-right: 30px;

@@ -368,9 +368,8 @@
 
 {% block modals %}
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="staticModalLabel"
-         aria-hidden="true"
-         data-backdrop="static">
-        <div class="modal-dialog modal-md" role="document">
+         aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-md" role="document" style="z-index: 100">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticModalLabel">{% trans "Success" %}!</h5>
