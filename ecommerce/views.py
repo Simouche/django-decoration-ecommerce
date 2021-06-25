@@ -81,10 +81,12 @@ class Dashboard(TemplateView):
         m_kwargs["items_sold_week"] = OrderLine.objects \
                                           .filter(order_line_lookup, created_at__week=get_current_week()) \
                                           .aggregate(count=Sum('quantity')).get('count', 0) or 0
-        m_kwargs["earnings"] = OrderLine.objects \
-            .filter(order_line_lookup) \
-            .aggregate(earning=Sum(F('quantity') * F('product__price'))).get('earning', 0.0) \
-            .quantize(decimal.Decimal("0.01"))
+        m_kwargs["earnings"] = (
+                OrderLine.objects
+                .filter(order_line_lookup)
+                .aggregate(earning=Sum(F('quantity') * F('product__price')))
+                .get('earning', 0.0) or decimal.Decimal(0.0)
+        ).quantize(decimal.Decimal("0.01"))
         m_kwargs['total_orders'] = Order.objects.all().count()
         m_kwargs['total_delivered_orders'] = Order.objects.filter(status__in=['D', 'PA']).count()
         m_kwargs['total_canceled_orders'] = Order.objects.filter(status__in=['CA', 'RE', 'R']).count()
