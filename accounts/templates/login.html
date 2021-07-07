@@ -132,14 +132,15 @@
                             </div>
                             <!-- form Footer -->
                             <div class="login-footer">
-{#                                <p>{% trans "Don’t have an account?" %} <a#}
-{#                                        href="{% url 'accounts:register' %}?next={{ next }}">{% trans "Sign Up" %}</a> {% trans "here" %}#}
-{#                                </p>#}
+                                {#                                <p>{% trans "Don’t have an account?" %} <a#}
+                                {#                                        href="{% url 'accounts:register' %}?next={{ next }}">{% trans "Sign Up" %}</a> {% trans "here" %}#}
+                                {#                                </p>#}
                                 <button type="submit" class="submit-btn3">{% trans "LOGIN" %}</button>
                             </div>
                         </div>
                     </form>
-                    <form class="form col-xl-6 login-form" action="{% url 'accounts:register' %}?next={{ next }}" method="post" role="form">
+                    <form class="form col-xl-6 login-form" action="{% url 'accounts:register' %}?next={{ next }}"
+                          method="post" role="form" id="register-form">
                         {% csrf_token %}
                         {% if messages %}
                             <div class="form-group row">
@@ -299,9 +300,9 @@
                             </div>
                             <!-- form Footer -->
                             <div class="register-footer">
-{#                                <p> {% trans "Already have an account? " %}<a#}
-{#                                        href="{% url 'accounts:login' %}"> {% trans "Login" %}</a>#}
-{#                                    {% trans "here" %}</p>#}
+                                {#                                <p> {% trans "Already have an account? " %}<a#}
+                                {#                                        href="{% url 'accounts:login' %}"> {% trans "Login" %}</a>#}
+                                {#                                    {% trans "here" %}</p>#}
                                 <button type="submit" class="submit-btn3">{% trans "Sign Up" %}</button>
                             </div>
                         </div>
@@ -359,6 +360,13 @@
 <script src="{% static  'js/plugins.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#register-form').on('submit', function () {
+            $('#user_type').val('C')
+        })
+    })
+</script>
 
 </body>
 </html>

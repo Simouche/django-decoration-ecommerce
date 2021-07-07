@@ -1,7 +1,7 @@
 from bootstrap_modal_forms.forms import BSModalModelForm
 from django import forms
 from django.contrib.auth.models import Group
-from django.contrib.postgres.forms import SimpleArrayField, SplitArrayWidget
+from django.contrib.postgres.forms import SimpleArrayField
 
 from accounts.models import User, Profile, City
 from base_backend import _
@@ -38,7 +38,8 @@ class RegistrationForm(forms.ModelForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
-                'placeholder': _("Username")
+                'placeholder': _("Username"),
+                'id': 'register-username'
             }
         )
     )
@@ -66,8 +67,9 @@ class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
-                'placeholder': _("Password")
-            }
+                'placeholder': _("Password"),
+                'id': 'register-password'
+            },
         )
     )
     c_password = forms.CharField(

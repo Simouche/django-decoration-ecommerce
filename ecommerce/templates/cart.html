@@ -82,16 +82,6 @@
                                         {% endfor %}
                                     </tr>
                                 {% endfor %}
-                                <tr class="bottom_button">
-                                    <td>
-                                        <button onclick="submitCartUpdate()"
-                                                class="btn">{% trans 'Update Cart' %}</button>
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
                                 {% comment %}                                <tr>
                                     <td></td>
                                     <td></td>
@@ -129,20 +119,21 @@
                                         <h5>{% trans 'Total' %}</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ cart.total_sum_client }} {% trans 'DZD' %}</h5>
+                                        <h5 id="total-value">{{ cart.total_sum_client }} {% trans 'DZD' %}</h5>
                                     </td>
                                     <td></td>
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <div class="checkout_btn_inner float-right">
+                                <a class="btn"
+                                   href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
+                                <button class="btn checkout_btn"
+                                        onclick="submitCartUpdate()"
+                                >{% trans 'Proceed to checkout' %}</button>
+                            </div>
                         </form>
-                        <div class="checkout_btn_inner float-right">
-                            <a class="btn"
-                               href="{% url 'ecommerce:products-list' %}">{% trans 'Continue Shopping' %}</a>
-                            <a class="btn checkout_btn"
-                               {% if cart.products_count != 0 %}href="{% url 'ecommerce:cart-check-out' %}" {% endif %}
-                            >{% trans 'Proceed to checkout' %}</a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -165,13 +156,62 @@
 
         $(document).ready(function () {
             $('.formset_row-{{ cart_lines.prefix }}').formset({
-                {#addText: '<i class="fas fa-plus"></i> add another',#}
-                deleteText: '<i class="fas fa-trash" style="color: #0b0b0b"></i>',
+                deleteText: '<i class="fas fa-trash bin" style="color: #0b0b0b"></i>',
                 prefix: '{{ form.prefix }}',
             })
+
+            $('.input-number').on('change', function () {
+
+                // negative quantities aren't permitted
+                if (parseFloat($(this).val()) < 0)
+                    $(this).val(0)
+
+                // building the ids of the targeted fields
+                const number = $(this).attr('id').split('-')[1]
+                const lineTotalId = `id_lines-${number}-total`
+                const linePriceId = `id_lines-${number}-price`
+
+                // calculating new values
+                const price = parseFloat($(`#${linePriceId}`).val())
+                const newQuantity = parseFloat($(this).val())
+                const newTotal = price * newQuantity
+
+                // holding the old total value
+                const totalField = $(`#${lineTotalId}`)
+                const oldLineTotal = totalField.val()
+
+                const totalValueField = $('#total-value')
+                const oldTotalValue = parseFloat(totalValueField.text().split(' ')[0])
+                const newTotalValue = oldTotalValue - oldLineTotal + newTotal
+                totalValueField.text(newTotalValue + 'DZD')
+
+                totalField.val(newTotal)
+            })
+
+            $('.bin').on('click', function () {
+                const aTag = $(this).parent()
+                const td = aTag.parent()
+                const input = td.children(":first")
+                const inputId = input.attr('id')
+                const number = inputId.split('-')[1]
+                const lineTotalId = `id_lines-${number}-total`
+
+                // holding the old total value
+                const totalField = $(`#${lineTotalId}`)
+                const oldLineTotal = totalField.val()
+
+                const totalValueField = $('#total-value')
+                const oldTotalValue = parseFloat(totalValueField.text().split(' ')[0])
+                const newTotalValue = oldTotalValue - oldLineTotal
+                totalValueField.text(newTotalValue + 'DZD')
+
+            })
+
+
         })
 
         function submitCartUpdate() {
+            console.log("cliiiiiiiiiiiiiicked!!!!")
             $("#cart-form").submit(function (event) {
                 $(".products").prop('disabled', '')
             })

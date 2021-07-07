@@ -10,6 +10,7 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
         if not request.session.get('cart_id', None):
             cart = Cart.objects.create()
             request.session['cart_id'] = cart.identifier.__str__()
+
         if request.user.is_authenticated:
             try:
                 request.user.profile.cart

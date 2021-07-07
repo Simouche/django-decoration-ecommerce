@@ -560,16 +560,15 @@ class CartAddView(CreateView):
             return super(CartAddView, self).form_valid(form=form)
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class CartUpdateView(FormView):
     template_name = "cart.html"
     form_class = CartWithLinesFormSet
 
-    def get_queryset(self):
-        return self.request.user.profile.cart.get_lines
-
     def get_object(self):
-        return self.request.user.profile.cart
+        if self.request.user.is_authenticated:
+            return self.request.user.profile.cart
+        return Cart.objects.get(identifier=self.request.session.get('cart_id'))
 
     def get_form_kwargs(self):
         kwargs = super(CartUpdateView, self).get_form_kwargs()
@@ -583,7 +582,7 @@ class CartUpdateView(FormView):
         return super(CartUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        self.success_url = reverse_lazy("ecommerce:cart-details", kwargs={"pk": self.request.user.profile.cart.id})
+        self.success_url = reverse_lazy("ecommerce:cart-check-out")
         return super(CartUpdateView, self).get_success_url()
 
     def form_invalid(self, form):

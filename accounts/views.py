@@ -27,9 +27,10 @@ class RegisterView(FormView):
     success_url = reverse_lazy("accounts:login")
     form_class = RegistrationForm
     initial = {'user_type': 'C'}
+    prefix = "register"
 
     def get_success_url(self):
-        if self.request.GET.get('next'):
+        if self.request.GET.get('next') and self.request.GET.get('next') != 'None':
             self.success_url = self.request.GET.get('next')
             return super(RegisterView, self).get_success_url()
         else:
@@ -41,6 +42,11 @@ class RegisterView(FormView):
                             password=form.cleaned_data.get('password'))
         login(self.request, user)
         return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        print(self.request.POST)
+        print(form.errors)
+        return super(RegisterView, self).form_invalid(form)
 
     def get_context_data(self, **kwargs):
         next = self.request.GET.get('next')
@@ -59,7 +65,8 @@ class LoginView(View):
             return redirect('ecommerce:index')
 
         login_form = LoginForm()
-        context = dict(login_form=login_form, next=self.request.GET.get('next'), form=RegistrationForm())
+        context = dict(login_form=login_form, next=self.request.GET.get('next'),
+                       form=RegistrationForm(prefix="register", auto_id=False, ))
         return render(request, self.template_name, context)
 
     def post(self, request):
