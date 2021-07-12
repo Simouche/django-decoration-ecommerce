@@ -116,6 +116,7 @@ class OrderLine(BaseModel):
     order = models.ForeignKey('Order', related_name='lines', on_delete=do_nothing)
     quantity = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Quantity'))
     size = models.ForeignKey('ProductSize', on_delete=models.SET_NULL, verbose_name=_('Size'), null=True, blank=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Total'), default=0)
 
     def __str__(self):
         return '{} {}'.format(self.quantity, self.product)
@@ -143,17 +144,19 @@ class OrderLine(BaseModel):
 
 class Order(DeletableModel):
     # add return status
-    status_choices = (('P', _('Pending')),
-                      ('RC', _('RECALL')),
-                      ('CO', _('Confirmed')),
-                      ('CA', _('Canceled')),
-                      ('OD', _('On Delivery')),
-                      ('D', _('Delivered')),
-                      ('R', _('Returned')),
-                      ('RE', _('Refund')),
-                      ('DE', _('Delayed')),
-                      ('PA', _('Paid')),
-                      ('NA', _('No Answer')),)
+    status_choices = (
+        ('P', _('Pending')),
+        ('RC', _('RECALL')),
+        ('CO', _('Confirmed')),
+        ('CA', _('Canceled')),
+        ('OD', _('On Delivery')),
+        ('D', _('Delivered')),
+        ('R', _('Returned')),
+        ('RE', _('Refund')),
+        ('DE', _('Delayed')),
+        ('PA', _('Paid')),
+        ('NA', _('No Answer')),
+    )
 
     profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
@@ -164,6 +167,12 @@ class Order(DeletableModel):
                                     verbose_name=_("Assigned To"), related_name="orders")
     note = models.TextField(_('Note'), max_length=1000, null=True, blank=True)
     delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True)
+    coupon = models.ForeignKey('Coupon', verbose_name=_('Applied Coupon'), on_delete=models.SET_NULL,
+                               related_name="orders", null=True, blank=True)
+
+    @property
+    def discounted(self):
+        return hasattr(self, 'coupon')
 
     @property
     def products_count(self):
@@ -173,24 +182,30 @@ class Order(DeletableModel):
     def sub_total(self):
         total = decimal.Decimal(0.0)
         for line in self.get_lines:
-            total += line.total
+            total += line.total_price
         return total.quantize(decimal.Decimal("0.01"))
 
     @property
     def total_sum(self):
-        sub_total = self.sub_total
+        sub_total = self.get_discounted_sub_total()
         total = sub_total + self.shipping_fee
         return total.quantize(decimal.Decimal("0.01"))
+
+    def get_discounted_sub_total(self):
+        discount_amount = 0
+        if self.discounted:
+            discount_amount = (self.sub_total * self.coupon.discount_percent) / decimal.Decimal(100.00)
+        return self.sub_total - discount_amount
 
     @property
     def total_sum_client(self):
         if self.free_delivery:
-            return self.sub_total
+            return self.get_discounted_sub_total()
         return self.total_sum
 
     @property
     def client_total_display(self):
-        return self.total_sum if not self.free_delivery else self.sub_total
+        return self.total_sum if not self.free_delivery else self.get_discounted_sub_total()
 
     @property
     def get_lines(self):
@@ -423,6 +438,18 @@ class Cart(DeletableModel):
     class Meta:
         verbose_name = _('Cart')
         verbose_name_plural = _('Carts')
+
+
+class Coupon(BaseModel):
+    code = models.CharField(max_length=50, verbose_name=_('Coupon Code'), unique=True)
+    discount_percent = models.PositiveIntegerField(verbose_name=_('Discount %'))
+    expiry_date = models.DateField(null=True, blank=True, verbose_name=_('ExpiryDate'))
+    is_expired = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('-created_at',)
+        verbose_name = _('Coupon')
+        verbose_name_plural = _('Coupons')
 
 
 class SeasonalDiscount(DeletableModel):

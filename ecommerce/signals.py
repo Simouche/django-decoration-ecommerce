@@ -30,6 +30,12 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
                                                  new_status=instance.status, user=request.user)
 
 
+@receiver(pre_save, sender=OrderLine)
+def order_line_pre_creation(sender, instance: OrderLine, created, **kwargs):
+    if created:
+        instance.total_price = instance.total
+
+
 @receiver(post_save, sender=OrderLine)
 def order_line_created(sender, instance: OrderLine, created, raw, **kwargs):
     if created:

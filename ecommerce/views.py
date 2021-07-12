@@ -708,7 +708,7 @@ class OrdersHistory(ListView, OrdersMixin):
         total = 0
         if kwargs.get('object_list'):
             for order in kwargs.get('object_list'):
-                total += order.sub_total
+                total += order.get_discounted_sub_total()
         context['total'] = total
         context['callers'] = User.objects.filter(user_type='CA')
         return context
@@ -1335,7 +1335,7 @@ class LoginRequired(RedirectView):
         return super(LoginRequired, self).get_redirect_url(*args, **kwargs)
 
 
-@login_required()
+@login_required
 def assign_orders_to_delivery_guy(request):
     ids = request.GET.getlist('orders')
     ids = ids[0].split(",")
@@ -1498,3 +1498,9 @@ def calculate_delivery_fee(request):
         fee = base_fee
 
     return JsonResponse({"fee": fee, "total": cart.total_sum_client_ajax(fee=fee)})
+
+
+@login_required
+def apply_coupon(request):
+    # todo apply coupon to order, by calculating the new price... ect
+    pass
