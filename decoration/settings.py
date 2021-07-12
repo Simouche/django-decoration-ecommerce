@@ -183,7 +183,7 @@ LOGIN_URL = 'accounts:login'
 
 
 # axes configs
-AXES_FAILURE_LIMIT = 5  # change this to a callable function from DB.
+AXES_FAILURE_LIMIT = 150 if DEBUG else 5  # change this to a callable function from DB.
 AXES_COOLOFF_TIME = 1
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 AXES_LOCKOUT_TEMPLATE = None  # lockout template

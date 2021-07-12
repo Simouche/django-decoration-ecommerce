@@ -95,8 +95,9 @@ class LoginView(View):
                     if not user.is_active:
                         login_form.add_error(None, _("Your account isn't activated, an admin will activate it soon."))
                 else:
-                    login_form.add_error(None, _('Invalid username/password'))
-                context = dict(login_form=login_form, next=self.request.GET.get('next'))
+                    login_form.add_error("username", _('Invalid username/password'))
+                context = dict(login_form=login_form, next=self.request.GET.get('next'),
+                               form=RegistrationForm(prefix="register", auto_id=False, ))
                 return render(request, self.template_name, context)
 
 
