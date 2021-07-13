@@ -446,6 +446,9 @@ class Coupon(BaseModel):
     expiry_date = models.DateField(null=True, blank=True, verbose_name=_('ExpiryDate'))
     is_expired = models.BooleanField(default=False)
 
+    def usages(self):
+        return 0
+
     class Meta:
         ordering = ('-created_at',)
         verbose_name = _('Coupon')

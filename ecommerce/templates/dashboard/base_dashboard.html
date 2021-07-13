@@ -168,6 +168,10 @@
                         <a href="{% url 'ecommerce:dashboard-sales' %}">
                             <i class="far fa-credit-card"></i>{% trans "Sales" %}</a>
                     </li>
+                    <li {% if "coupons" in request.path %} class="active" {% endif %}>
+                        <a href="{% url 'ecommerce:dashboard-coupons' %}">
+                            <i class="far fa-credit-card"></i>{% trans "Coupons" %}</a>
+                    </li>
                     <li class="has-sub">
                         <a class="js-arrow" href="#"><i class="fas fa-truck"></i>{% trans 'Delivery' %}</a>
                         <ul class="navbar__sub-list list-unstyled js-sub-list">

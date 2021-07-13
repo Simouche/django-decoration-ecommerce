@@ -31,8 +31,8 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
 
 
 @receiver(pre_save, sender=OrderLine)
-def order_line_pre_creation(sender, instance: OrderLine, created, **kwargs):
-    if created:
+def order_line_pre_creation(sender, instance: OrderLine, **kwargs):
+    if not instance.pk and not kwargs.get('raw', False):
         instance.total_price = instance.total
 
 

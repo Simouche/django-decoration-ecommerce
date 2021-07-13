@@ -11,6 +11,7 @@ urlpatterns = [
     path('dashboard/products/all/', views.DashboardProductsListView.as_view(), name='dashboard-products'),
 
     path('dashboard/sales/all/', views.DashboardSalesListView.as_view(), name='dashboard-sales'),
+    path('dashboard/coupon/all/', views.CouponListView.as_view(), name='dashboard-coupons'),
     path('dashboard/sales/all/export/', views.DashboardSalesListView.as_view(), name='dashboard-sales-export'),
     path('dashboard/sales/<int:pk>/update/status/', views.DashBoardUpdateSaleStatus.as_view(),
          name='dashboard-sales-update-status'),

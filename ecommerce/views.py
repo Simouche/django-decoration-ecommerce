@@ -34,7 +34,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
     PartnerForm, FilterForm
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings, DeliveryFee, \
-    Partner, QuickLink
+    Partner, QuickLink, Coupon
 
 
 class Index(TemplateView):
@@ -1504,3 +1504,13 @@ def calculate_delivery_fee(request):
 def apply_coupon(request):
     # todo apply coupon to order, by calculating the new price... ect
     pass
+
+
+@method_decorator(login_required, name='dispatch')
+class CouponListView(ListView):
+    model = Coupon
+    template_name = "dashboard/coupons.html"
+    queryset = Coupon.objects.all()
+    paginate_by = 50
+    context_object_name = "coupons"
+    allow_empty = True
