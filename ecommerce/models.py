@@ -172,7 +172,7 @@ class Order(DeletableModel):
 
     @property
     def discounted(self):
-        return hasattr(self, 'coupon')
+        return hasattr(self, 'coupon') and getattr(self, 'coupon', False)
 
     @property
     def products_count(self):
