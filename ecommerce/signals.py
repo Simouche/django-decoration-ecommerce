@@ -10,6 +10,8 @@ order_line_deleted = Signal()
 
 @receiver(pre_save, sender=Order)
 def order_pre_creation_signal(sender, instance: Order, raw, **kwargs):
+    if raw:
+        return
     if not instance.pk:
         instance.number = Order.generate_number()
 
@@ -19,6 +21,8 @@ def order_pre_creation_signal(sender, instance: Order, raw, **kwargs):
 
 @receiver(post_save, sender=Order)
 def order_status_changed(sender, instance, created, raw, **kwargs):
+    if raw:
+        return
     request = get_request()
     if request and request.user.is_authenticated:
         if created:
@@ -31,13 +35,17 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
 
 
 @receiver(pre_save, sender=OrderLine)
-def order_line_pre_creation(sender, instance: OrderLine, **kwargs):
+def order_line_pre_creation(sender, instance: OrderLine,raw, **kwargs):
+    if raw:
+        return
     if not instance.pk and not kwargs.get('raw', False):
         instance.total_price = instance.total
 
 
 @receiver(post_save, sender=OrderLine)
 def order_line_created(sender, instance: OrderLine, created, raw, **kwargs):
+    if raw:
+        return
     if created:
         instance.product.stock = F('stock') - instance.quantity
 

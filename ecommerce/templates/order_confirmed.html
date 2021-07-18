@@ -58,7 +58,7 @@
                                 <ul class="list list_2">
                                     <li>
                                         <a href="#">{% trans 'Subtotal' %}
-                                            <span>{{ order.sub_total }} {% trans 'DZD' %}</span></a>
+                                            <span>{{ order.get_discounted_sub_total }} {% trans 'DZD' %}</span></a>
                                     </li>
                                     <li>
                                         <a href="#">{% trans 'Delivery' %}

@@ -12,6 +12,7 @@ urlpatterns = [
 
     path('dashboard/sales/all/', views.DashboardSalesListView.as_view(), name='dashboard-sales'),
     path('dashboard/coupon/all/', views.CouponListView.as_view(), name='dashboard-coupons'),
+    path('dashboard/coupon/create/', views.CreateCoupon.as_view(), name='dashboard-coupons-create'),
     path('dashboard/sales/all/export/', views.DashboardSalesListView.as_view(), name='dashboard-sales-export'),
     path('dashboard/sales/<int:pk>/update/status/', views.DashBoardUpdateSaleStatus.as_view(),
          name='dashboard-sales-update-status'),
@@ -68,6 +69,7 @@ urlpatterns = [
     path('cart/update/', views.CartUpdateView.as_view(), name='cart-update'),
     path('cart/checkout/', views.CartCashOutToOrder.as_view(), name='cart-check-out'),
     path('cart/checkout/delivery-fee/', views.calculate_delivery_fee, name='calculate-delivery-fee'),
+    path('cart/checkout/get-coupon/', views.get_coupon_value, name='get-coupon'),
     path('cart/checkout/confirm/', views.CartCheckOutConfirm.as_view(), name='cart-check-out-confirm'),
     path('cart/get-count/', views.get_cart_count, name='cart-get-count'),
 

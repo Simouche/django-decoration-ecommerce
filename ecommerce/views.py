@@ -631,7 +631,8 @@ class CartCheckOutConfirm(RedirectView):
         form = CheckoutForm(self.request.POST)
         if form.is_valid():
             form.save(self.request.user)
-            order = self.request.user.profile.cart.confirm(note=form.cleaned_data.get('note'))
+            order = self.request.user.profile.cart.confirm(note=form.cleaned_data.get('note'),
+                                                           coupon_id=form.cleaned_data.get('coupon_id'))
             url = reverse(self.pattern_name, kwargs={'pk': order.id})
             return url
         url = reverse("ecommerce:cart-check-out")
@@ -1501,9 +1502,29 @@ def calculate_delivery_fee(request):
 
 
 @login_required
-def apply_coupon(request):
-    # todo apply coupon to order, by calculating the new price... ect
-    pass
+def get_coupon_value(request):
+    coupon_code = request.GET.get('coupon')
+
+    if coupon_code is None:
+        response = {"status": False}
+
+    coupons = Coupon.objects.filter(code=coupon_code)
+    if coupons.exists():
+        coupon = coupons.first()
+        if coupon.still_valid():
+            response = {
+                'status': True,
+                'coupon': coupon.pk,
+                'value': coupon.value(),
+                'type': coupon.value_type()
+            }
+        else:
+            response = {
+                'status': False,
+                'message': _('Coupon Expired'),
+            }
+
+    return JsonResponse(response, safe=False)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1514,3 +1535,21 @@ class CouponListView(ListView):
     paginate_by = 50
     context_object_name = "coupons"
     allow_empty = True
+
+
+@method_decorator(staff_member_required, name="dispatch")
+class CreateCoupon(CreateView):
+    model = Coupon
+    success_url = reverse_lazy("ecommerce:dashboard-coupons")
+    template_name = "dashboard/create_coupon.html"
+    fields = ('code', 'discount_percent', 'raw_value', 'expiry_date')
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        if is_ajax(request):
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(CreateCoupon, self).get(request, *args, **kwargs)

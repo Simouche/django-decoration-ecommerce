@@ -12,7 +12,12 @@
     <h3 class="title-5 m-b-35">{% trans "Coupons" %}</h3>
     <div class="table-data__tool">
         <div class="table-data__tool-left">
-
+            {% if request.user.user_type == 'A' %}
+                <button id="create-sub-category" type="button" name="button"
+                        class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createCouponForm()">
+                    <i class="zmdi zmdi-plus"></i>{% trans "sub-category" %}
+                </button>
+            {% endif %}
         </div>
         <div class="table-data__tool-right">
 
@@ -29,6 +34,7 @@
                 <th>{% trans "Selected" %}</th>
                 <th>{% trans "code" %}</th>
                 <th>{% trans "discount %" %}</th>
+                <th>{% trans "discount $" %}</th>
                 <th>{% trans "expiry date" %}</th>
                 <th>{% trans "expired" %}</th>
                 <th>{% trans "usages" %}</th>
@@ -48,7 +54,8 @@
                         </div>
                     </td>
                     <td>{{ coupon.code }}</td>
-                    <td>{{ coupon.discount }}</td>
+                    <td>{{ coupon.discount_percent|default:"_" }}</td>
+                    <td>{{ coupon.raw_value|default:"_" }}</td>
                     <td>{{ coupon.expiry_date }}</td>
                     <td>{{ coupon.is_expired }}</td>
                     <td>{{ coupon.usages }}</td>
@@ -99,6 +106,13 @@
     </div>
     <!-- end delete user modal -->
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="create-coupon-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
 {% endblock modals %}
 
 {% block scripts %}
@@ -113,6 +127,17 @@
                 }
             }
         )
+
+        function createCouponForm() {
+            $.ajax({
+                method: "GET",
+                url: "{% url 'ecommerce:dashboard-coupons-create' %}",
+                success: (data) => {
+                    $(".modal-content").html(data)
+                    $("#create-coupon-modal").modal()
+                }
+            })
+        }
 
     </script>
 {% endblock scripts %}

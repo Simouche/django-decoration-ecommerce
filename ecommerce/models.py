@@ -171,7 +171,7 @@ class Order(DeletableModel):
                                related_name="orders", null=True, blank=True)
 
     @property
-    def discounted(self):
+    def discounted(self) -> bool:
         return hasattr(self, 'coupon') and getattr(self, 'coupon', False)
 
     @property
@@ -421,9 +421,13 @@ class Cart(DeletableModel):
         else:
             return -1
 
-    def confirm(self, note=None):
+    def confirm(self, note=None, coupon_id=None):
+        coupon = None
+        if coupon_id:
+            coupons = Coupon.objects.filter(id=coupon_id)
+            coupon = coupons.first() if coupons.exists() else None
         order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee,
-                                     free_delivery=self.is_free_delivery)
+                                     free_delivery=self.is_free_delivery, coupon=coupon)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()
@@ -442,17 +446,38 @@ class Cart(DeletableModel):
 
 class Coupon(BaseModel):
     code = models.CharField(max_length=50, verbose_name=_('Coupon Code'), unique=True)
-    discount_percent = models.PositiveIntegerField(verbose_name=_('Discount %'))
+    discount_percent = models.PositiveIntegerField(verbose_name=_('Discount %'), null=True, blank=True)
+    raw_value = models.PositiveIntegerField(verbose_name=_('Discount Value'), null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True, verbose_name=_('ExpiryDate'))
     is_expired = models.BooleanField(default=False)
 
+    def still_valid(self):
+        if self.is_expired:
+            return False
+        if timezone.now().date() > self.expiry_date:
+            self.is_expired = True
+            self.save()
+            return False
+        return True
+
+    def value_type(self):
+        if self.discount_percent:
+            return 'p'
+        return 'r'
+
+    def value(self):
+        return self.discount_percent or self.raw_value
+
     def usages(self):
-        return 0
+        return self.orders.count()
 
     class Meta:
         ordering = ('-created_at',)
         verbose_name = _('Coupon')
         verbose_name_plural = _('Coupons')
+
+    def __str__(self):
+        return self.code
 
 
 class SeasonalDiscount(DeletableModel):

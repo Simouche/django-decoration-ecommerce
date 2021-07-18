@@ -224,6 +224,7 @@ class CheckoutForm(forms.Form):
     city = forms.ModelChoiceField(queryset=City.objects.all(), required=False)
     address = forms.CharField(widget=forms.Textarea(), required=False)
     note = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _("Note")}), required=False)
+    coupon_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     def save(self, user: User):
         cd = self.cleaned_data

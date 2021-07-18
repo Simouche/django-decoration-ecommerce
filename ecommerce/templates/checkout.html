@@ -37,13 +37,14 @@
         <!--? Checkout Area Start-->
         <section class="checkout_area section-padding40">
             <div class="container">
-                {% comment %}<div class="cupon_area">
+                <div class="cupon_area">
                     <div class="check_title">
                         <h2> {% trans 'Have a coupon?' %}</h2>
                     </div>
-                    <input type="text" placeholder="Enter coupon code"/>
-                    <a class="btn" href="#">{% trans 'Apply Coupon' %}</a>
-                </div>{% endcomment %}
+                    <input id="coupon-code-input" type="text" placeholder={% trans "Enter coupon code" %}/>
+                    <button id="coupon-code-button" class="btn"
+                            onclick="applyCoupon()">{% trans 'Apply Coupon' %}</button>
+                </div>
                 <div class="billing_details">
                     <div class="row">
                         <div class="col-lg-6">
@@ -91,6 +92,9 @@
                                     <label for="{{ form.note.id_for_label }}">{{ form.note.label }}</label>
                                     {% render_field form.note class="form-control" %}
                                 </div>
+                                <div class="col-md-12 form-group">
+                                    {% render_field form.coupon_id class="form-control" %}
+                                </div>
                             </form>
                         </div>
                         <div class="col-lg-6">
@@ -113,7 +117,7 @@
                                 <ul class="list list_2">
                                     <li>
                                         <a href="#">{% trans 'Subtotal' %}
-                                            <span>{{ user.profile.cart.sub_total }} {% trans 'DZD' %}</span></a>
+                                            <span id="sub-total-fee">{{ user.profile.cart.sub_total }} {% trans 'DZD' %}</span></a>
                                     </li>
                                     <li>
                                         <a href="#">{% trans 'Delivery' %}
@@ -167,6 +171,61 @@
     <script type="text/javascript">
         function submitForm() {
             $("#billing-form").submit()
+        }
+
+        function applyCoupon() {
+            const couponCode = $('#coupon-code-input').val()
+
+            if (couponCode == null || couponCode === "")
+                return
+
+            getCouponValue(couponCode)
+        }
+
+        function getCouponValue(couponCode) {
+            const url = "{% url 'ecommerce:get-coupon' %}"
+            $.ajax({
+                url: url,
+                data: {'coupon': couponCode},
+                type: "GET",
+                success: (data) => {
+                    console.log(data)
+                    if (data['status']) {
+                        if (data['type'] === 'r') {
+                            applyRawValue(data['value'])
+                        } else {
+                            applyPercentValue(data['value'])
+                        }
+                        $("#id_coupon_id").val(data['coupon'])
+                    } else {
+                        console.log(data['message'])
+                    }
+                },
+                error: (response) => {
+                    console.log(response)
+                }
+            })
+        }
+
+        function applyRawValue(value) {
+            const textTotal = $('#total-fee').text().split(' ')[0]
+            const total = parseFloat(textTotal)
+            const newTotal = total - value
+            $('#total-fee').html(newTotal + " {% trans 'DZD' %}")
+        }
+
+        function applyPercentValue(percent) {
+            const textTotal = $('#total-fee').text().split(' ')[0]
+            const total = parseFloat(textTotal)
+
+            const textSubTotal = $('#sub-total-fee').text().split(' ')[0]
+            const subtotal = parseFloat(textSubTotal)
+            const newSubTotal = subtotal - (subtotal * percent / 100)
+            console.log("new sub total", newSubTotal)
+
+            const newTotal = (total - subtotal) + newSubTotal
+            console.log("new total", newTotal)
+            $('#total-fee').html(newTotal + " {% trans 'DZD' %}")
         }
 
         $(document).ready(function () {
