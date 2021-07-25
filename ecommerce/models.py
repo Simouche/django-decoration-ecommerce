@@ -194,7 +194,10 @@ class Order(DeletableModel):
     def get_discounted_sub_total(self):
         discount_amount = 0
         if self.discounted:
-            discount_amount = (self.sub_total * self.coupon.discount_percent) / decimal.Decimal(100.00)
+            if self.coupon.discount_percent:
+                discount_amount = (self.sub_total * self.coupon.discount_percent) / decimal.Decimal(100.00)
+            else:
+                discount_amount = self.coupon.raw_value
         return self.sub_total - discount_amount
 
     @property
