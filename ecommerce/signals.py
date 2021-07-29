@@ -38,7 +38,7 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
 def order_line_pre_creation(sender, instance: OrderLine,raw, **kwargs):
     if raw:
         return
-    if not instance.pk and not kwargs.get('raw', False):
+    if not instance.pk:
         instance.total_price = instance.total
 
 

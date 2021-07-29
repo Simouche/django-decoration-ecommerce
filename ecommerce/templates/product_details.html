@@ -51,7 +51,10 @@
                     <div class="col-lg-5 offset-lg-1">
                         <div class="s_product_text">
                             <h3>{{ product.name }}</h3>
-                            <h2><span id="price-value">{{ product.get_price }}</span> {% trans 'DZD' %}</h2>
+                            <h2>{% if product.on_discount %}
+                                <span><del
+                                        id="price-old-value">{{ product.get_price }} {% trans 'DZD' %} </del></span>  {% endif %}
+                                <span id="price-value">{{ product.get_discounted_price }}</span> {% trans 'DZD' %}</h2>
                             <ul class="list">
                                 <li>
                                     <a class="active"
@@ -74,6 +77,7 @@
                                     <select name="sizes" id="sizes" onchange="onSizeChanged()">
                                         {% for size in product.sizes.all %}
                                             <option value="{{ size.id }}" data-price="{{ size.price }}"
+                                                    data-dprice="{{ size.get_price }}"
                                                     data-available="{{ size.available }}"
                                                     {% if size.default %}selected{% endif %}>{{ size.size }}</option>
                                         {% endfor %}
@@ -427,7 +431,9 @@
         function onSizeChanged() {
             const size = $("#sizes option:selected")
             const price = size.data("price")
-            $('#price-value').text(price)
+            const dprice = size.data("dprice")
+            $('#price-value').text(dprice)
+            $('#price-old-value').text(price + " " + " {% trans "DZD" %}")
         }
 
     </script>

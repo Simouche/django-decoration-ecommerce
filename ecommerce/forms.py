@@ -91,7 +91,7 @@ class CreateProductForm(BSModalModelForm):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'price', 'weight', 'main_image', 'discount_price', 'stock', 'category',
+        fields = ('name', 'description', 'price', 'weight', 'main_image', 'discount_percent', 'stock', 'category',
                   'free_delivery', 'reference')
 
 

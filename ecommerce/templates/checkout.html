@@ -173,10 +173,12 @@
             $("#billing-form").submit()
         }
 
+        var couponApplied = false
+
         function applyCoupon() {
             const couponCode = $('#coupon-code-input').val()
 
-            if (couponCode == null || couponCode === "")
+            if (couponCode == null || couponCode === "" || couponApplied)
                 return
 
             getCouponValue(couponCode)
@@ -197,6 +199,7 @@
                             applyPercentValue(data['value'])
                         }
                         $("#id_coupon_id").val(data['coupon'])
+                        couponApplied = true
                     } else {
                         console.log(data['message'])
                     }

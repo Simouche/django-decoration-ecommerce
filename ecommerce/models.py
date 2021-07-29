@@ -49,8 +49,9 @@ class Product(DeletableModel):
     price = models.DecimalField(verbose_name=_('Price'), max_digits=10, decimal_places=2)
     main_image = models.ImageField(verbose_name=_('Main Image'), upload_to='products')
     slider = ArrayField(models.CharField(max_length=255, ), null=True, blank=True, default=list)
-    discount_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Discount Price'), null=True,
-                                         blank=True)
+    discount_percent = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Discount Percent'),
+                                           null=True,
+                                           blank=True)
     weight = models.PositiveIntegerField(verbose_name=_('Weight'), default=1)
     reference = models.CharField(max_length=30, verbose_name=_('Reference'), null=True, blank=True)
     stock = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
@@ -87,6 +88,22 @@ class Product(DeletableModel):
         return self.price
 
     @property
+    def get_discounted_price(self):
+        price = self.get_price
+        if self.on_discount:
+            price = price - self.calculate_discount_value()
+
+        return price.quantize(decimal.Decimal("0.01"))
+
+    def calculate_discount_value(self, price=None):
+        value = (price or self.price) * (self.discount_percent / 100)
+        return value
+
+    @property
+    def on_discount(self):
+        return self.discount_percent is not None and self.discount_percent != 0
+
+    @property
     def has_sizes(self):
         return self.sizes.all().count() != 0
 
@@ -106,6 +123,13 @@ class ProductSize(BaseModel):
     def __str__(self):
         return "{} = {}".format(self.size, self.price)
 
+    @property
+    def get_price(self):
+        if self.product.on_discount:
+            return self.price - self.product.calculate_discount_value(price=self.price).quantize(
+                decimal.Decimal("0.01"))
+        return self.price
+
     class Meta:
         verbose_name = _('Size')
         verbose_name_plural = _('Sizes')
@@ -124,8 +148,8 @@ class OrderLine(BaseModel):
     @property
     def total(self):
         if self.size:
-            return (self.size.price * self.quantity).quantize(decimal.Decimal("0.01"))
-        return (self.product.price * self.quantity).quantize(decimal.Decimal("0.01"))
+            return (self.size.get_price * self.quantity).quantize(decimal.Decimal("0.01"))
+        return (self.product.get_discounted_price * self.quantity).quantize(decimal.Decimal("0.01"))
 
     @property
     def display_quantity(self):
@@ -322,15 +346,13 @@ class CartLine(BaseModel):
     size = models.ForeignKey('ProductSize', on_delete=models.SET_NULL, verbose_name=_('Size'), null=True, blank=True)
 
     def _total_sum(self):
-        if self.size:
-            return self.size.price * self.quantity
-        return self.product.price * self.quantity
+        return self.product_price * self.quantity
 
     @property
     def product_price(self):
         if self.size:
-            return self.size.price
-        return self.product.price
+            return self.size.get_price
+        return self.product.get_discounted_price
 
     @property
     def total_sum(self):
@@ -453,11 +475,13 @@ class Coupon(BaseModel):
     raw_value = models.PositiveIntegerField(verbose_name=_('Discount Value'), null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True, verbose_name=_('ExpiryDate'))
     is_expired = models.BooleanField(default=False)
+    max_usages = models.PositiveIntegerField(verbose_name=_('Max Usages'), null=True, blank=True)
 
     def still_valid(self):
         if self.is_expired:
             return False
-        if timezone.now().date() > self.expiry_date:
+        if timezone.now().date() > self.expiry_date or \
+                (self.max_usages is not None and self.max_usages <= self.usages()):
             self.is_expired = True
             self.save()
             return False
@@ -472,7 +496,7 @@ class Coupon(BaseModel):
         return self.discount_percent or self.raw_value
 
     def usages(self):
-        return self.orders.count()
+        return self.orders.count() or 0
 
     class Meta:
         ordering = ('-created_at',)
