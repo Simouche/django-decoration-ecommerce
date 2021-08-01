@@ -1542,7 +1542,7 @@ class CreateCoupon(CreateView):
     model = Coupon
     success_url = reverse_lazy("ecommerce:dashboard-coupons")
     template_name = "dashboard/create_coupon.html"
-    fields = ('code', 'discount_percent', 'raw_value', 'expiry_date')
+    fields = ('code', 'discount_percent', 'raw_value', 'expiry_date', 'max_usages')
 
     def get(self, request, *args, **kwargs):
         self.object = None
