@@ -66,9 +66,7 @@
                                         {% trans 'In Stock' %} {% else %} {% trans 'Out of Stock' %} {% endif %}</a>
                                 </li>
                             </ul>
-                            <p>
-                                {{ product.description }}
-                            </p>
+                            <pre>{{ product.description }}</pre>
 
                             {% if product.has_sizes %}
                                 <h4>{% trans 'Size' %}</h4>
@@ -89,7 +87,7 @@
                                 <h4>{% trans 'Quantity' %}</h4>
                                 <div class="product_count d-inline-block">
                                     <span class="inumber-decrement"> <i class="ti-minus"></i></span>
-                                    <input id="quantity" class="input-number" type="text" value="0">
+                                    <input id="quantity" class="input-number" type="text" value="1" min="1">
                                     <span class="number-increment"> <i class="ti-plus"></i></span>
                                 </div>
                             </div>
@@ -147,9 +145,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <p>
-                            {{ product.description }}
-                        </p>
+                        <pre>{{ product.description }}</pre>
                     </div>
                     {% comment %} <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         {# TODO implement this #}
@@ -231,62 +227,62 @@
                                     <div class="col-6">
                                         <div class="box_total">
                                             <h5>{% trans 'Overall' %}</h5>
-                                            <h4>{{ product.overall }}</h4>
+                                            {#                                            <h4>{{ product.overall }}</h4>#}
                                             <h6>({{ product.total_reviews_count }} {% trans 'Reviews' %})</h6>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="rating_list">
-                                            <h3>{% trans 'Based on' %} {{ product.ratings.count }} {% trans 'Reviews' %}</h3>
-                                            <ul class="list">
-                                                <li>
-                                                    <a href="#">5 {% trans 'Star' %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        {{ product.reviews_count_based_on_stars.4 }}</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">4 {% trans 'Star' %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star "></i> {{ product.reviews_count_based_on_stars.3 }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">3 {% trans 'Star' %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.2 }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">2 {% trans 'Star' %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.1 }}
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">1 {% trans 'Star' %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.0 }}
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    {#                                    <div class="col-6">#}
+                                    {#                                        <div class="rating_list">#}
+                                    {#                                            <h3>{% trans 'Based on' %} {{ product.ratings.count }} {% trans 'Reviews' %}</h3>#}
+                                    {#                                            <ul class="list">#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a href="#">5 {% trans 'Star' %}#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        {{ product.reviews_count_based_on_stars.4 }}</a>#}
+                                    {#                                                </li>#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a href="#">4 {% trans 'Star' %}#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star "></i> {{ product.reviews_count_based_on_stars.3 }}#}
+                                    {#                                                    </a>#}
+                                    {#                                                </li>#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a href="#">3 {% trans 'Star' %}#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.2 }}#}
+                                    {#                                                    </a>#}
+                                    {#                                                </li>#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a href="#">2 {% trans 'Star' %}#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.1 }}#}
+                                    {#                                                    </a>#}
+                                    {#                                                </li>#}
+                                    {#                                                <li>#}
+                                    {#                                                    <a href="#">1 {% trans 'Star' %}#}
+                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i>#}
+                                    {#                                                        <i class="fa fa-star"></i> {{ product.reviews_count_based_on_stars.0 }}#}
+                                    {#                                                    </a>#}
+                                    {#                                                </li>#}
+                                    {#                                            </ul>#}
+                                    {#                                        </div>#}
+                                    {#                                    </div>#}
                                 </div>
                                 <div class="review_list">
                                     {% for rating in product.ratings.all %}
@@ -302,12 +298,12 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <h4>{{ rating.profile.user.full_name }}</h4>
-                                                    {% for i in rating.checked_stars_range %}
-                                                        <i class="fa fa-star checked-star"></i>
-                                                    {% endfor %}
-                                                    {% for i in rating.un_checked_stars_range %}
-                                                        <i class="fa fa-star"></i>
-                                                    {% endfor %}
+                                                    {#                                                    {% for i in rating.checked_stars_range %}#}
+                                                    {#                                                        <i class="fa fa-star checked-star"></i>#}
+                                                    {#                                                    {% endfor %}#}
+                                                    {#                                                    {% for i in rating.un_checked_stars_range %}#}
+                                                    {#                                                        <i class="fa fa-star"></i>#}
+                                                    {#                                                    {% endfor %}#}
                                                 </div>
                                             </div>
                                             <p>
@@ -320,15 +316,16 @@
                             <div class="col-lg-6">
                                 <div class="review_box">
                                     <h4>{% trans 'Add a Review' %}</h4>
-                                    {% if user.is_authenticated %}<p>{% trans 'Your Rating' %}</p>
-                                        <ul class="list">
-                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                        </ul>
-                                        <p>{% trans 'Outstanding' %}</p>
+                                    {% if user.is_authenticated %}
+{#                                        <p>{% trans 'Your Rating' %}</p>#}
+{#                                        <ul class="list">#}
+{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+{#                                        </ul>#}
+{#                                        <p>{% trans 'Outstanding' %}</p>#}
                                         <form class="row contact_form" action="{% url 'ecommerce:review-add' %}"
                                               method="POST" novalidate="novalidate">
                                             {% csrf_token %}
@@ -347,9 +344,9 @@
                                             </div>
                                         </form>
                                     {% else %}
-                                        <button type="submit" value="submit" class="btn">
+                                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn">
                                             {% trans 'Login' %}
-                                        </button>
+                                        </a>
                                     {% endif %}
                                 </div>
                             </div>

@@ -87,12 +87,20 @@ class RegistrationForm(forms.ModelForm):
             }
         )
     )
+    address = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': _('Address')
+            }
+        )
+    )
     user_type = forms.ChoiceField(widget=forms.HiddenInput,
                                   choices=(('C', _('Client')), ('S', _('Staff'))))
 
     class Meta:
         model = User
-        fields = ['username', "first_name", "last_name", 'user_type', 'phones', 'email']
+        fields = ('username', "first_name", "last_name", 'user_type', 'phones', 'email',)
 
     def clean(self):
         cleaned_data = super(RegistrationForm, self).clean()
@@ -105,6 +113,10 @@ class RegistrationForm(forms.ModelForm):
         user.set_password(self.cleaned_data['password'])
         user.is_active = True
         user.save()
+
+        profile = user.profile
+        profile.address = self.cleaned_data.get('address')
+        profile.save()
 
         user_type = self.cleaned_data['user_type']
         if user_type == 'C':

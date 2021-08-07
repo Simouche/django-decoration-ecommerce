@@ -23,6 +23,11 @@ class CreateOrderForm(forms.ModelForm):
     ))
     assigned_to = forms.ModelChoiceField(queryset=User.objects.filter(user_type='CA'), required=False)
 
+    delivery_date = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        widget=BootstrapDatePickerInput(),
+    )
+
     def __init__(self, is_caller=False, *args, **kwargs):
         super(CreateOrderForm, self).__init__(*args, **kwargs)
         if is_caller:

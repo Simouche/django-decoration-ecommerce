@@ -16,7 +16,7 @@
             </li>
             {% for line in order.get_lines %}
                 <li>
-                    <a href="#">{{ line.product.name }}
+                    <a href="#">{{ line.product.name }} ({{ line.size.size|default:"" }})
                         <span class="middle">x {{ line.quantity }}</span>
                         <span class="last">{{ line.total }}{% trans 'DZD' %}</span>
                     </a>

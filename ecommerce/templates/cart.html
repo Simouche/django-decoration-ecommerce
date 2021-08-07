@@ -163,8 +163,8 @@
             $('.input-number').on('change', function () {
 
                 // negative quantities aren't permitted
-                if (parseFloat($(this).val()) < 0)
-                    $(this).val(0)
+                if (parseFloat($(this).val()) < 1)
+                    $(this).val(1)
 
                 // building the ids of the targeted fields
                 const number = $(this).attr('id').split('-')[1]
@@ -211,7 +211,6 @@
         })
 
         function submitCartUpdate() {
-            console.log("cliiiiiiiiiiiiiicked!!!!")
             $("#cart-form").submit(function (event) {
                 $(".products").prop('disabled', '')
             })

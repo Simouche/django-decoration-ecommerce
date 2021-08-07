@@ -26,7 +26,7 @@ SECRET_KEY = '+nij4fikst76nks4u)h6r*a5o1157sn*e_na7ghftwl=)=hwt!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['auconfort.shop', 'samydeco.com', 'www.auconfort.shop', 'www.samydeco.com', '*']
 
 # Application definition
 

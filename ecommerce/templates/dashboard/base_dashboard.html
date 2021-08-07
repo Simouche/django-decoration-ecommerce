@@ -9,9 +9,9 @@
     <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="au theme template">
-    <meta name="author" content="Hau Nguyen">
-    <meta name="keywords" content="decoration home accessories dz algeria">
+    <meta name="description" content="Auconfort.shop ecommerce website">
+    <meta name="author" content="Wassim Chaguetmi">
+    <meta name="keywords" content="decoration home accessories dz algeria linge bed sheets pillow oreiller lit matelas">
 
     <!-- Title Page-->
     <title>{% trans "Dashboard" %}</title>
@@ -42,6 +42,15 @@
 
     <!-- Jquery JS-->
     <script src={% static "dashboard/vendor/jquery-3.2.1.min.js" %}></script>
+    <script src={% static "dashboard/vendor/bootstrap-4.1/popper.min.js" %}></script>
+    <script src={% static "dashboard/vendor/bootstrap-4.1/bootstrap.min.js" %}></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"
+            integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css"
+          integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js"
+            integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
 
     {% block styles %}
 
@@ -367,8 +376,8 @@
 
 
 <!-- Bootstrap JS-->
-<script src={% static "dashboard/vendor/bootstrap-4.1/popper.min.js" %}></script>
-<script src={% static "dashboard/vendor/bootstrap-4.1/bootstrap.min.js" %}></script>
+{#<script src={% static "dashboard/vendor/bootstrap-4.1/popper.min.js" %}></script>#}
+{#<script src={% static "dashboard/vendor/bootstrap-4.1/bootstrap.min.js" %}></script>#}
 <!-- Vendor JS       -->
 <script src={% static "dashboard/vendor/slick/slick.min.js" %}></script>
 <script src={% static "dashboard/vendor/wow/wow.min.js" %}></script>
