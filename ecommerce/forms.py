@@ -25,7 +25,7 @@ class CreateOrderForm(forms.ModelForm):
 
     delivery_date = forms.DateField(
         input_formats=['%d/%m/%Y'],
-        widget=BootstrapDatePickerInput(),
+        widget=BootstrapDatePickerInput(attrs={'placeholder': _('Delivery Date')}),
     )
 
     def __init__(self, is_caller=False, *args, **kwargs):
@@ -125,8 +125,10 @@ class SearchOrderStatusChangeHistory(forms.Form):
     FROM_STATUS_CHOICES = (('O', _('Old Status')),) + Order.status_choices
     TO_STATUS_CHOICES = (('N', _('New Status')),) + Order.status_choices
 
-    date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
-    time = forms.TimeField(required=False, input_formats=['%H:%M'], widget=BootstrapTimePickerInput())
+    date = forms.DateField(required=False, input_formats=['%d/%m/%Y'],
+                           widget=BootstrapDatePickerInput(attrs={'placeholder': _('Date')}))
+    time = forms.TimeField(required=False, input_formats=['%H:%M'],
+                           widget=BootstrapTimePickerInput(attrs={'placeholder': _('Time')}))
     user = forms.ModelChoiceField(queryset=User.objects.exclude(user_type='C'), required=False, empty_label=_('User'))
     order = forms.ModelChoiceField(queryset=Order.objects.all(), required=False, empty_label=_('Order'))
     from_status = forms.ChoiceField(choices=FROM_STATUS_CHOICES, required=False)
@@ -249,10 +251,14 @@ class OrderFilter(forms.Form):
     user = forms.ModelChoiceField(queryset=User.objects.filter(user_type='C'), required=False, empty_label=_('Client'))
     delivery_man = forms.ModelChoiceField(queryset=DeliveryGuy.objects.all(), required=False,
                                           empty_label=_('Delivery Man'))
+    delivery_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'],
+                                    widget=BootstrapDatePickerInput(attrs={'placeholder': _('Delivery Date')}))
     caller = forms.ModelChoiceField(queryset=User.objects.exclude(user_type='C'), required=False,
                                     empty_label=_('Caller'))
-    start_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
-    end_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'], widget=BootstrapDatePickerInput())
+    start_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'],
+                                 widget=BootstrapDatePickerInput(attrs={'placeholder': _('From')}))
+    end_date = forms.DateField(required=False, input_formats=['%d/%m/%Y'],
+                               widget=BootstrapDatePickerInput(attrs={'placeholder': _('To')}))
     status = forms.MultipleChoiceField(choices=FROM_STATUS_CHOICES, required=False)
 
 

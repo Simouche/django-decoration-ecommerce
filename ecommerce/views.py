@@ -254,6 +254,11 @@ class DashboardSalesListView(ListView):
                 queryset = queryset.filter(profile__user=cd.get('user'))
             if cd.get('delivery_man'):
                 queryset = queryset.filter(deliveries__delivery_guys=cd.get('delivery_man'))
+            if cd.get('delivery_date'):
+                queryset = queryset.filter(
+                    Q(deliveries__delivery_date=cd.get('delivery_date')) |
+                    Q(delivery_date=cd.get('delivery_date'))
+                )
             if cd.get('caller'):
                 queryset = queryset.filter(assigned_to=cd.get('caller'))
             if cd.get('start_date'):

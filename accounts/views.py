@@ -1,5 +1,6 @@
 import xlwt
 from bootstrap_modal_forms.generic import BSModalCreateView
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,16 +12,16 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext
 from django.views import View
-from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView
+from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView, TemplateView
 
 from accounts.forms import LoginForm, RegistrationForm, CreateStaffForm
 from accounts.models import Profile, User, State, City
 from base_backend import _
 from base_backend.decorators import super_user_required
 from base_backend.utils import is_ajax
-
-
 # Create your views here.
+from ecommerce.models import Settings
+
 
 class RegisterView(FormView):
     template_name = "register.html"
@@ -99,6 +100,14 @@ class LoginView(View):
                 context = dict(login_form=login_form, next=self.request.GET.get('next'),
                                form=RegistrationForm(prefix="register", auto_id=False, ))
                 return render(request, self.template_name, context)
+
+
+class ForgotPassword(TemplateView):
+    template_name = "forgot_password.html"
+
+    def get_context_data(self, **kwargs):
+        phone = Settings.objects.all().first().assistance_number
+        return super(ForgotPassword, self).get_context_data(phone=phone, **kwargs)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -246,20 +255,15 @@ def deactivate_user(request, pk):
     return redirect('accounts:users-list')
 
 
-class ForgotPassword(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
-
-
-class PasswordReset(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
+@staff_member_required()
+def reset_user_password(request):
+    user = get_object_or_404(User, pk=request.POST.get('pk'))
+    n_password = request.POST.get("password")
+    user.is_active = True
+    user.set_password(n_password)
+    user.save()
+    messages.success(request, _('User password changed.'))
+    return redirect('accounts:users-list')
 
 
 @method_decorator(login_required, name="dispatch")

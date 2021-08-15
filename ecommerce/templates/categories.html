@@ -141,14 +141,14 @@
                                 <div class="count-job mb-35">
                                     <span>{{ products.count }} {% trans 'Product found' %}</span>
                                     <!-- Select job items start -->
-{#                                    <div class="select-cat">#}
-{#                                        <span>{% trans 'Sort by' %}</span>#}
-{#                                        <select name="select">#}
-{#                                            <option value="name">{% trans 'Name' %}</option>#}
-{#                                            <option value="price_high">{% trans 'Highest Price' %}</option>#}
-{#                                            <option value="price_low">{% trans 'Lowest Price' %}</option>#}
-{#                                        </select>#}
-{#                                    </div>#}
+                                    {#                                    <div class="select-cat">#}
+                                    {#                                        <span>{% trans 'Sort by' %}</span>#}
+                                    {#                                        <select name="select">#}
+                                    {#                                            <option value="name">{% trans 'Name' %}</option>#}
+                                    {#                                            <option value="price_high">{% trans 'Highest Price' %}</option>#}
+                                    {#                                            <option value="price_low">{% trans 'Lowest Price' %}</option>#}
+                                    {#                                        </select>#}
+                                    {#                                    </div>#}
                                     <!--  Select job items End-->
                                 </div>
                             </div>
@@ -169,7 +169,14 @@
                                                     <h3>
                                                         <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
                                                     </h3>
-                                                    <span>{{ product.price }} {% trans 'DZD' %}</span>
+                                                    {% if product.on_discount %}
+                                                        <span>
+                                                            <del>
+                                                            {{ product.get_price }} {% trans 'DZD' %}
+                                                        </del>
+                                                        </span>
+                                                    {% endif %}
+                                                    <span>{{ product.get_discounted_price }} {% trans 'DZD' %}</span>
                                                 </div>
                                             </div>
                                         </div>

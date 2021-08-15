@@ -57,7 +57,14 @@
                                                     <h3>
                                                         <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
                                                     </h3>
-                                                    <span>{{ product.get_price }} {% trans 'DZD' %}</span>
+                                                    {% if product.on_discount %}
+                                                        <span>
+                                                            <del>
+                                                            {{ product.get_price }} {% trans 'DZD' %}
+                                                        </del>
+                                                        </span>
+                                                    {% endif %}
+                                                    <span>{{ product.get_discounted_price }} {% trans 'DZD' %}</span>
                                                 </div>
                                             </div>
                                         </div>

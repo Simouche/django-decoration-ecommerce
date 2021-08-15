@@ -127,7 +127,8 @@
                                 <div class="single-input-fields login-check">
                                     <!--                                    <input type="checkbox" id="fruit1" name="keep-log">-->
                                     <!--                                    <label for="fruit1">Keep me logged in</label>-->
-                                    <a href="#" class="f-right">{% trans "Forgot Password?" %}</a>
+                                    <a href="{% url 'accounts:forgot-password' %}"
+                                       class="f-right">{% trans "Forgot Password?" %}</a>
                                 </div>
                             </div>
                             <!-- form Footer -->

@@ -103,6 +103,13 @@
 
                     <td>
                         <div class="table-data-feature">
+                            {% if request.user.user_type == 'A' %}
+                                <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                        title="{% trans 'Reset Password' %}" data-target="#passwordmodal"
+                                        data-id="{{ user.id }}">
+                                    <i class="fa fa-key"></i>
+                                </button>
+                            {% endif %}
                             <button type="button" class="item" data-toggle="modal" data-placement="top" title="Info"
                                     onclick="loadUserProfileIntoModal('{% url 'accounts:profile-details' user.profile.pk %}','#details-user-modal')">
                                 <i class="fa fa-info"></i>
@@ -127,6 +134,28 @@
 {% endblock content %}
 
 {% block modals %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog modal-{% if message.tags %}{{ message.tags }}{% endif %}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="icon-box m-auto">
+                                <i class="fa {% if message.tags == 'success' %} fa-check-circle {% else %} fa-times {% endif %}"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4>{% if message.tags == 'success' %} {% trans 'Great' %}! {% else %}
+                                trans Oops!  {% endif %}</h4>
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <!-- delete user modal -->
     <div class="modal fade" id="deletemodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
@@ -154,6 +183,34 @@
     </div>
     <!-- end delete user modal -->
 
+    <!-- change password modal -->
+    <div class="modal fade" id="passwordmodal" tabindex="-1" role="dialog" aria-labelledby="smallmodalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smallmodalLabel">{% trans 'Reset Password' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" class="" action="{% url "accounts:users-change-password" %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="pk" value="" id="form-user-pk">
+                        <label>
+                            <input class="form-control browser-default" type="text" name="password"
+                                   placeholder="{% trans "new password" %}">
+                        </label>
+                        <input type="submit" value="{% trans "Reset" %}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- change password modal -->
+
+
     {# create user modal#}
     <div class="modal fade" tabindex="-1" role="dialog" id="create-user-modal"
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
@@ -165,9 +222,9 @@
     <div class="modal fade" tabindex="-1" role="dialog" id="details-user-modal"
          aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-{#            <div class="modal-content">#}
-{#                {% include "dashboard/profile.html" %}#}
-{#            </div>#}
+            {#            <div class="modal-content">#}
+            {#                {% include "dashboard/profile.html" %}#}
+            {#            </div>#}
         </div>
     </div>
 
@@ -186,6 +243,12 @@
                 }
             }
         )
+
+        $('#passwordmodal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget)
+            const id = button.data('id')
+            $('#form-user-pk').val(id)
+        })
 
         const asyncSuccessMessage =
             "<div " +
