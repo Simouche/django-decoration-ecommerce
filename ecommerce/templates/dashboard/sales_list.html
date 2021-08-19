@@ -63,7 +63,7 @@
                         class="au-btn au-btn-icon au-btn--green au-btn--small">{% trans 'Assign to' %}</button>
                 {% url 'ecommerce:dashboard-sales-export' as url %}
                 {% include "dashboard/exportation_layout.html" with exportation_url=url %}
-                <button id="print-button" onclick="print()"
+                <button id="print-button" onclick="print_f()"
                         class="au-btn au-btn-icon au-btn--blue au-btn--small">{% trans 'print' %}</button>
             {% endif %}
         </div>
@@ -271,7 +271,7 @@
             })
         }
 
-        function print() {
+        function print_f() {
             const ids = []
             const agentsSelect = $("#assign-to-select")
             $("input:checkbox[name=selected-orders]:checked").each(function () {

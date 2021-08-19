@@ -48,11 +48,13 @@ def order_line_created(sender, instance: OrderLine, created, raw, **kwargs):
         return
     if created:
         instance.product.stock = F('stock') - instance.quantity
+        instance.product.save()
 
 
 @receiver(order_line_deleted)
 def order_line_deleted_handler(sender, instance: OrderLine, **kwargs):
     instance.product.stock = F('stock') + instance.quantity
+    instance.product.save()
 
 
 def get_request():

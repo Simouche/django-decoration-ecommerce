@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% load static %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Auconfort</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '1x/logo.png' %}">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/progressbar_barfiller.css' %}">
+    <link rel="stylesheet" href="{% static 'css/lightslider.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/price_rangs.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gijgo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animated-headline.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block styles %}
+
+    {% endblock styles %}
+</head>
+
+<body class="animsition">
+<div class="mb-50">
+    <h2>{% trans "Inventory of: " %}{{ delivery_man }}</h2>
+</div>
+<div id="companies-table-div" class="table-responsive table--no-card m-b-40">
+    <table class="table table-data2" id="companies-table">
+        <thead>
+        <tr>
+            <th>{% trans "produit" %}</th>
+            <th>{% trans "quantity" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tuple in products.items %}
+            <tr class="tr-shadow">
+                <td>{{ tuple.0 }}</td>
+                <td>{{ tuple.1 }}</td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {#    <h4>Caisse shop: {{ money }} DZD Caisse livreur: {{ delivery_money }} DZD</h4>#}
+</div>
+</body>
+
+
+<script type="text/javascript">
+    (function () {
+        print()
+    })();
+</script>

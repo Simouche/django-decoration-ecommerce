@@ -344,7 +344,7 @@ class DashBoardUpdateSaleStatus(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         order = get_object_or_404(Order, pk=kwargs['pk'])
         order.progress_status()
-        if self.request.user.user_type == 'CA':
+        if self.request.user.user_type == 'CA' or "orders/history" in self.request.META.get('HTTP_REFERER'):
             return reverse("ecommerce:orders-history")
         return reverse("ecommerce:dashboard-sales")
 
@@ -1375,7 +1375,7 @@ def print_route_sheet(request):
     settings.assistance_number = index.assistance_number
     context = {
         'orders': orders,
-        'settings': settings
+        'settings': settings,
     }
     return render(request, 'dashboard/invoice/invoice2.html',
                   context)
@@ -1394,6 +1394,22 @@ def print_view(request, order_id=None):
         settings = Settings.objects.all().first()
         settings.assistance_number = index.assistance_number
         return render(request, 'dashboard/invoice/invoice1.html',
+                      {'orders': order, 'settings': settings})
+
+
+@login_required
+def print_inventory(request, order_id=None):
+    if request.method == "GET":
+        if order_id is not None:
+            order = [get_object_or_404(Order, pk=order_id)]
+        else:
+            ids = request.GET.getlist('orders')
+            ids = ids[0].split(",")
+            order = get_list_or_404(Order, pk__in=ids)
+        index = IndexContent.objects.all().first()
+        settings = Settings.objects.all().first()
+        settings.assistance_number = index.assistance_number
+        return render(request, 'dashboard/invoice/invoice2.html',
                       {'orders': order, 'settings': settings})
 
 
@@ -1432,6 +1448,37 @@ class ComplaintsList(ListView):
             return JsonResponse(data)
         else:
             return super(ComplaintsList, self).get(request, *args, **kwargs)
+
+
+@login_required
+def print_recap(request):
+    delivery_man = get_object_or_404(DeliveryGuy, pk=request.GET.get('pk'))
+    deliveries = delivery_man.deliveries.filter(order__status__in=['OD'])
+    orders = [delivery.order for delivery in deliveries]
+    products = {}
+    for order in orders:
+        for line in order.get_lines:
+            product = line.product.name
+            if products.get(product, None):
+                products[product] += line.quantity
+            else:
+                products[product] = line.quantity
+
+    delivered_deliveries = delivery_man.deliveries.filter(order__status__in=['D'])
+    money = 0
+    for delivery in delivered_deliveries:
+        money += delivery.order.client_total_display
+
+    delivery_money = 0
+    for delivery in delivered_deliveries:
+        delivery_money += delivery.order.shipping_fee
+
+    context = dict(money=money, products=products,
+                   delivery_man=delivery_man,
+                   delivery_money=delivery_money, print=True)
+
+    return render(request, 'dashboard/delivery_man_recap_print.html',
+                  context)
 
 
 @method_decorator(login_required, name='dispatch')

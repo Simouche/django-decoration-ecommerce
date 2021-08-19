@@ -282,7 +282,23 @@
                                         {% render_field form.address class="form-control browser-default" id="address" %}
                                     {% endif %}
                                 </div>
-
+                                <div class="single-input-fields">
+                                    <label>{% trans "City" %}</label>
+                                    {% if form.is_bound %}
+                                        {% if form.city.errors %}
+                                            {% render_field form.city class="form-control browser-default" id="city" %}
+                                            {% for error in form.city.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ error }}
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            {% render_field form.city class="form-control browser-default" id="city" %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% render_field form.city class="form-control browser-default" id="city" %}
+                                    {% endif %}
+                                </div>
                                 <div class="single-input-fields">
                                     <label>{% trans "Password" %}</label>
                                     {% if form.is_bound %}

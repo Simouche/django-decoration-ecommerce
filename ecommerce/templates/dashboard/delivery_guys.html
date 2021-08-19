@@ -45,6 +45,12 @@
                                         <i class="fa fa-sync"></i>
                                     </button>
                                 </div>
+                                <div class="col-3">
+                                    <button onclick="printRecap('{% url 'ecommerce:delivery-man-recap-print' %}?pk={{ guy.pk }}')"
+                                            class="item" data-toggle="tooltip" data-placement="top" title="Print">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
                             {% endif %}
                             <button onclick="showDeliveries('{% url 'ecommerce:delivery-agents-deliveries' guy.pk %}')"
                                     class="item" data-toggle="tooltip" data-placement="top" title="Orders">
@@ -132,6 +138,10 @@
                 },
                 error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
             })
+        }
+
+        function printRecap(url) {
+            window.open(url, '_blank')
         }
 
         function showRecap(url) {

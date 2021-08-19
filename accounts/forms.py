@@ -95,6 +95,11 @@ class RegistrationForm(forms.ModelForm):
             }
         )
     )
+    city = forms.ModelChoiceField(
+        required=True,
+        queryset=City.objects.all(),
+        initial=1
+    )
     user_type = forms.ChoiceField(widget=forms.HiddenInput,
                                   choices=(('C', _('Client')), ('S', _('Staff'))))
 
@@ -116,6 +121,7 @@ class RegistrationForm(forms.ModelForm):
 
         profile = user.profile
         profile.address = self.cleaned_data.get('address')
+        profile.city = self.cleaned_data.get('city')
         profile.save()
 
         user_type = self.cleaned_data['user_type']
@@ -202,7 +208,8 @@ class CreateStaffForm(BSModalModelForm):
             }
         )
     )
-    user_type = forms.ChoiceField(choices=(('S', _('Staff')), ('A', _('Admin')), ('CA', _('Caller'))))
+    user_type = forms.ChoiceField(
+        choices=(('C', _('Client')), ('S', _('Staff')), ('A', _('Admin')), ('CA', _('Caller'))))
 
     class Meta:
         model = User

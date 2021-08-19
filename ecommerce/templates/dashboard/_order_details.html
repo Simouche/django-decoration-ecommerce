@@ -37,6 +37,8 @@
         </ul>
         {% trans "Not Provided" as not_provided %}
         <p>{% trans "Address:" %} {{ order.profile.address|default:not_provided }}, {{ order.profile.city|default:not_provided }}.</p>
+
+        <pre>{% trans "Note:" %} {{ order.note|default:"" }}.</pre>
         {% if user.user_type in "SA" or not "sales" in request.path %}
             <a class="btn w-100"
                href="{% url 'ecommerce:dashboard-sales-update-status' order.pk %}">
