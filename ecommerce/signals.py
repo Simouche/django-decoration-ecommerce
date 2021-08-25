@@ -15,7 +15,7 @@ def order_pre_creation_signal(sender, instance: Order, raw, **kwargs):
     if not instance.pk:
         instance.number = Order.generate_number()
 
-    if instance.status == 'CO':
+    if instance.status == 'CO' and not instance.delivery_date:
         instance.delivery_date = get_tomorrow_date()
 
 
@@ -35,7 +35,7 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
 
 
 @receiver(pre_save, sender=OrderLine)
-def order_line_pre_creation(sender, instance: OrderLine,raw, **kwargs):
+def order_line_pre_creation(sender, instance: OrderLine, raw, **kwargs):
     if raw:
         return
     if not instance.pk:

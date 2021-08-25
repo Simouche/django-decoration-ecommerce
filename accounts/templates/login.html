@@ -179,10 +179,11 @@
 
                             <!-- Single Input Fields -->
                             <div class="input-box">
+                                {% render_field form.user_type class="form-control browser-default" id="user_type" type="hidden" %}
                                 <div class="single-input-fields">
                                     <label>{% trans "Username" %}</label>
                                     {% if form.is_bound %}
-                                        {% render_field form.user_type class="form-control browser-default" id="user_type" type="hidden" %}
+
                                         {% if form.username.errors %}
                                             {% render_field form.username class="form-control browser-default" id="username" %}
                                             {% for error in form.username.errors %}

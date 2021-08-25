@@ -66,7 +66,8 @@
                                         {% trans 'In Stock' %} {% else %} {% trans 'Out of Stock' %} {% endif %}</a>
                                 </li>
                             </ul>
-                            <pre>{{ product.description }}</pre>
+                            <pre style="word-wrap: break-word; white-space: pre-wrap;  white-space: -moz-pre-wrap; /* Firefox */
+                                        white-space: -o-pre-wrap; ">{{ product.description }}</pre>
 
                             {% if product.has_sizes %}
                                 <h4>{% trans 'Size' %}</h4>
@@ -317,15 +318,15 @@
                                 <div class="review_box">
                                     <h4>{% trans 'Add a Review' %}</h4>
                                     {% if user.is_authenticated %}
-{#                                        <p>{% trans 'Your Rating' %}</p>#}
-{#                                        <ul class="list">#}
-{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
-{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
-{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
-{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
-{#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
-{#                                        </ul>#}
-{#                                        <p>{% trans 'Outstanding' %}</p>#}
+                                        {#                                        <p>{% trans 'Your Rating' %}</p>#}
+                                        {#                                        <ul class="list">#}
+                                        {#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+                                        {#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+                                        {#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+                                        {#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+                                        {#                                            <li><a href="#"><i class="fa fa-star"></i></a></li>#}
+                                        {#                                        </ul>#}
+                                        {#                                        <p>{% trans 'Outstanding' %}</p>#}
                                         <form class="row contact_form" action="{% url 'ecommerce:review-add' %}"
                                               method="POST" novalidate="novalidate">
                                             {% csrf_token %}

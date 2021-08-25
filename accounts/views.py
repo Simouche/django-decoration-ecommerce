@@ -67,7 +67,7 @@ class LoginView(View):
 
         login_form = LoginForm()
         context = dict(login_form=login_form, next=self.request.GET.get('next'),
-                       form=RegistrationForm(prefix="register", auto_id=False, ))
+                       form=RegistrationForm(prefix="register", auto_id=False, initial={'user_type': 'C'}))
         return render(request, self.template_name, context)
 
     def post(self, request):

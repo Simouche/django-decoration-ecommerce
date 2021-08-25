@@ -75,7 +75,7 @@
                     </td>
                     <td>{{ product.name }}</td>
                     <td>
-                        <pre><span class="description"> {{ product.description }}</span></pre>
+                        <pre><span class="description"> {{ product.description|slice:"30" }}...</span></pre>
                     </td>
                     <td> {{ product.price }} {% trans 'DZD' %}</td>
                     <td>{{ product.stock }}</td>
