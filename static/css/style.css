@@ -2681,7 +2681,7 @@ hr {
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .header-area .menu-wrapper .logo img {
-        width: 165px
+        /*width: 165px*/
     }
 }
 

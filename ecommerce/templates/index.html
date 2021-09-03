@@ -134,7 +134,7 @@
                                 <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                      data-wow-delay=".1s">
                                     <div class="popular-img">
-                                        <img height="400px" src="{{ product.main_image.url }}" alt="">
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
                                     </div>
                                     <div class="popular-caption">
                                         <h3>
@@ -212,7 +212,7 @@
                                 <div class="single-new-arrival mb-50 text-center wow fadeInUp" data-wow-duration="1s"
                                      data-wow-delay=".1s">
                                     <div class="popular-img">
-                                        <img height="400px" src="{{ product.main_image.url }}" alt="">
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
                                     </div>
                                     <div class="popular-caption">
                                         <h3>
@@ -361,7 +361,8 @@
                                         <h4>{% trans "Partners" %}</h4>
                                         <ul>
                                             {% for partner in partners %}
-                                                <li><a target="_blank" href="{{ partner.url }}">{{ partner.name }}</a></li>
+                                                <li><a target="_blank" href="{{ partner.url }}">{{ partner.name }}</a>
+                                                </li>
                                             {% endfor %}
                                         </ul>
                                     </div>

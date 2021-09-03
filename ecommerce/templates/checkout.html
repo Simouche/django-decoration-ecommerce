@@ -231,11 +231,6 @@
             $('#total-fee').html(newTotal + " {% trans 'DZD' %}")
         }
 
-        $(document).ready(function () {
-            $('.select2').select2()
-            const element = $('.select2-selection').eq(1)
-            element.addClass("d-none")
-        })
 
         function onCityChange(e) {
             {% if user.profile.cart.is_free_delivery %}

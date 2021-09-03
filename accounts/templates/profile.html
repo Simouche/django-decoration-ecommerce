@@ -4,7 +4,6 @@
 {% load static %}
 
 {% block styles %}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <style>
         .image-upload > input {
             display: none;
@@ -189,13 +188,5 @@
 
 {% block scripts %}
     <script src="{% static 'js/decorationjs/order.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            $('.select2').select2()
-            const element = $('.select2-selection').eq(1)
-            element.addClass("d-none")
-        })
-    </script>
+    <script type="text/javascript"></script>
 {% endblock %}
