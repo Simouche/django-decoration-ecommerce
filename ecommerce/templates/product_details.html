@@ -101,11 +101,11 @@
                     </div>
                 </div>
                 <div class="mt-200">
-                    <h2>{% trans 'Similar Products' %}</h2>
+                    <h2 class="mb-30">{% trans 'Similar Products' %}</h2>
                     <div class="row">
                         {% for product in products %}
                             <a href="{% url 'ecommerce:products-product-details' product.pk %}">
-                                <div class="col-lg-4 col-md-6 col-sm-6  mr-50">
+                                <div class="col-lg-4 col-md-6 col-sm-6  mr-25 ml-25">
                                     <div class="single-new-arrival mb-50 text-center">
                                         <div class="popular-img">
                                             <img src="{{ product.main_image.url }}" alt="" height="300px">
@@ -371,25 +371,23 @@
 {% block modals %}
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="staticModalLabel"
          aria-hidden="true" data-backdrop="static">
-        <div class="modal-dialog modal-md" role="document" style="z-index: 100">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticModalLabel">{% trans "Success" %}!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <div class="modal-dialog modal-lg" role="document" style="z-index: 100">
+            <div class="modal-content pr-30 pl-30">
+
+                <div class="modal-body pb-30">
+                    <h3 style="color: #0c2e60">
+                        {% trans "The product has been added to your cart for a home delivery." %}
+                    </h3>
                 </div>
-                <div class="modal-body">
-                    <p>
-                        {% trans "The product has been added to your cart!" %}
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button onclick="goToCart()" type="button"
-                            class="btn btn-secondary" style="background: grey"
-                            data-dismiss="modal">{% trans "Go to cart" %}</button>
-                    <button type="button" class="btn btn-primary" onclick="goToSimilarCategory()"
+                <div class="">
+                    <button style="width: 50%" type="button" class="btn btn-primary" onclick="goToSimilarCategory()"
                             data-dismiss="modal">{% trans "Continue shopping" %}</button>
+                    <button onclick="goToCart()" type="button"
+                            class="btn btn-secondary" style="background: grey; width:49%"
+                            data-dismiss="modal">{% trans "Go to cart" %}</button>
+                </div>
+                <div class="alert alert-primary mt-20" role="alert">
+                    {% trans "Your purchases will be home delivered." %}
                 </div>
             </div>
         </div>
