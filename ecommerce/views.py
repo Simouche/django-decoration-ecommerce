@@ -8,7 +8,6 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.exceptions import PermissionDenied
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
@@ -42,7 +41,6 @@ class Index(TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
-        # raise PermissionDenied
         m_kwargs = super(Index, self).get_context_data(**kwargs)
         m_kwargs['popular_cats'] = Category.objects.category_with_3_products()[:3]
         m_kwargs['random_products'] = Product.objects.filter(visible=True).order_by('?')[:3]
