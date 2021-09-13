@@ -8,6 +8,7 @@ from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 from django.db.models import Sum, F, Count, QuerySet, Q
@@ -41,6 +42,7 @@ class Index(TemplateView):
     template_name = "index.html"
 
     def get_context_data(self, **kwargs):
+        # raise PermissionDenied
         m_kwargs = super(Index, self).get_context_data(**kwargs)
         m_kwargs['popular_cats'] = Category.objects.category_with_3_products()[:3]
         m_kwargs['random_products'] = Product.objects.filter(visible=True).order_by('?')[:3]
@@ -1605,3 +1607,20 @@ class CreateCoupon(CreateView):
                                     request=request)
             return JsonResponse(html, safe=False)
         return super(CreateCoupon, self).get(request, *args, **kwargs)
+
+
+def handle404(request, exception, **kwargs):
+    template_name = "404.html"
+    context = {'error': exception}
+    return render(request, template_name, context, status=404)
+
+
+def handle403(request, exception, **kwargs):
+    template_name = "403.html"
+    context = {'error': exception}
+    return render(request, template_name, context, status=403)
+
+
+def handle500(request, *args, **kwargs):
+    template_name = "500.html"
+    return render(kwargs.get('request'), template_name, status=500)
