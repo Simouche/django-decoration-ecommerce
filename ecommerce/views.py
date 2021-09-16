@@ -1459,6 +1459,8 @@ def print_recap(request):
     for order in orders:
         for line in order.get_lines:
             product = line.product.name
+            if line.size:
+                product += " " + line.size.size
             if products.get(product, None):
                 products[product] += line.quantity
             else:
