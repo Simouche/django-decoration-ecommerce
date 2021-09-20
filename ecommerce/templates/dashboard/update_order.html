@@ -80,7 +80,12 @@
                         {% endif %}
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                         {% with WIDGET_ERROR_CLASS='is-invalid' %}
-                            {% render_field field class="form-control browser-default" %}
+                            {% if field.name == 'product' %}
+                                {% render_field field class=" formset-element form-control browser-default" %}
+                            {% else %}
+                                {% render_field field class="form-control browser-default" %}
+                            {% endif %}
+
                         {% endwith %}
                         {% if field.errors %}
                             {% for error in field.errors %}
@@ -103,13 +108,42 @@
     </div>
 </form>
 
-{#<script src="{% static 'formset/jquery.formset.js' %}"></script>#}
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('.formset_row-{{ lines_form.prefix }}').formset({
             addText: '<i class="fas fa-plus" style="color: #0b0b0b"></i> <span style="color: #0b0b0b">{% trans 'Add' %}</span>',
             deleteText: '<i class="fas fa-trash" style="color: #0b0b0b"></i>',
             prefix: '{{ lines_form.prefix }}'
+        })
+
+        $('select.formset-element').each((e, obj) => {
+            const selectObject = $(obj)
+            selectObject.on('change', function (e) {
+                const selectName = $(this).attr('name')
+                const selectNumber = selectName.split("-")[1]
+                const selectSizeName = 'id_lines-' + selectNumber + '-size'
+                const selectSizeObject = $('#' + selectSizeName)
+                $.ajax({
+                    url: '{% url 'ecommerce:get-product-sizes' %}',
+                    type: 'GET',
+                    data: {'pk': $(this).val()},
+                    success: function (data, textStatus, jqXHR) {
+                        selectSizeObject.empty()
+                        const option = $('<option></option>').attr("value", '').text('----------');
+                        selectSizeObject.append(option)
+                        data.forEach((element) => {
+                            const option = $('<option></option>').attr("value", element['id']).text(element['size']);
+                            selectSizeObject.append(option)
+                        })
+                        console.log(data)
+                    },
+                    error: function (_, __, ___) {
+                        console.log(___)
+                    }
+                })
+            })
+
         })
     })
 </script>

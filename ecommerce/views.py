@@ -851,6 +851,11 @@ class OrderUpdateView(UpdateView, OrdersMixin):
             data['lines_form'] = form
         return data
 
+    def form_invalid(self, form):
+        print("form invalid: ", form.errors)
+        messages.error(self.request, _('Update Error'))
+        return HttpResponseRedirect(reverse("ecommerce:orders-history"))
+
     def form_valid(self, form):
         context = self.get_context_data()
         lines_form = context['lines_form']
@@ -859,6 +864,8 @@ class OrderUpdateView(UpdateView, OrdersMixin):
             if lines_form.is_valid():
                 lines_form.instance = self.object
                 lines_form.save()
+            else:
+                print(lines_form.errors)
         return super(OrderUpdateView, self).form_valid(form)
 
     def get_form_kwargs(self):
@@ -1607,6 +1614,13 @@ class CreateCoupon(CreateView):
                                     request=request)
             return JsonResponse(html, safe=False)
         return super(CreateCoupon, self).get(request, *args, **kwargs)
+
+
+@login_required()
+def get_product_sizes(request, ):
+    product = get_object_or_404(Product, pk=request.GET.get('pk'))
+    sizes = list(product.sizes.values('id', 'size'))
+    return JsonResponse(sizes, safe=False)
 
 
 def handle404(request, exception, **kwargs):

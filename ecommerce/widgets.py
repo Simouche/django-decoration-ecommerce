@@ -1,7 +1,7 @@
-from django.forms import DateTimeInput
+from django.forms import DateInput, TimeInput
 
 
-class BootstrapTimePickerInput(DateTimeInput):
+class BootstrapTimePickerInput(TimeInput):
     template_name = 'widgets/bootstrap_timepicker.html'
 
     def get_context(self, name, value, attrs):
@@ -15,7 +15,7 @@ class BootstrapTimePickerInput(DateTimeInput):
         return context
 
 
-class BootstrapDatePickerInput(DateTimeInput):
+class BootstrapDatePickerInput(DateInput):
     template_name = 'widgets/bootstrap_datepicker.html'
 
     def get_context(self, name, value, attrs):

@@ -65,7 +65,7 @@
         </div>
     </div>
     <div class=" table-data__tool">
-        <form method="GET" action="{% url 'ecommerce:dashboard-sales' %}" class="form-inline">
+        <form method="GET" action="{% url 'ecommerce:orders-history' %}" class="form-inline">
             {% for field in form %}
                 {% if field.name in 'order user delivery_man caller status' %}
                     <div class="rs-select2--light rs-select2--md px-1 pr-1">
@@ -170,6 +170,28 @@
             </div>
         </div>
     </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog modal-{% if message.tags %}{{ message.tags }}{% endif %}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="icon-box m-auto">
+                                <i class="fa {% if message.tags == 'success' %} fa-check-circle {% else %} fa-times {% endif %}"></i>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <h4>{% if message.tags == 'success' %} {% trans 'Great' %}! {% else %}
+                                trans Oops!  {% endif %}</h4>
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 
 {% endblock modals %}
 

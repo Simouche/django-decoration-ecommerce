@@ -26,7 +26,7 @@ SECRET_KEY = '+nij4fikst76nks4u)h6r*a5o1157sn*e_na7ghftwl=)=hwt!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['auconfort.shop', 'samydeco.com', 'www.auconfort.shop', 'www.samydeco.com','*']
+ALLOWED_HOSTS = ['auconfort.shop', 'samydeco.com', 'www.auconfort.shop', 'www.samydeco.com', '*']
 
 # Application definition
 
@@ -154,6 +154,8 @@ USE_L10N = True
 USE_TZ = True
 
 TIME_INPUT_FORMATS = ('%H:%M',)
+
+DATE_INPUT_FORMATS = ('%d/%m/%Y',)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

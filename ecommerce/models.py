@@ -190,7 +190,7 @@ class Order(DeletableModel):
     assigned_to = models.ForeignKey("accounts.User", on_delete=do_nothing, null=True, blank=True,
                                     verbose_name=_("Assigned To"), related_name="orders")
     note = models.TextField(_('Note'), max_length=1000, null=True, blank=True)
-    delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True)
+    delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True,)
     coupon = models.ForeignKey('Coupon', verbose_name=_('Applied Coupon'), on_delete=models.SET_NULL,
                                related_name="orders", null=True, blank=True)
 

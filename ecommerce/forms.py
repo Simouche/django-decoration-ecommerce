@@ -38,17 +38,21 @@ class CreateOrderForm(forms.ModelForm):
             self.fields['status'] = forms.ChoiceField(choices=self.status_choices)
 
     class Meta:
-        global status_choices
         model = Order
-        fields = ['profile', 'number', 'status', 'shipping_fee', 'free_delivery', 'note', 'delivery_date']
+        fields = ('profile', 'number', 'status', 'shipping_fee', 'free_delivery', 'note', 'delivery_date')
 
 
 class CreateOrderLineForm(forms.ModelForm):
     order = forms.ModelChoiceField(queryset=Order.objects.filter(visible=True), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(CreateOrderLineForm, self).__init__(*args, **kwargs)
+        if kwargs.get('instance', None) and not kwargs.get('data'):
+            self.fields['size'].queryset = kwargs.get('instance').product.sizes
+
     class Meta:
         model = OrderLine
-        fields = ['product', 'order', 'quantity']
+        fields = ['product', 'size', 'order', 'quantity']
 
 
 OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, form=CreateOrderLineForm,

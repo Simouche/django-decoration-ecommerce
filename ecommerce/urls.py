@@ -95,4 +95,6 @@ urlpatterns = [
 
     path('login-required/', views.LoginRequired.as_view(), name='login-required'),
 
+    path('get-product-sizes/', views.get_product_sizes, name='get-product-sizes')
+
 ]
