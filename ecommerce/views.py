@@ -1623,6 +1623,14 @@ def get_product_sizes(request, ):
     return JsonResponse(sizes, safe=False)
 
 
+@login_required()
+def product_recap(request, pk):
+    lines = get_list_or_404(OrderLine, product_id=pk)
+    data = dict()
+    data['html'] = render_to_string("dashboard/product_recap.html", {'lines': lines}, request=request)
+    return JsonResponse(data)
+
+
 def handle404(request, exception, **kwargs):
     template_name = "404.html"
     context = {'error': exception}

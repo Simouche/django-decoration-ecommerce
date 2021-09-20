@@ -61,6 +61,7 @@ urlpatterns = [
          name="delivery-companies-update"),
 
     path('dashboard/recap/delivery-man/', views.DeliveryManRecapView.as_view(), name='delivery-man-recap'),
+    path('dashboard/recap/product/<int:pk>/', views.product_recap, name='product-recap'),
     path('dashboard/recap/delivery-man/print/', views.print_recap, name='delivery-man-recap-print'),
 
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),

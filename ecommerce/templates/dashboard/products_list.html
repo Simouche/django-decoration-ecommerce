@@ -85,6 +85,12 @@
                         <div class="table-data-feature row m-0">
                             {% if request.user.user_type == 'A' %}
                                 {% if product.visible %}
+                                    <div class="col-3">
+                                        <button onclick="showRecap('{% url 'ecommerce:product-recap' product.pk %}')"
+                                                class="item" data-toggle="tooltip" data-placement="top" title="Recap">
+                                            <i class="fa fa-sync"></i>
+                                        </button>
+                                    </div>
                                     <div class="col-3 pl-1">
                                         <button data-id="{% url 'ecommerce:products-product-update' product.id %}"
                                                 id="update-product{{ product.id }}" class="item" data-toggle="tooltip"
@@ -186,6 +192,15 @@
             </div>
         {% endfor %}
     {% endif %}
+
+    {# show delivery guy recap #}
+    <div class="modal fade" tabindex="-1" role="dialog" id="show-recap-modal"
+         aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" id="show-recap-content"></div>
+        </div>
+    </div>
+
 
 {% endblock modals %}
 
@@ -315,6 +330,20 @@
             url: "{% url 'ecommerce:dashboard-products' %}",
             dataTableId: '#users-table-div'
         })
+
+        function showRecap(url) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: (response) => {
+                    const mModal = $("#show-recap-modal")
+                    mModal.find(".modal-content").html(response['html'])
+                    mModal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
+            })
+        }
 
     </script>
 

@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load static %}
+
+<div id="product-recap-div" class="table-responsive table--no-card m-b-40">
+    <table class="table table-data2" id="product-recap-table">
+        <thead>
+        <tr>
+            <th>{% trans "produit" %}</th>
+            <th>{% trans "quantity" %}</th>
+            <th>{% trans "Order" %}</th>
+            <th>{% trans "Order Date" %}</th>
+            <th>{% trans "Delivery Man" %}</th>
+            <th>{% trans "Delivery Date" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for line in lines %}
+            <tr class="tr-shadow">
+                <td>{{ line.product_name }}</td>
+                <td>{{ line.quantity }}</td>
+                <td>{{ line.order.number }}</td>
+                <td>{{ line.order.created_at }}</td>
+                <td>{{ line.order.deliveries.first.delivery_guys.name }}</td>
+                <td>{{ line.order.delivery_date }}</td>
+            </tr>
+            <tr class="spacer"></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
