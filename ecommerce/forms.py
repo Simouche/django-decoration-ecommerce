@@ -44,6 +44,7 @@ class CreateOrderForm(forms.ModelForm):
 
 class CreateOrderLineForm(forms.ModelForm):
     order = forms.ModelChoiceField(queryset=Order.objects.filter(visible=True), required=False)
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(visible=True), required=True)
 
     def __init__(self, *args, **kwargs):
         super(CreateOrderLineForm, self).__init__(*args, **kwargs)
@@ -52,7 +53,7 @@ class CreateOrderLineForm(forms.ModelForm):
 
     class Meta:
         model = OrderLine
-        fields = ['product', 'size', 'order', 'quantity']
+        fields = ('product', 'size', 'order', 'quantity')
 
 
 OrderWithLinesFormSet = inlineformset_factory(parent_model=Order, model=OrderLine, form=CreateOrderLineForm,

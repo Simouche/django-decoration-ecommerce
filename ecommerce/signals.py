@@ -38,7 +38,22 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
 def order_line_pre_creation(sender, instance: OrderLine, raw, **kwargs):
     if raw:
         return
-    if not instance.pk:
+
+    existing_instance = False
+    if instance.pk:
+        existing_instance = OrderLine.objects.get(pk=instance.pk)
+        instance.old_product = existing_instance.product
+        instance.old_quantity = existing_instance.quantity
+
+    if not instance.pk or \
+            (
+                    existing_instance and
+                    (
+                            existing_instance.product != instance.product or
+                            existing_instance.size != instance.size or
+                            existing_instance.quantity != instance.quantity
+                    )
+            ):
         instance.total_price = instance.total
 
 
@@ -48,7 +63,17 @@ def order_line_created(sender, instance: OrderLine, created, raw, **kwargs):
         return
     if created:
         instance.product.stock = F('stock') - instance.quantity
-        instance.product.save()
+    else:
+        if instance.product != getattr(instance, 'old_product', None):
+            instance.old_product.stock = F('stock') + instance.old_quantity
+            instance.product.stock = F('stock') - instance.quantity
+        elif instance.quantity != getattr(instance, 'old_quantity', 0) and \
+                not getattr(instance, 'old_quantity', 0) == 0:
+            if instance.quantity > instance.old_quantity:
+                instance.product.stock = F('stock') - (instance.quantity - instance.old_quantity)
+            elif instance.quantity < instance.old_quantity:
+                instance.product.stock = F('stock') + (instance.old_quantity - instance.quantity)
+    instance.product.save()
 
 
 @receiver(order_line_deleted)
