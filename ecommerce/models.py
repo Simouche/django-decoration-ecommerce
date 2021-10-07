@@ -58,6 +58,7 @@ class Product(DeletableModel):
     category = models.ForeignKey('SubCategory', on_delete=do_nothing, related_name='products',
                                  verbose_name=_('Category'), null=True)
     free_delivery = models.BooleanField(default=False, verbose_name=_('Free Delivery'))
+    free_product = models.BooleanField(default=False, verbose_name=_('Free Product'))
 
     def __str__(self):
         return self.name
@@ -181,6 +182,7 @@ class Order(DeletableModel):
         ('CA', _('Canceled')),
         ('OD', _('On Delivery')),
         ('D', _('Delivered')),
+        ('DC', _('Delivery Canceled')),
         ('R', _('Returned')),
         ('RE', _('Refund')),
         ('DE', _('Delayed')),
@@ -296,6 +298,10 @@ class Order(DeletableModel):
         data.append(bottom_row)
 
         return data
+
+    def cancel_order(self):
+        for line in self.lines.all():
+            line.product.stock = F('stock') + line.quantity
 
 
 class OrderStatusChange(BaseModel):

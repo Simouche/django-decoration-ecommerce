@@ -45,7 +45,6 @@ class RegisterView(FormView):
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
-        print(self.request.POST)
         print(form.errors)
         return super(RegisterView, self).form_invalid(form)
 

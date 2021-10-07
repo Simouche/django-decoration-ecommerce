@@ -112,6 +112,7 @@ class Dashboard(TemplateView):
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
+                                .filter(free_product=False) \
                                 .values('price', 'stock', product_name=F('name'),
                                         order_count=Count('orders_lines__order'),
                                         quantities=Sum('orders_lines__quantity'), ) \
@@ -371,7 +372,7 @@ class DashboardSaleDetails(DetailView):
 class ViewProductDetailsView(DetailView):
     model = Product
     context_object_name = 'product'
-    queryset = Product.objects.filter(visible=True)
+    queryset = Product.objects.filter(visible=True).filter(free_product=False)
     template_name = "product_details.html"
 
     def get_context_data(self, **kwargs):
@@ -394,7 +395,7 @@ class ViewProductDetailsView(DetailView):
 class ProductsListView(ListView):
     model = Product
     context_object_name = 'products'
-    queryset = Product.objects.filter(visible=True)
+    queryset = Product.objects.filter(visible=True).filter(free_product=False)
     template_name = "products.html"
     paginate_by = 12
     page_kwarg = 'page'
@@ -452,7 +453,7 @@ class UpdateProduct(BSModalUpdateView):
     form_class = CreateProductForm
     success_url = reverse_lazy("ecommerce:dashboard-products")
     template_name = "dashboard/create_product.html"
-    queryset = Product.objects.filter(visible=True)
+    queryset = Product.objects.filter(visible=True).filter(free_product=False)
     formset_class = ProductWithSizesFormset
 
     def get_context_data(self, **kwargs):
@@ -1014,7 +1015,7 @@ def get_cart_count(request):
 class CategoriesListView(ListView):
     model = Product
     context_object_name = 'products'
-    queryset = Product.objects.filter(visible=True)
+    queryset = Product.objects.filter(visible=True).filter(free_product=False)
     template_name = "categories.html"
     # paginate_by = 21
     # page_kwarg = 'page'

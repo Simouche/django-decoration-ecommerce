@@ -102,7 +102,7 @@ class CreateProductForm(BSModalModelForm):
     class Meta:
         model = Product
         fields = ('name', 'description', 'price', 'weight', 'main_image', 'discount_percent', 'stock', 'category',
-                  'free_delivery', 'reference')
+                  'free_delivery', 'free_product', 'reference')
 
 
 ProductWithSizesFormset = inlineformset_factory(parent_model=Product, model=ProductSize,

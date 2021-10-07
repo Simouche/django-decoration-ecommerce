@@ -20,7 +20,7 @@ def order_pre_creation_signal(sender, instance: Order, raw, **kwargs):
 
 
 @receiver(post_save, sender=Order)
-def order_status_changed(sender, instance, created, raw, **kwargs):
+def order_status_changed(sender, instance: Order, created, raw, **kwargs):
     if raw:
         return
     request = get_request()
@@ -32,6 +32,8 @@ def order_status_changed(sender, instance, created, raw, **kwargs):
             if last_change and not last_change.new_status == instance.status:
                 OrderStatusChange.objects.create(order=instance, previous_status=last_change.new_status,
                                                  new_status=instance.status, user=request.user)
+                if instance.status in ['CA', 'R', 'RE']:
+                    instance.cancel_order()
 
 
 @receiver(pre_save, sender=OrderLine)

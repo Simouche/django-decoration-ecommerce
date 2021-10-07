@@ -9859,3 +9859,8 @@ b, sup, sub, u, del {
         bottom: 30px
     }
 }
+
+
+.invalid-feedback{
+    display: block;
+}

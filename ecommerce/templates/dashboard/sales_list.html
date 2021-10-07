@@ -218,8 +218,7 @@
                     deleteUser(`/orders/${id}/delete/`, '#sales-table', "{{ csrf_token }}")
                     $('#deletemodal').modal("hide")
                 }
-            }
-        )
+            })
 
         loadByStatusSales({
             selectId: "#status-select",
