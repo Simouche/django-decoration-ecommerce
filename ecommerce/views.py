@@ -389,7 +389,8 @@ class ViewProductDetailsView(DetailView):
         if self.request.user.is_authenticated:
             return self.request.user.profile.cart
         else:
-            return Cart.objects.get(identifier=self.request.session.get('cart_id'))
+            cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
+            return cart
 
 
 class ProductsListView(ListView):
@@ -552,7 +553,8 @@ class CartAddView(CreateView):
         if self.request.user.is_authenticated:
             return self.request.user.profile.cart
         else:
-            return Cart.objects.get(identifier=self.request.session.get('cart_id'))
+            cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
+            return cart
 
     def form_invalid(self, form):
         print(form.errors)

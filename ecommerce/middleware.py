@@ -1,3 +1,5 @@
+import traceback
+
 from django.http import HttpRequest
 from django.utils.deprecation import MiddlewareMixin
 
@@ -10,10 +12,17 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
         if not request.session.get('cart_id', None):
             cart = Cart.objects.create()
             request.session['cart_id'] = cart.identifier.__str__()
+        else:
+            print(request.session.get('cart_id', None))
 
         if request.user.is_authenticated:
             try:
-                request.user.profile.cart
-            except Exception:
+                existing_cart = request.user.profile.cart
+                session_cart = Cart.objects.filter(identifier=request.session.get('cart_id')).first()
+                session_cart.lines.update(cart=existing_cart)
+            except Exception as e:
+                traceback.print_exc()
                 profile = request.user.profile
-                Cart.objects.filter(identifier=request.session.get('cart_id')).update(profile=profile)
+                cart = Cart.objects.filter(identifier=request.session.get('cart_id')).first()
+                profile.cart = cart
+                profile.save()
