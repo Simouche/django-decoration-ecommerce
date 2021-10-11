@@ -146,7 +146,7 @@ msgstr "En Remise"
 
 #: .\models.py:101
 msgid "Order Line"
-msgstr ""
+msgstr "Ligne de commande"
 
 #: .\models.py:102
 msgid "Order Lines"
@@ -966,7 +966,7 @@ msgstr "Commentaire"
 
 #: .\templates\product_details.html:338
 msgid "Submit Now"
-msgstr ""
+msgstr "Soumettre Maintenant"
 
 #: .\templates\product_details.html:344
 msgid "Login"
