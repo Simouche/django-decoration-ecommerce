@@ -56,7 +56,9 @@ class Contact(TemplateView):
     template_name = "contact.html"
 
     def get_context_data(self, **kwargs):
-        return super(Contact, self).get_context_data(settings=Settings.objects.all().first(), **kwargs)
+        return super(Contact, self).get_context_data(settings=Settings.objects.all().first(),
+                                                     content=IndexContent.objects.all().first(),
+                                                     **kwargs)
 
     def post(self, request, *args, **kwargs):
         return self.get(request, *args, **kwargs)

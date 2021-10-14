@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-23 11:53+0100\n"
+"POT-Creation-Date: 2021-10-14 14:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\forms.py:14 .\forms.py:41 .\forms.py:142 .\templates\register.html:95
+#: .\forms.py:14 .\forms.py:41 .\forms.py:164 .\templates\login.html:185
+#: .\templates\register.html:97
 msgid "Username"
 msgstr "Nom D'utilisateur"
 
@@ -26,12 +27,12 @@ msgstr "Nom D'utilisateur"
 msgid "Phone"
 msgstr "Téléphone"
 
-#: .\forms.py:14 .\forms.py:84 .\forms.py:185 .\views.py:165
+#: .\forms.py:14 .\forms.py:86 .\forms.py:207 .\views.py:213
 msgid "Email"
 msgstr "Email"
 
-#: .\forms.py:21 .\forms.py:69 .\forms.py:170 .\templates\login.html:111
-#: .\templates\register.html:180
+#: .\forms.py:21 .\forms.py:70 .\forms.py:192 .\templates\login.html:112
+#: .\templates\login.html:305 .\templates\register.html:216
 msgid "Password"
 msgstr "Mot de Passe"
 
@@ -39,57 +40,65 @@ msgstr "Mot de Passe"
 msgid "Code"
 msgstr "Code"
 
-#: .\forms.py:48 .\forms.py:149 .\templates\register.html:112 .\views.py:165
+#: .\forms.py:49 .\forms.py:171 .\templates\login.html:203
+#: .\templates\register.html:114 .\views.py:213
 msgid "First Name"
 msgstr "Prénom"
 
-#: .\forms.py:55 .\forms.py:156 .\templates\register.html:129 .\views.py:165
+#: .\forms.py:56 .\forms.py:178 .\templates\login.html:220
+#: .\templates\register.html:131 .\views.py:213
 msgid "Last Name"
 msgstr "Nom"
 
-#: .\forms.py:62 .\forms.py:163 .\models.py:19
+#: .\forms.py:63 .\forms.py:185 .\models.py:19
 msgid "Phone Number"
 msgstr "Numéro de Téléphone"
 
-#: .\forms.py:64 .\forms.py:165
+#: .\forms.py:65 .\forms.py:187
 msgid "if you have multiple phones, enter them separated by a coma."
 msgstr "si vous avez plusieurs téléphones, entrez-les séparés par une virgule."
 
-#: .\forms.py:76 .\forms.py:78 .\forms.py:177 .\templates\register.html:197
+#: .\forms.py:78 .\forms.py:80 .\forms.py:199 .\templates\login.html:322
+#: .\templates\register.html:233
 msgid "Confirm Password"
 msgstr "Confirmez le mot de passe"
 
-#: .\forms.py:89 .\models.py:15
-msgid "Client"
-msgstr "Client"
-
-#: .\forms.py:89 .\forms.py:189 .\models.py:15
-msgid "Staff"
-msgstr "Personnel"
-
-#: .\forms.py:89 .\forms.py:189 .\models.py:15
-msgid "Admin"
-msgstr "Admin"
-
-#: .\forms.py:98 .\forms.py:198
-msgid "Un-matching passwords!"
-msgstr "Mots de passe non correspondants!"
-
-#: .\forms.py:115
-msgid "Choose a user"
-msgstr "Choisissez un utilisateur"
-
-#: .\forms.py:120 .\models.py:80
+#: .\forms.py:94 .\forms.py:142 .\models.py:81 .\templates\login.html:271
+#: .\templates\register.html:182
 msgid "Address"
 msgstr "Adresse"
 
-#: .\forms.py:124
+#: .\forms.py:104 .\forms.py:212 .\models.py:15
+msgid "Client"
+msgstr "Client"
+
+#: .\forms.py:104 .\forms.py:212 .\models.py:15
+msgid "Staff"
+msgstr "Personnel"
+
+#: .\forms.py:113 .\forms.py:221
+msgid "Un-matching passwords!"
+msgstr "Mots de passe non correspondants!"
+
+#: .\forms.py:137
+msgid "Choose a user"
+msgstr "Choisissez un utilisateur"
+
+#: .\forms.py:146
 msgid "Select a city"
 msgstr "Sélectionnez une ville"
 
-#: .\forms.py:128 .\models.py:83
+#: .\forms.py:150 .\models.py:84
 msgid "Birth Date"
 msgstr "Date de Naissance"
+
+#: .\forms.py:212 .\models.py:15
+msgid "Admin"
+msgstr "Admin"
+
+#: .\forms.py:212 .\models.py:15
+msgid "Caller"
+msgstr "Agent D'appel"
 
 #: .\models.py:25
 msgid "Active"
@@ -109,129 +118,317 @@ msgstr "Type"
 msgid ""
 "The user's type can be one of the available choices, Client, Staff or Admin."
 msgstr ""
-"Le type d'utilisateur peut être l'un des choix disponibles, Client, Personnel ou Admin."
+"Le type d'utilisateur peut être l'un des choix disponibles, Client, "
+"Personnel ou Admin."
 
-#: .\models.py:72
+#: .\models.py:73 .\templates\profile.html:88
 msgid "Profile Picture"
 msgstr "Photo de Profile"
 
-#: .\models.py:75
+#: .\models.py:76
 msgid "the user's profile picture."
 msgstr "la photo de profil de l'utilisateur."
 
-#: .\models.py:82 .\models.py:151
+#: .\models.py:83 .\models.py:155 .\templates\login.html:288
+#: .\templates\register.html:199
 msgid "City"
 msgstr "Ville"
 
-#: .\models.py:84
+#: .\models.py:85
 msgid "Gender"
 msgstr "Sex"
 
-#: .\models.py:107
+#: .\models.py:111 .\templates\profile.html:40
 msgid "Profile"
 msgstr "Profile"
 
-#: .\models.py:108
+#: .\models.py:112
 msgid "Profiles"
 msgstr "Profiles"
 
-#: .\models.py:112 .\models.py:125 .\models.py:141
+#: .\models.py:116 .\models.py:129 .\models.py:145
+#: .\templates\dashboard\cities.html:10 .\templates\dashboard\states.html:10
 msgid "Name"
 msgstr "Nom"
 
-#: .\models.py:113 .\models.py:126 .\models.py:142
+#: .\models.py:117 .\models.py:130 .\models.py:146
+#: .\templates\dashboard\cities.html:11 .\templates\dashboard\states.html:11
 msgid "Arabic Name"
 msgstr "Nom en Arabe"
 
-#: .\models.py:114 .\models.py:127 .\models.py:143
+#: .\models.py:118 .\models.py:131 .\models.py:147
 msgid "English Name"
 msgstr "Nom en Anglais"
 
-#: .\models.py:120 .\models.py:130
+#: .\models.py:124 .\models.py:134
 msgid "Region"
 msgstr "Région"
 
-#: .\models.py:121
+#: .\models.py:125
 msgid "Regions"
 msgstr "Régions"
 
-#: .\models.py:128
+#: .\models.py:132 .\templates\dashboard\states.html:13
 msgid "Matricule"
 msgstr "Matricule"
 
-#: .\models.py:129 .\models.py:144
+#: .\models.py:133 .\models.py:148
 msgid "Postal Code"
 msgstr "Code Postal"
 
-#: .\models.py:136 .\models.py:145
+#: .\models.py:140 .\models.py:149 .\templates\dashboard\cities.html:14
 msgid "State"
 msgstr "Etat"
 
-#: .\models.py:137
+#: .\models.py:141
 msgid "States"
 msgstr "Etats"
 
-#: .\models.py:152
+#: .\models.py:156
 msgid "Cities"
 msgstr "Villes"
 
-#: .\templates\login.html:76 .\templates\register.html:217
-msgid "Login"
-msgstr "S'identifier"
+#: .\templates\dashboard\_users_table.html:8
+#: .\templates\dashboard\users.html:38
+msgid "picture"
+msgstr "photo"
 
-#: .\templates\login.html:77
-msgid "Enter login details to get access"
-msgstr "Entrez les informations de connexion pour accéder"
+#: .\templates\dashboard\_users_table.html:9
+#: .\templates\dashboard\users.html:39
+msgid "full name"
+msgstr "nom complet"
 
-#: .\templates\login.html:94
-msgid "Username, Email Address or Phone number"
-msgstr "Nom d'utilisateur, Adresse e-mail ou Numéro de Téléphone"
-
-#: .\templates\login.html:130
-msgid "Forgot Password?"
-msgstr "Mot de Passe Oublié?"
-
-#: .\templates\login.html:135
-msgid "Don’t have an account?"
-msgstr "Vous n’avez pas de compte?"
-
-#: .\templates\login.html:136 .\templates\register.html:76
-#: .\templates\register.html:219
-msgid "Sign Up"
-msgstr "S'inscrire"
-
-#: .\templates\login.html:136 .\templates\register.html:218
-msgid "here"
-msgstr "ici"
-
-#: .\templates\login.html:138
-msgid "LOGIN"
-msgstr "S'IDENTIFIER"
-
-#: .\templates\register.html:77
-msgid "Create your account to get full access"
-msgstr "Créez votre compte pour obtenir un accès complet"
-
-#: .\templates\register.html:146
-msgid "Phone number"
-msgstr "Numéro de Téléphone"
-
-#: .\templates\register.html:163
-msgid "Email Address"
+#: .\templates\dashboard\_users_table.html:10
+#: .\templates\dashboard\users.html:40
+#, fuzzy
+#| msgid "Email"
+msgid "email"
 msgstr "Email"
 
-#: .\templates\register.html:216
-msgid "Already have an account? "
-msgstr "Vous avez déjà un compte?"
-
-#: .\views.py:72
-msgid "Invalid username/password"
-msgstr "Nom d'utilisateur / mot de passe invalide"
-
-#: .\views.py:165
+#: .\templates\dashboard\_users_table.html:11
+#: .\templates\dashboard\users.html:41 .\views.py:213
 msgid "phone"
 msgstr "téléphone"
 
-#: .\views.py:188
+#: .\templates\dashboard\_users_table.html:12
+#: .\templates\dashboard\users.html:42
+msgid "date joined"
+msgstr "date d'inscription"
+
+#: .\templates\dashboard\_users_table.html:13
+#: .\templates\dashboard\users.html:43
+msgid "role"
+msgstr "role"
+
+#: .\templates\dashboard\_users_table.html:14
+#: .\templates\dashboard\users.html:44
+msgid "orders count"
+msgstr "nombres de commandes"
+
+#: .\templates\dashboard\_users_table.html:16
+#: .\templates\dashboard\users.html:46
+msgid "access"
+msgstr "accés"
+
+#: .\templates\dashboard\_users_table.html:18
+#: .\templates\dashboard\users.html:48 .\templates\profile.html:141
+msgid "actions"
+msgstr "actions"
+
+#: .\templates\dashboard\_users_table.html:53
+#: .\templates\dashboard\users.html:83
+msgid "Deleted"
+msgstr "Supprimé"
+
+#: .\templates\dashboard\_users_table.html:60
+#: .\templates\dashboard\users.html:90
+msgid "revoke"
+msgstr "révoquer"
+
+#: .\templates\dashboard\_users_table.html:67
+#: .\templates\dashboard\users.html:97
+msgid "approve"
+msgstr "approuver"
+
+#: .\templates\dashboard\cities.html:12 .\templates\dashboard\states.html:12
+#, fuzzy
+#| msgid "English Name"
+msgid "English Namet"
+msgstr "Nom en Anglais"
+
+#: .\templates\dashboard\cities.html:13 .\templates\dashboard\states.html:14
+msgid "Code Postal"
+msgstr "Code Postal"
+
+#: .\templates\dashboard\profile.html:2054
+msgid "Calls"
+msgstr "Appels"
+
+#: .\templates\dashboard\profile.html:2058
+msgid "Sales"
+msgstr "Ventes"
+
+#: .\templates\dashboard\users.html:9
+#, fuzzy
+#| msgid "Username"
+msgid "Users"
+msgstr "Nom D'utilisateur"
+
+#: .\templates\dashboard\users.html:15
+msgid "Groups"
+msgstr "Groups"
+
+#: .\templates\dashboard\users.html:27
+msgid "add user"
+msgstr "ajouter un utilisateur"
+
+#: .\templates\dashboard\users.html:108 .\templates\dashboard\users.html:193
+#: .\templates\forgot_password.html:59
+#, fuzzy
+#| msgid "Password"
+msgid "Reset Password"
+msgstr "Mot de Passe"
+
+#: .\templates\dashboard\users.html:151
+msgid "Great"
+msgstr "Super"
+
+#: .\templates\dashboard\users.html:167
+msgid "Attention!"
+msgstr "Attention!"
+
+#: .\templates\dashboard\users.html:174
+msgid "Delete User ?"
+msgstr "Supprimer L'utilisateur?"
+
+#: .\templates\dashboard\users.html:178
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\templates\dashboard\users.html:180
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\templates\dashboard\users.html:204
+#, fuzzy
+#| msgid "Password"
+msgid "new password"
+msgstr "Mot de Passe"
+
+#: .\templates\dashboard\users.html:206
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: .\templates\dashboard\users.html:258
+msgid "Success: User was created."
+msgstr "Succès : l'utilisateur a été créé."
+
+#: .\templates\forgot_password.html:61
+msgid "You should contact the support at "
+msgstr "Vous devez contacter le support au"
+
+#: .\templates\forgot_password.html:61
+msgid " to help you reset your password."
+msgstr "pour vous aider à réinitialiser votre mot de passe."
+
+#: .\templates\forgot_password.html:62
+msgid "Go Back"
+msgstr "Retour"
+
+#: .\templates\login.html:77 .\templates\register.html:253
+msgid "Login"
+msgstr "S'identifier"
+
+#: .\templates\login.html:78
+msgid "Enter login details to get access"
+msgstr "Entrez les informations de connexion pour accéder"
+
+#: .\templates\login.html:95
+msgid "Username, Email Address or Phone number"
+msgstr "Nom d'utilisateur, Adresse e-mail ou Numéro de Téléphone"
+
+#: .\templates\login.html:132
+msgid "Forgot Password?"
+msgstr "Mot de Passe Oublié?"
+
+#: .\templates\login.html:140
+msgid "LOGIN"
+msgstr "S'IDENTIFIER"
+
+#: .\templates\login.html:165 .\templates\login.html:344
+#: .\templates\register.html:78 .\templates\register.html:255
+msgid "Sign Up"
+msgstr "S'inscrire"
+
+#: .\templates\login.html:166 .\templates\register.html:79
+msgid "Create your account to get full access"
+msgstr "Créez votre compte pour obtenir un accès complet"
+
+#: .\templates\login.html:237 .\templates\register.html:148
+msgid "Phone number"
+msgstr "Numéro de Téléphone"
+
+#: .\templates\login.html:254 .\templates\register.html:165
+msgid "Email Address"
+msgstr "Email"
+
+#: .\templates\profile.html:44
+msgid "My Orders"
+msgstr "Mes Commandes"
+
+#: .\templates\profile.html:120
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: .\templates\profile.html:136
+#, fuzzy
+#| msgid "Phone Number"
+msgid "Number"
+msgstr "Numéro de Téléphone"
+
+#: .\templates\profile.html:137
+msgid "Items Count"
+msgstr "Nombre d'Articles"
+
+#: .\templates\profile.html:138
+msgid "Total"
+msgstr "Totale"
+
+#: .\templates\profile.html:139
+msgid "date"
+msgstr "date"
+
+#: .\templates\profile.html:140
+msgid "status"
+msgstr "statu"
+
+#: .\templates\profile.html:149
+msgid "DZD"
+msgstr "DZD"
+
+#: .\templates\register.html:252
+msgid "Already have an account? "
+msgstr "Vous avez déjà un compte?"
+
+#: .\templates\register.html:254
+msgid "here"
+msgstr "ici"
+
+#: .\views.py:96
+msgid "Your account isn't activated, an admin will activate it soon."
+msgstr "Votre compte n'est pas activé, un administrateur l'activera bientôt."
+
+#: .\views.py:98
+msgid "Invalid username/password"
+msgstr "Nom d'utilisateur / mot de passe invalide"
+
+#: .\views.py:236
 msgid "User Created Success"
 msgstr "User Created Success"
+
+#: .\views.py:264
+msgid "User password changed."
+msgstr "Mot de passe utilisateur modifié."
+
+#~ msgid "Don’t have an account?"
+#~ msgstr "Vous n’avez pas de compte?"

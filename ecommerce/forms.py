@@ -229,13 +229,14 @@ class AssignOrdersToCallerForm(forms.Form):
 
 
 class CheckoutForm(forms.Form):
-    first_name = forms.CharField(required=False)
-    last_name = forms.CharField(required=False)
-    phone_number = forms.CharField(required=False)
-    email_address = forms.EmailField(required=False)
-    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False)
-    address = forms.CharField(widget=forms.Textarea(), required=False)
-    note = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _("Note")}), required=False)
+    first_name = forms.CharField(required=False, label=_("First Name"))
+    last_name = forms.CharField(required=False, label=_('Last Name'))
+    phone_number = forms.CharField(required=False, label=_('Phone Number'))
+    email_address = forms.EmailField(required=False, label=_('Email'))
+    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False, label=_('City'))
+    address = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _('Address')}), required=False,
+                              label=_('Address'))
+    note = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _("Note")}), required=False, label=_('Note'))
     coupon_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     def save(self, user: User):
