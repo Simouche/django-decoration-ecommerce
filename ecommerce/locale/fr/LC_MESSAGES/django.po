@@ -1621,7 +1621,7 @@ msgstr "date"
 #, fuzzy
 #| msgid "Free Delivery"
 msgid "Fast Delivery"
-msgstr "Livraison Gratuite"
+msgstr "Livraison Rapide"
 
 #: .\templates\index.html:250
 #, fuzzy
