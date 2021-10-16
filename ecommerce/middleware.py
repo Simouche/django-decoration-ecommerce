@@ -19,7 +19,8 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
             try:
                 existing_cart = request.user.profile.cart
                 session_cart = Cart.objects.filter(identifier=request.session.get('cart_id')).first()
-                session_cart.lines.update(cart=existing_cart)
+                if session_cart.lines.count() > 0:
+                    session_cart.lines.update(cart=existing_cart)
             except Exception as e:
                 traceback.print_exc()
                 profile = request.user.profile

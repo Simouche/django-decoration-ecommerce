@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-23 11:53+0100\n"
+"POT-Creation-Date: 2021-10-16 17:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,740 +19,1179 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: .\forms.py:33 .\forms.py:35
-msgid "French Name"
+#: .\forms.py:11 .\forms.py:34 .\models.py:179
+#: .\templates\dashboard\orders_list.html:17
+msgid "Pending"
 msgstr ""
 
-#: .\forms.py:39 .\forms.py:41 .\models.py:16 .\models.py:31 .\models.py:47
-#: .\models.py:264
-msgid "Arabic Name"
+#: .\forms.py:12 .\forms.py:35 .\models.py:180
+msgid "RECALL"
 msgstr ""
 
-#: .\forms.py:45 .\forms.py:47 .\models.py:17 .\models.py:32 .\models.py:48
-#: .\models.py:265
-msgid "English Name"
+#: .\forms.py:13 .\forms.py:36 .\models.py:181
+#: .\templates\dashboard\sales_list.html:18 .\templates\order_confirmed.html:19
+msgid "Confirmed"
 msgstr ""
 
-#: .\forms.py:51 .\forms.py:54
-msgid "French Description"
+#: .\forms.py:14 .\forms.py:37 .\models.py:182
+#: .\templates\dashboard\_order_details.html:52
+#: .\templates\dashboard\orders_list.html:20
+msgid "Canceled"
 msgstr ""
 
-#: .\forms.py:58 .\forms.py:60 .\models.py:50
-msgid "Arabic Description"
+#: .\forms.py:20 .\templates\dashboard\_orders_table.html:9
+#: .\templates\dashboard\_sales_table.html:9
+#: .\templates\dashboard\orders_list.html:89
+#: .\templates\dashboard\sales_list.html:93 .\views.py:323 .\views.py:754
+msgid "Number"
 msgstr ""
 
-#: .\forms.py:64 .\forms.py:66 .\models.py:51
-msgid "English Description"
+#: .\forms.py:28 .\forms.py:261 .\models.py:201 .\models.py:580
+#: .\templates\dashboard\product_recap.html:13
+msgid "Delivery Date"
 msgstr ""
 
-#: .\forms.py:70 .\forms.py:72 .\models.py:52 .\templates\_cart_area.html:11
-#: .\templates\cart.html:39 .\views.py:107 .\views.py:129
-msgid "Price"
-msgstr ""
-
-#: .\forms.py:75 .\forms.py:77 .\models.py:53
-msgid "Main Image"
-msgstr ""
-
-#: .\forms.py:81 .\forms.py:83 .\models.py:55
-msgid "Discount Price"
-msgstr ""
-
-#: .\forms.py:87 .\forms.py:89 .\models.py:56
-msgid "Available Colors"
-msgstr ""
-
-#: .\forms.py:93 .\forms.py:95 .\models.py:57
-msgid "Dimensions"
-msgstr ""
-
-#: .\forms.py:99 .\forms.py:101 .\views.py:107 .\views.py:129
-msgid "Stock"
-msgstr ""
-
-#: .\forms.py:128
-msgid "Old Status"
-msgstr ""
-
-#: .\forms.py:129 .\models.py:170
-msgid "New Status"
-msgstr ""
-
-#: .\forms.py:133
-msgid "User"
-msgstr ""
-
-#: .\forms.py:134 .\models.py:146 .\models.py:168
-#: .\templates\dashboard\_order_details.html:11
-msgid "Order"
-msgstr ""
-
-#: .\models.py:15 .\models.py:30 .\models.py:263 .\models.py:340
-#: .\templates\categories.html:179 .\views.py:107 .\views.py:129
+#: .\forms.py:66 .\forms.py:68 .\models.py:18 .\models.py:32 .\models.py:523
+#: .\models.py:564 .\models.py:658 .\models.py:671 .\views.py:194
+#: .\views.py:216
 msgid "Name"
 msgstr ""
 
-#: .\models.py:25 .\models.py:33 .\models.py:60
-#: .\templates\product_details.html:59 .\views.py:107 .\views.py:130
+#: .\forms.py:72 .\forms.py:75 .\models.py:48
+#: .\templates\product_details.html:136
+msgid "Description"
+msgstr ""
+
+#: .\forms.py:79 .\forms.py:81 .\models.py:49 .\models.py:119 .\models.py:292
+#: .\templates\_cart_area.html:11 .\templates\cart.html:46 .\views.py:194
+#: .\views.py:216
+msgid "Price"
+msgstr ""
+
+#: .\forms.py:84 .\forms.py:86 .\models.py:50
+msgid "Main Image"
+msgstr ""
+
+#: .\forms.py:90 .\forms.py:92
+msgid "Discount Price"
+msgstr ""
+
+#: .\forms.py:96 .\forms.py:98 .\views.py:194 .\views.py:216
+msgid "Stock"
+msgstr ""
+
+#: .\forms.py:130
+msgid "Old Status"
+msgstr ""
+
+#: .\forms.py:131 .\models.py:310
+msgid "New Status"
+msgstr ""
+
+#: .\forms.py:134
+msgid "Date"
+msgstr ""
+
+#: .\forms.py:136
+msgid "Time"
+msgstr ""
+
+#: .\forms.py:137
+msgid "User"
+msgstr ""
+
+#: .\forms.py:138 .\models.py:262 .\models.py:308 .\models.py:577
+#: .\models.py:696 .\templates\dashboard\_order_details.html:11
+#: .\templates\dashboard\product_recap.html:10
+msgid "Order"
+msgstr ""
+
+#: .\forms.py:232
+msgid "First Name"
+msgstr ""
+
+#: .\forms.py:233
+msgid "Last Name"
+msgstr ""
+
+#: .\forms.py:234
+msgid "Phone Number"
+msgstr ""
+
+#: .\forms.py:235 .\templates\contact.html:75
+msgid "Email"
+msgstr ""
+
+#: .\forms.py:236
+msgid "City"
+msgstr ""
+
+#: .\forms.py:237 .\forms.py:238 .\models.py:708
+msgid "Address"
+msgstr ""
+
+#: .\forms.py:239 .\models.py:200
+msgid "Note"
+msgstr ""
+
+#: .\forms.py:256
+msgid "Numero"
+msgstr ""
+
+#: .\forms.py:257 .\models.py:689 .\templates\dashboard\_orders_table.html:10
+#: .\templates\dashboard\_sales_table.html:10
+#: .\templates\dashboard\orders_list.html:90
+#: .\templates\dashboard\sales_list.html:94 .\views.py:323 .\views.py:754
+msgid "Client"
+msgstr ""
+
+#: .\forms.py:259 .\templates\dashboard\product_recap.html:12
+msgid "Delivery Man"
+msgstr ""
+
+#: .\forms.py:263
+msgid "Caller"
+msgstr ""
+
+#: .\forms.py:265
+msgid "From"
+msgstr ""
+
+#: .\forms.py:267
+msgid "To"
+msgstr ""
+
+#: .\forms.py:273
+msgid "Any"
+msgstr ""
+
+#: .\forms.py:274 .\templates\dashboard\dashboard.html:245
+msgid "Today"
+msgstr ""
+
+#: .\forms.py:275
+msgid "Last 2 Days"
+msgstr ""
+
+#: .\forms.py:276
+msgid "Last 5 Days"
+msgstr ""
+
+#: .\forms.py:277
+msgid "Last 10 Days"
+msgstr ""
+
+#: .\forms.py:278
+msgid "Last 15 Days"
+msgstr ""
+
+#: .\forms.py:284 .\models.py:27 .\models.py:33 .\models.py:59
+#: .\templates\index.html:347 .\templates\product_details.html:62
+#: .\views.py:194 .\views.py:217
 msgid "Category"
 msgstr ""
 
-#: .\models.py:26 .\templates\categories.html:14 .\templates\categories.html:19
+#: .\forms.py:287 .\models.py:42
+msgid "Sub-Category"
+msgstr ""
+
+#: .\models.py:28 .\templates\categories.html:15 .\templates\categories.html:20
 #: .\templates\dashboard\products_list.html:12
 msgid "Categories"
 msgstr ""
 
-#: .\models.py:41
-msgid "Sub-Category"
-msgstr ""
-
-#: .\models.py:42 .\templates\dashboard\products_list.html:27
+#: .\models.py:43 .\templates\dashboard\products_list.html:27
 msgid "Sub-Categories"
 msgstr ""
 
-#: .\models.py:46 .\templates\dashboard\_products_table.html:11
-#: .\templates\dashboard\dashboard.html:94
-#: .\templates\dashboard\products_list.html:55
+#: .\models.py:47 .\templates\contact.html:65
+#: .\templates\dashboard\_products_table.html:11
+#: .\templates\dashboard\dashboard.html:330
+#: .\templates\dashboard\delivery_guys.html:22
+#: .\templates\dashboard\products_list.html:57
 msgid "name"
 msgstr ""
 
-#: .\models.py:49 .\templates\product_details.html:92
-msgid "Description"
+#: .\models.py:52
+msgid "Discount Percent"
 msgstr ""
 
-#: .\models.py:61
+#: .\models.py:55
+msgid "Weight"
+msgstr ""
+
+#: .\models.py:56
+msgid "Reference"
+msgstr ""
+
+#: .\models.py:60 .\templates\checkout.html:125
+#: .\templates\order_confirmed.html:66
 msgid "Free Delivery"
 msgstr ""
 
-#: .\models.py:83 .\templates\_cart_area.html:10 .\templates\cart.html:38
-#: .\templates\checkout.html:48 .\templates\dashboard\_order_details.html:14
+#: .\models.py:61
+msgid "Free Product"
+msgstr ""
+
+#: .\models.py:113 .\models.py:120 .\models.py:292
+#: .\templates\_cart_area.html:10 .\templates\cart.html:44
+#: .\templates\checkout.html:105 .\templates\dashboard\_order_details.html:14
 #: .\templates\order_confirmed.html:46
 msgid "Product"
 msgstr ""
 
-#: .\models.py:84 .\templates\dashboard\base_dashboard.html:126
+#: .\models.py:114 .\templates\dashboard\base_dashboard.html:90
+#: .\templates\dashboard\base_dashboard.html:166
 #: .\templates\dashboard\products_list.html:7 .\templates\products.html:14
 #: .\templates\products.html:19
 msgid "Products"
 msgstr ""
 
-#: .\models.py:90 .\models.py:214 .\templates\_cart_area.html:12
-#: .\templates\cart.html:40
+#: .\models.py:118 .\models.py:135 .\models.py:143 .\models.py:358
+#: .\templates\product_details.html:73
+msgid "Size"
+msgstr ""
+
+#: .\models.py:136 .\templates\dashboard\create_product.html:59
+msgid "Sizes"
+msgstr ""
+
+#: .\models.py:142 .\models.py:292 .\models.py:357
+#: .\templates\_cart_area.html:12 .\templates\cart.html:45
+#: .\templates\product_details.html:89
 msgid "Quantity"
 msgstr ""
 
-#: .\models.py:91
-msgid "On Discount"
+#: .\models.py:144 .\models.py:292 .\templates\_cart_area.html:13
+#: .\templates\_cart_area.html:82 .\templates\cart.html:47
+#: .\templates\cart.html:121 .\templates\checkout.html:105
+#: .\templates\checkout.html:137 .\templates\dashboard\_order_details.html:14
+#: .\templates\dashboard\_order_details.html:35
+#: .\templates\dashboard\_orders_table.html:14
+#: .\templates\dashboard\_sales_table.html:14
+#: .\templates\dashboard\deliveries.html:12
+#: .\templates\dashboard\orders_list.html:94
+#: .\templates\dashboard\sales_list.html:98 .\templates\order_confirmed.html:46
+#: .\templates\order_confirmed.html:73
+msgid "Total"
 msgstr ""
 
-#: .\models.py:101
+#: .\models.py:166
 msgid "Order Line"
 msgstr ""
 
-#: .\models.py:102
+#: .\models.py:167
 msgid "Order Lines"
 msgstr ""
 
-#: .\models.py:107 .\templates\dashboard\orders_list.html:17
-msgid "Pending"
-msgstr ""
-
-#: .\models.py:108
-msgid "RECALL"
-msgstr ""
-
-#: .\models.py:109 .\templates\dashboard\sales_list.html:18
-#: .\templates\order_confirmed.html:19
-msgid "Confirmed"
-msgstr ""
-
-#: .\models.py:110 .\templates\dashboard\_order_details.html:49
-#: .\templates\dashboard\_orders_table.html:33
-#: .\templates\dashboard\orders_list.html:18
-msgid "Canceled"
-msgstr ""
-
-#: .\models.py:111 .\templates\dashboard\_order_details.html:45
-#: .\templates\dashboard\_sales_table.html:38
+#: .\models.py:183 .\templates\dashboard\_order_details.html:48
 #: .\templates\dashboard\sales_list.html:19
 msgid "On Delivery"
 msgstr ""
 
-#: .\models.py:112 .\templates\dashboard\_order_details.html:47
-#: .\templates\dashboard\_order_details.html:51
-#: .\templates\dashboard\_sales_table.html:33
-#: .\templates\dashboard\_sales_table.html:40
+#: .\models.py:184 .\templates\dashboard\_order_details.html:50
 #: .\templates\dashboard\sales_list.html:20
 msgid "Delivered"
 msgstr ""
 
-#: .\models.py:113
+#: .\models.py:185
+msgid "Delivery Canceled"
+msgstr ""
+
+#: .\models.py:186 .\templates\dashboard\sales_list.html:21
 msgid "Returned"
 msgstr ""
 
-#: .\models.py:114
+#: .\models.py:187 .\templates\dashboard\sales_list.html:22
 msgid "Refund"
 msgstr ""
 
-#: .\models.py:115
+#: .\models.py:188
+msgid "Delayed"
+msgstr ""
+
+#: .\models.py:189 .\templates\dashboard\_order_details.html:54
+#: .\templates\dashboard\sales_list.html:23
 msgid "Paid"
 msgstr ""
 
-#: .\models.py:118
+#: .\models.py:190 .\templates\dashboard\orders_list.html:19
+msgid "No Answer"
+msgstr ""
+
+#: .\models.py:194
 msgid "Order Number"
 msgstr ""
 
-#: .\models.py:119
+#: .\models.py:195
 msgid "Order Status"
 msgstr ""
 
-#: .\models.py:120
+#: .\models.py:196
 msgid "Shipping Fee"
 msgstr ""
 
-#: .\models.py:147 .\templates\dashboard\base_dashboard.html:134
-#: .\templates\dashboard\orders_list.html:11
+#: .\models.py:199
+msgid "Assigned To"
+msgstr ""
+
+#: .\models.py:202
+msgid "Applied Coupon"
+msgstr ""
+
+#: .\models.py:263 .\templates\dashboard\base_dashboard.html:98
+#: .\templates\dashboard\base_dashboard.html:174
+#: .\templates\dashboard\orders_list.html:10
 msgid "Orders"
 msgstr ""
 
-#: .\models.py:169
+#: .\models.py:309
 msgid "Previous Status"
 msgstr ""
 
-#: .\models.py:179
+#: .\models.py:319
 msgid "Favorite"
 msgstr ""
 
-#: .\models.py:180
+#: .\models.py:320
 msgid "Favorites"
 msgstr ""
 
-#: .\models.py:184
+#: .\models.py:324
 msgid "Stars"
 msgstr ""
 
-#: .\models.py:185
+#: .\models.py:325 .\models.py:694
 msgid "Comment"
 msgstr ""
 
-#: .\models.py:190
+#: .\models.py:330
 msgid "Rating"
 msgstr ""
 
-#: .\models.py:191
+#: .\models.py:331
 msgid "Ratings"
 msgstr ""
 
-#: .\models.py:207
+#: .\models.py:350
 msgid "Like"
 msgstr ""
 
-#: .\models.py:208
+#: .\models.py:351
 msgid "Likes"
 msgstr ""
 
-#: .\models.py:227
+#: .\models.py:381
 msgid "Cart Line"
 msgstr ""
 
-#: .\models.py:228
+#: .\models.py:382
 msgid "Cart Lines"
 msgstr ""
 
-#: .\models.py:258
+#: .\models.py:387
+msgid "Identifier"
+msgstr ""
+
+#: .\models.py:480
 msgid "Cart"
 msgstr ""
 
-#: .\models.py:259
+#: .\models.py:481
 msgid "Carts"
 msgstr ""
 
-#: .\models.py:266
+#: .\models.py:485
+msgid "Coupon Code"
+msgstr ""
+
+#: .\models.py:486
+msgid "Discount %"
+msgstr ""
+
+#: .\models.py:487
+msgid "Discount Value"
+msgstr ""
+
+#: .\models.py:488
+msgid "ExpiryDate"
+msgstr ""
+
+#: .\models.py:490
+msgid "Max Usages"
+msgstr ""
+
+#: .\models.py:515
+msgid "Coupon"
+msgstr ""
+
+#: .\models.py:516 .\templates\dashboard\base_dashboard.html:182
+#: .\templates\dashboard\coupons.html:12
+msgid "Coupons"
+msgstr ""
+
+#: .\models.py:524
+msgid "Arabic Name"
+msgstr ""
+
+#: .\models.py:525
+msgid "English Name"
+msgstr ""
+
+#: .\models.py:526
 msgid "Period"
 msgstr ""
 
-#: .\models.py:267 .\models.py:278
+#: .\models.py:527 .\models.py:538
 msgid "Discount"
 msgstr ""
 
-#: .\models.py:271
+#: .\models.py:531
 msgid "Seasonal Discount"
 msgstr ""
 
-#: .\models.py:272
+#: .\models.py:532
 msgid "Seasonal Discounts"
 msgstr ""
 
-#: .\models.py:281
+#: .\models.py:541
 msgid "Product On Seasonal Discount"
 msgstr ""
 
-#: .\models.py:282
+#: .\models.py:542
 msgid "Products On Seasonal Discount"
 msgstr ""
 
-#: .\models.py:286
+#: .\models.py:546
 msgid "Company Name"
 msgstr ""
 
-#: .\models.py:287
+#: .\models.py:547
 msgid "Weight Threshold"
 msgstr ""
 
-#: .\models.py:296
+#: .\models.py:548
+msgid "Fee per 1kg"
+msgstr ""
+
+#: .\models.py:549
+msgid "Default"
+msgstr ""
+
+#: .\models.py:559
+msgid "Delivery Company"
+msgstr ""
+
+#: .\models.py:560 .\templates\dashboard\delivery_companies.html:8
+msgid "Delivery Companies"
+msgstr ""
+
+#: .\models.py:572 .\models.py:578 .\templates\dashboard\sales_list.html:55
+msgid "Delivery Guy"
+msgstr ""
+
+#: .\models.py:573 .\templates\dashboard\base_dashboard.html:113
+#: .\templates\dashboard\base_dashboard.html:193
+#: .\templates\dashboard\delivery_guys.html:8
+msgid "Delivery Guys"
+msgstr ""
+
+#: .\models.py:590 .\templates\_cart_area.html:72 .\templates\checkout.html:123
+#: .\templates\dashboard\base_dashboard.html:105
+#: .\templates\dashboard\base_dashboard.html:185
+#: .\templates\order_confirmed.html:64
+msgid "Delivery"
+msgstr ""
+
+#: .\models.py:591
+msgid "Deliveries"
+msgstr ""
+
+#: .\models.py:600 .\templates\dashboard\deliveries.html:13
 msgid "Delivery Fee"
 msgstr ""
 
-#: .\models.py:297
+#: .\models.py:601
 msgid "Delivery Fees"
 msgstr ""
 
-#: .\models.py:302
+#: .\models.py:606
 msgid "Visibility"
 msgstr ""
 
-#: .\models.py:303
+#: .\models.py:607
 msgid "Header"
 msgstr ""
 
-#: .\models.py:304 .\models.py:310 .\models.py:316 .\models.py:322
-#: .\models.py:327 .\models.py:334
+#: .\models.py:608 .\models.py:615 .\models.py:621 .\models.py:628
+#: .\models.py:634 .\models.py:642
 msgid "Title"
 msgstr ""
 
-#: .\models.py:305 .\models.py:311 .\models.py:317 .\models.py:323
-#: .\models.py:328 .\models.py:335
+#: .\models.py:609 .\models.py:616 .\models.py:622 .\models.py:629
+#: .\models.py:635 .\models.py:643
 msgid "Content Text"
 msgstr ""
 
-#: .\models.py:306 .\models.py:318 .\models.py:324 .\models.py:329
-#: .\models.py:336
+#: .\models.py:610 .\models.py:623 .\models.py:630 .\models.py:636
+#: .\models.py:644
 msgid "Button Text"
 msgstr ""
 
-#: .\models.py:307 .\models.py:319
+#: .\models.py:611 .\models.py:624 .\models.py:631 .\models.py:637
+#: .\models.py:645
+msgid "Button Link"
+msgstr ""
+
+#: .\models.py:612 .\models.py:625
 msgid "Image"
 msgstr ""
 
-#: .\models.py:313
+#: .\models.py:618
 msgid "Display Categories"
 msgstr ""
 
-#: .\models.py:330
+#: .\models.py:638
 msgid "Image 1"
 msgstr ""
 
-#: .\models.py:331
+#: .\models.py:639
 msgid "Image 2"
 msgstr ""
 
-#: .\models.py:341
+#: .\models.py:647 .\models.py:709
+msgid "Assistance Number"
+msgstr ""
+
+#: .\models.py:659 .\models.py:670
 msgid "URL"
 msgstr ""
 
-#: .\templates\_cart_area.html:13 .\templates\_cart_area.html:82
-#: .\templates\cart.html:41 .\templates\cart.html:110
-#: .\templates\checkout.html:48 .\templates\checkout.html:71
-#: .\templates\dashboard\_order_details.html:14
-#: .\templates\dashboard\_order_details.html:36
-#: .\templates\dashboard\_orders_table.html:12
-#: .\templates\dashboard\_sales_table.html:12
-#: .\templates\dashboard\orders_list.html:38
-#: .\templates\dashboard\sales_list.html:40 .\templates\order_confirmed.html:46
-#: .\templates\order_confirmed.html:69
-msgid "Total"
+#: .\models.py:662
+msgid "Partner"
+msgstr ""
+
+#: .\models.py:663 .\templates\dashboard\base_dashboard.html:212
+#: .\templates\index.html:361
+msgid "Partners"
+msgstr ""
+
+#: .\models.py:674
+msgid "Quick Link"
+msgstr ""
+
+#: .\models.py:675 .\templates\dashboard\base_dashboard.html:208
+msgid "Quick Links"
+msgstr ""
+
+#: .\models.py:683 .\templates\dashboard\complaints.html:18
+msgid "Delivery Problem"
+msgstr ""
+
+#: .\models.py:684 .\templates\dashboard\complaints.html:19
+msgid "Product Problem"
+msgstr ""
+
+#: .\models.py:685 .\templates\dashboard\complaints.html:20
+msgid "Service Problem"
+msgstr ""
+
+#: .\models.py:686 .\templates\dashboard\complaints.html:21
+msgid "Other"
+msgstr ""
+
+#: .\models.py:691
+msgid "Complaint"
+msgstr ""
+
+#: .\models.py:692
+msgid "Against"
+msgstr ""
+
+#: .\models.py:695
+msgid "Treated"
+msgstr ""
+
+#: .\models.py:696
+msgid "complaints"
+msgstr ""
+
+#: .\models.py:701
+msgid "Standard Delivery Fee"
+msgstr ""
+
+#: .\models.py:702
+msgid "Delivery feed for Alger, Boumerdes and Blida"
+msgstr ""
+
+#: .\models.py:704
+msgid "RC"
+msgstr ""
+
+#: .\models.py:705
+msgid "NIF"
+msgstr ""
+
+#: .\models.py:706
+msgid "AI"
+msgstr ""
+
+#: .\models.py:710
+msgid "Assistance Email"
 msgstr ""
 
 #: .\templates\_cart_area.html:34 .\templates\_cart_area.html:46
 #: .\templates\_cart_area.html:65 .\templates\_cart_area.html:75
-#: .\templates\_cart_area.html:85 .\templates\cart.html:62
-#: .\templates\cart.html:74 .\templates\cart.html:93 .\templates\cart.html:103
-#: .\templates\cart.html:113 .\templates\categories.html:203
-#: .\templates\checkout.html:55 .\templates\checkout.html:63
-#: .\templates\checkout.html:71 .\templates\dashboard\_order_details.html:21
+#: .\templates\_cart_area.html:85 .\templates\cart.html:124
+#: .\templates\categories.html:176 .\templates\categories.html:180
+#: .\templates\checkout.html:112 .\templates\checkout.html:120
+#: .\templates\checkout.html:128 .\templates\checkout.html:138
+#: .\templates\checkout.html:217 .\templates\checkout.html:231
+#: .\templates\checkout.html:246 .\templates\checkout.html:247
+#: .\templates\dashboard\_order_details.html:21
 #: .\templates\dashboard\_order_details.html:28
-#: .\templates\dashboard\_order_details.html:36
-#: .\templates\dashboard\_orders_table.html:29
+#: .\templates\dashboard\_order_details.html:35
+#: .\templates\dashboard\_orders_table.html:43
 #: .\templates\dashboard\_products_table.html:34
-#: .\templates\dashboard\_sales_table.html:29
-#: .\templates\dashboard\orders_list.html:54
-#: .\templates\dashboard\products_list.html:78
-#: .\templates\dashboard\sales_list.html:57 .\templates\index.html:84
-#: .\templates\index.html:142 .\templates\index.html:219
+#: .\templates\dashboard\_sales_table.html:42
+#: .\templates\dashboard\orders_list.html:123
+#: .\templates\dashboard\products_list.html:80
+#: .\templates\dashboard\sales_list.html:126 .\templates\index.html:86
+#: .\templates\index.html:143 .\templates\index.html:221
 #: .\templates\order_confirmed.html:53 .\templates\order_confirmed.html:61
-#: .\templates\order_confirmed.html:69 .\templates\product_details.html:54
-#: .\templates\products.html:59
+#: .\templates\order_confirmed.html:73 .\templates\product_details.html:56
+#: .\templates\product_details.html:57 .\templates\product_details.html:119
+#: .\templates\product_details.html:437 .\templates\products.html:63
+#: .\templates\products.html:67
 msgid "DZD"
 msgstr ""
 
-#: .\templates\_cart_area.html:52 .\templates\cart.html:80
+#: .\templates\_cart_area.html:52
 msgid "Update Cart"
 msgstr ""
 
-#: .\templates\_cart_area.html:62 .\templates\cart.html:90
-#: .\templates\checkout.html:62 .\templates\dashboard\_order_details.html:28
+#: .\templates\_cart_area.html:62 .\templates\checkout.html:119
+#: .\templates\dashboard\_order_details.html:28
 #: .\templates\order_confirmed.html:60
 msgid "Subtotal"
 msgstr ""
 
-#: .\templates\_cart_area.html:72 .\templates\cart.html:100
-msgid "Delivery"
-msgstr ""
-
-#: .\templates\_cart_area.html:92 .\templates\cart.html:120
+#: .\templates\_cart_area.html:92 .\templates\cart.html:133
 msgid "Continue Shopping"
 msgstr ""
 
-#: .\templates\_cart_area.html:93 .\templates\cart.html:122
+#: .\templates\_cart_area.html:93 .\templates\cart.html:136
 msgid "Proceed to checkout"
 msgstr ""
 
-#: .\templates\cart.html:14 .\templates\cart.html:19
-msgid "Cart List"
+#: .\templates\about.html:14 .\templates\about.html:18
+msgid "About"
 msgstr ""
 
-#: .\templates\cart.html:18 .\templates\categories.html:18
-#: .\templates\checkout.html:18 .\templates\order_confirmed.html:18
+#: .\templates\about.html:17 .\templates\cart.html:19
+#: .\templates\categories.html:19 .\templates\checkout.html:24
+#: .\templates\contact.html:18 .\templates\order_confirmed.html:18
 #: .\templates\product_details.html:19 .\templates\products.html:18
 msgid "Home"
 msgstr ""
 
-#: .\templates\categories.html:36
+#: .\templates\about.html:35
+msgid "WHO ARE WE ?"
+msgstr ""
+
+#: .\templates\cart.html:15 .\templates\cart.html:20
+msgid "Cart List"
+msgstr ""
+
+#: .\templates\cart.html:48 .\templates\dashboard\coupons.html:102
+#: .\templates\dashboard\products_list.html:158
+#: .\templates\dashboard\sales_list.html:203
+msgid "Delete"
+msgstr ""
+
+#: .\templates\categories.html:37
 msgid "Shop with us"
 msgstr ""
 
-#: .\templates\categories.html:53
+#: .\templates\categories.html:54
 msgid "Filter Products"
 msgstr ""
 
-#: .\templates\categories.html:89 .\templates\categories.html:132
-msgid "Any"
-msgstr ""
-
-#: .\templates\categories.html:107
+#: .\templates\categories.html:99
 msgid "Price Range"
 msgstr ""
 
-#: .\templates\categories.html:114
+#: .\templates\categories.html:106
 msgid "Price :"
 msgstr ""
 
-#: .\templates\categories.html:119
+#: .\templates\categories.html:111 .\templates\categories.html:231
 #: .\templates\dashboard\order_change_history_list.html:35
 msgid "to"
 msgstr ""
 
-#: .\templates\categories.html:130
+#: .\templates\categories.html:122
 msgid "Latest Product"
 msgstr ""
 
-#: .\templates\categories.html:136
-msgid "Today"
-msgstr ""
-
-#: .\templates\categories.html:140
-msgid "Last 2 days"
-msgstr ""
-
-#: .\templates\categories.html:144
-msgid "Last 5 days"
-msgstr ""
-
-#: .\templates\categories.html:148
-msgid "Last 10 days"
-msgstr ""
-
-#: .\templates\categories.html:152
-msgid "Last 15 days"
-msgstr ""
-
-#: .\templates\categories.html:161
+#: .\templates\categories.html:130
 #: .\templates\dashboard\order_change_history_list.html:23
+#: .\templates\dashboard\orders_list.html:81
+#: .\templates\dashboard\sales_list.html:85
 msgid "Filter"
 msgstr ""
 
-#: .\templates\categories.html:174
+#: .\templates\categories.html:143
 msgid "Product found"
 msgstr ""
 
-#: .\templates\categories.html:177
-msgid "Sort by"
-msgstr ""
-
-#: .\templates\categories.html:180
-msgid "Highest Price"
-msgstr ""
-
-#: .\templates\categories.html:181
-msgid "Lowest Price"
-msgstr ""
-
-#: .\templates\checkout.html:14 .\templates\checkout.html:19
+#: .\templates\checkout.html:20 .\templates\checkout.html:25
 #: .\templates\order_confirmed.html:14
 msgid "Checkout"
 msgstr ""
 
-#: .\templates\checkout.html:36
+#: .\templates\checkout.html:42
 msgid "Have a coupon?"
 msgstr ""
 
-#: .\templates\checkout.html:39
+#: .\templates\checkout.html:44
+msgid "Enter coupon code"
+msgstr ""
+
+#: .\templates\checkout.html:46
 msgid "Apply Coupon"
 msgstr ""
 
-#: .\templates\checkout.html:45
+#: .\templates\checkout.html:51
+msgid "Billing Details"
+msgstr ""
+
+#: .\templates\checkout.html:102
 msgid "Your Order"
 msgstr ""
 
-#: .\templates\checkout.html:66 .\templates\dashboard\_order_details.html:31
-#: .\templates\order_confirmed.html:64
-msgid "Shipping"
+#: .\templates\checkout.html:131
+msgid "Will be calculated later."
 msgstr ""
 
-#: .\templates\checkout.html:77
+#: .\templates\checkout.html:144
 msgid "I’ve read and accept the"
 msgstr ""
 
-#: .\templates\checkout.html:78
+#: .\templates\checkout.html:145
 msgid "terms & conditions*"
 msgstr ""
 
-#: .\templates\checkout.html:82 .\templates\dashboard\_order_details.html:43
-#: .\templates\dashboard\_orders_table.html:37
+#: .\templates\checkout.html:149 .\templates\dashboard\_order_details.html:46
+#: .\templates\dashboard\_order_details.html:56
 msgid "Confirm"
+msgstr ""
+
+#: .\templates\contact.html:15
+msgid "Contact Us"
+msgstr ""
+
+#: .\templates\contact.html:19
+msgid "Contact"
+msgstr ""
+
+#: .\templates\contact.html:48
+msgid "Get in Touch"
+msgstr ""
+
+#: .\templates\contact.html:57
+msgid "message"
+msgstr ""
+
+#: .\templates\contact.html:60
+msgid "Enter Message"
+msgstr ""
+
+#: .\templates\contact.html:68
+msgid "Enter your name"
+msgstr ""
+
+#: .\templates\contact.html:73
+msgid "email"
+msgstr ""
+
+#: .\templates\contact.html:80
+msgid "subject"
+msgstr ""
+
+#: .\templates\contact.html:82
+msgid "Enter Subject"
+msgstr ""
+
+#: .\templates\contact.html:88
+msgid "Send"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:7
+#: .\templates\dashboard\complaints.html:31
+msgid "client"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:8
+#: .\templates\dashboard\_orders_table.html:11
+#: .\templates\dashboard\_sales_table.html:11
+#: .\templates\dashboard\complaints.html:32
+#: .\templates\dashboard\deliveries.html:10
+#: .\templates\dashboard\orders_list.html:91
+#: .\templates\dashboard\sales_list.html:95
+msgid "phone"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:9
+#: .\templates\dashboard\complaints.html:33
+msgid "complaint"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:10
+#: .\templates\dashboard\complaints.html:34
+msgid "order"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:11
+#: .\templates\dashboard\complaints.html:35
+msgid "against"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:12
+#: .\templates\dashboard\complaints.html:36
+msgid "comment"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:13
+#: .\templates\dashboard\complaints.html:37
+msgid "treated"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:14
+#: .\templates\dashboard\_orders_table.html:15
+#: .\templates\dashboard\complaints.html:38
+#: .\templates\dashboard\deliveries.html:14
+#: .\templates\dashboard\order_change_history_list.html:31
+#: .\templates\dashboard\orders_list.html:95
+msgid "date"
+msgstr ""
+
+#: .\templates\dashboard\_complaints_table.html:36
+#: .\templates\dashboard\complaints.html:60
+msgid "empty"
 msgstr ""
 
 #: .\templates\dashboard\_order_details.html:5
 msgid "Details"
 msgstr ""
 
+#: .\templates\dashboard\_order_details.html:31
+msgid "Shipping"
+msgstr ""
+
+#: .\templates\dashboard\_order_details.html:31
+msgid "free"
+msgstr ""
+
+#: .\templates\dashboard\_order_details.html:38
+msgid "Not Provided"
+msgstr ""
+
+#: .\templates\dashboard\_order_details.html:39
+msgid "Address:"
+msgstr ""
+
+#: .\templates\dashboard\_order_details.html:41
+msgid "Note:"
+msgstr ""
+
 #: .\templates\dashboard\_orders_table.html:8
 #: .\templates\dashboard\_sales_table.html:8
-#: .\templates\dashboard\orders_list.html:34
-#: .\templates\dashboard\sales_list.html:36 .\views.py:191 .\views.py:463
-msgid "Number"
+#: .\templates\dashboard\coupons.html:34
+#: .\templates\dashboard\orders_list.html:88
+#: .\templates\dashboard\sales_list.html:92
+msgid "Selected"
 msgstr ""
 
-#: .\templates\dashboard\_orders_table.html:9
-#: .\templates\dashboard\_sales_table.html:9
-#: .\templates\dashboard\orders_list.html:35
-#: .\templates\dashboard\sales_list.html:37 .\views.py:191 .\views.py:463
-msgid "Client"
-msgstr ""
-
-#: .\templates\dashboard\_orders_table.html:10
-#: .\templates\dashboard\_sales_table.html:10
-#: .\templates\dashboard\_users_table.html:11
-#: .\templates\dashboard\orders_list.html:36
-#: .\templates\dashboard\sales_list.html:38 .\templates\dashboard\users.html:40
-msgid "phone"
-msgstr ""
-
-#: .\templates\dashboard\_orders_table.html:11
-#: .\templates\dashboard\_sales_table.html:11
-#: .\templates\dashboard\orders_list.html:37
-#: .\templates\dashboard\sales_list.html:39 .\views.py:191 .\views.py:463
-msgid "Items Count"
+#: .\templates\dashboard\_orders_table.html:12
+#: .\templates\dashboard\_sales_table.html:12
+#: .\templates\dashboard\deliveries.html:9
+#: .\templates\dashboard\orders_list.html:92
+#: .\templates\dashboard\sales_list.html:96
+msgid "city"
 msgstr ""
 
 #: .\templates\dashboard\_orders_table.html:13
 #: .\templates\dashboard\_sales_table.html:13
-#: .\templates\dashboard\order_change_history_list.html:31
-#: .\templates\dashboard\orders_list.html:39
-#: .\templates\dashboard\sales_list.html:41
-msgid "date"
+#: .\templates\dashboard\deliveries.html:11
+#: .\templates\dashboard\orders_list.html:93
+#: .\templates\dashboard\sales_list.html:97 .\views.py:323 .\views.py:754
+msgid "Items Count"
 msgstr ""
 
-#: .\templates\dashboard\_orders_table.html:14
+#: .\templates\dashboard\_orders_table.html:16
+#: .\templates\dashboard\orders_list.html:96
+msgid "assigned to"
+msgstr ""
+
+#: .\templates\dashboard\_orders_table.html:17
 #: .\templates\dashboard\_products_table.html:15
-#: .\templates\dashboard\_sales_table.html:14
-#: .\templates\dashboard\orders_list.html:40
-#: .\templates\dashboard\products_list.html:59
-#: .\templates\dashboard\sales_list.html:42
+#: .\templates\dashboard\_sales_table.html:18
+#: .\templates\dashboard\orders_list.html:97
+#: .\templates\dashboard\products_list.html:61
+#: .\templates\dashboard\sales_list.html:102
 msgid "status"
 msgstr ""
 
-#: .\templates\dashboard\_orders_table.html:15
+#: .\templates\dashboard\_orders_table.html:18
 #: .\templates\dashboard\_products_table.html:16
-#: .\templates\dashboard\_sales_table.html:15
-#: .\templates\dashboard\_users_table.html:18
-#: .\templates\dashboard\orders_list.html:41
-#: .\templates\dashboard\products_list.html:60
-#: .\templates\dashboard\sales_list.html:43 .\templates\dashboard\users.html:47
+#: .\templates\dashboard\_sales_table.html:19
+#: .\templates\dashboard\coupons.html:41
+#: .\templates\dashboard\delivery_companies.html:28
+#: .\templates\dashboard\delivery_guys.html:24
+#: .\templates\dashboard\orders_list.html:98
+#: .\templates\dashboard\products_list.html:62
+#: .\templates\dashboard\sales_list.html:103
 msgid "actions"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:9
-#: .\templates\dashboard\products_list.html:53
+#: .\templates\dashboard\products_list.html:55
 msgid "thumbnail"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:12
-#: .\templates\dashboard\products_list.html:56
+#: .\templates\dashboard\products_list.html:58
 msgid "description"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:13
-#: .\templates\dashboard\dashboard.html:97
-#: .\templates\dashboard\products_list.html:57
+#: .\templates\dashboard\dashboard.html:333
+#: .\templates\dashboard\products_list.html:59
 msgid "price"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:14
-#: .\templates\dashboard\products_list.html:58
+#: .\templates\dashboard\products_list.html:60
 msgid "stock"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:36
-#: .\templates\dashboard\products_list.html:80
+#: .\templates\dashboard\products_list.html:82
 msgid "Available"
 msgstr ""
 
 #: .\templates\dashboard\_products_table.html:37
-#: .\templates\dashboard\_users_table.html:53
-#: .\templates\dashboard\products_list.html:81
-#: .\templates\dashboard\users.html:82
+#: .\templates\dashboard\products_list.html:83
 msgid "Deleted"
 msgstr ""
 
-#: .\templates\dashboard\_products_table.html:66
-#: .\templates\dashboard\order_change_history_list.html:53
-#: .\templates\dashboard\products_list.html:110
-#: .\templates\pagination_layout.html:6
-msgid "first"
+#: .\templates\dashboard\_sales_table.html:15
+#: .\templates\dashboard\deliveries.html:15
+#: .\templates\dashboard\sales_list.html:99
+msgid "delivery date"
 msgstr ""
 
-#: .\templates\dashboard\_products_table.html:67
-#: .\templates\dashboard\order_change_history_list.html:54
-#: .\templates\dashboard\products_list.html:111
-#: .\templates\pagination_layout.html:7
-msgid "previous"
+#: .\templates\dashboard\_sales_table.html:16
+#: .\templates\dashboard\sales_list.html:100
+msgid "caller"
 msgstr ""
 
-#: .\templates\dashboard\_products_table.html:71
-#: .\templates\dashboard\order_change_history_list.html:58
-#: .\templates\dashboard\products_list.html:115
-#: .\templates\pagination_layout.html:11
-msgid "Page"
-msgstr ""
-
-#: .\templates\dashboard\_products_table.html:71
-#: .\templates\dashboard\order_change_history_list.html:58
-#: .\templates\dashboard\products_list.html:115
-#: .\templates\pagination_layout.html:11
-msgid "of"
-msgstr ""
-
-#: .\templates\dashboard\_products_table.html:75
-#: .\templates\dashboard\order_change_history_list.html:62
-#: .\templates\dashboard\products_list.html:119
-#: .\templates\pagination_layout.html:15
-msgid "next"
-msgstr ""
-
-#: .\templates\dashboard\_products_table.html:76
-#: .\templates\dashboard\order_change_history_list.html:63
-#: .\templates\dashboard\products_list.html:120
-#: .\templates\pagination_layout.html:16
-msgid "last"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:8
-#: .\templates\dashboard\users.html:37
-msgid "picture"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:9
-#: .\templates\dashboard\users.html:38
-msgid "full name"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:10
-#: .\templates\dashboard\users.html:39
-msgid "email"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:12
-#: .\templates\dashboard\users.html:41
-msgid "date joined"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:13
-#: .\templates\dashboard\users.html:42
-msgid "role"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:14
-#: .\templates\dashboard\users.html:43
-msgid "orders count"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:16
-#: .\templates\dashboard\users.html:45
-msgid "access"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:60
-#: .\templates\dashboard\users.html:89
-msgid "revoke"
-msgstr ""
-
-#: .\templates\dashboard\_users_table.html:67
-#: .\templates\dashboard\users.html:96
-msgid "approve"
+#: .\templates\dashboard\_sales_table.html:17
+#: .\templates\dashboard\sales_list.html:101
+msgid "delivery"
 msgstr ""
 
 #: .\templates\dashboard\base_dashboard.html:17
-#: .\templates\dashboard\base_dashboard.html:121
+#: .\templates\dashboard\base_dashboard.html:85
+#: .\templates\dashboard\base_dashboard.html:161
+#: .\templates\dashboard\delivery_map_pdf_template.html:17
 msgid "Dashboard"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:130
-#: .\templates\dashboard\users.html:8
+#: .\templates\dashboard\base_dashboard.html:94
+#: .\templates\dashboard\base_dashboard.html:170
 msgid "Users"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:138
+#: .\templates\dashboard\base_dashboard.html:102
+#: .\templates\dashboard\base_dashboard.html:178
+#: .\templates\dashboard\complaints.html:11
 #: .\templates\dashboard\sales_list.html:12
 msgid "Sales"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:142
+#: .\templates\dashboard\base_dashboard.html:109
+#: .\templates\dashboard\base_dashboard.html:189
+msgid "Companies"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:121
+#: .\templates\dashboard\base_dashboard.html:200
 #: .\templates\dashboard\order_change_history_list.html:7
 msgid "History"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:160
-msgid "Search"
+#: .\templates\dashboard\base_dashboard.html:125
+#: .\templates\dashboard\base_dashboard.html:204
+msgid "Home Page"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:276
+#: .\templates\dashboard\base_dashboard.html:128
+#: .\templates\dashboard\base_dashboard.html:219
+msgid "Places"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:132
+#: .\templates\dashboard\base_dashboard.html:223
+#: .\templates\dashboard\orders_list.html:28
+#: .\templates\dashboard\sales_list.html:31
+msgid "States"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:136
+#: .\templates\dashboard\base_dashboard.html:227
+#: .\templates\dashboard\orders_list.html:39
+#: .\templates\dashboard\sales_list.html:42
+msgid "Cities"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:216
+msgid "Settings"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:233
+msgid "Complaints"
+msgstr ""
+
+#: .\templates\dashboard\base_dashboard.html:326
 msgid "Account"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:280
-msgid "Setting"
+#: .\templates\dashboard\base_dashboard.html:331
+msgid "Logout"
 msgstr ""
 
-#: .\templates\dashboard\base_dashboard.html:285
-msgid "Logout"
+#: .\templates\dashboard\company_details.html:5
+msgid "Company Delivery Fees"
+msgstr ""
+
+#: .\templates\dashboard\company_details.html:6
+#: .\templates\dashboard\create_category.html:51
+#: .\templates\dashboard\create_company.html:12
+#: .\templates\dashboard\create_company.html:22
+#: .\templates\dashboard\create_company.html:94
+#: .\templates\dashboard\create_coupon.html:51
+#: .\templates\dashboard\create_delivery_guy.html:9
+#: .\templates\dashboard\create_delivery_guy.html:51
+#: .\templates\dashboard\create_partner.html:54
+#: .\templates\dashboard\create_product.html:101
+#: .\templates\dashboard\create_quick_links.html:54
+#: .\templates\dashboard\create_sub_category.html:51
+#: .\templates\dashboard\create_user.html:9
+#: .\templates\dashboard\create_user.html:51
+#: .\templates\dashboard\update_delivery_guy.html:9
+#: .\templates\dashboard\update_delivery_guy.html:51
+#: .\templates\dashboard\update_order.html:9
+#: .\templates\dashboard\update_order.html:19
+#: .\templates\dashboard\update_order.html:106
+msgid "Close"
+msgstr ""
+
+#: .\templates\dashboard\company_details.html:17
+msgid "State"
+msgstr ""
+
+#: .\templates\dashboard\company_details.html:18
+msgid "Fee"
+msgstr ""
+
+#: .\templates\dashboard\company_details.html:30
+msgid "No Info Available"
+msgstr ""
+
+#: .\templates\dashboard\complaints.html:17
+msgid "Type"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:18
+#: .\templates\dashboard\products_list.html:34
+msgid "sub-category"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:35
+msgid "code"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:36
+#, python-format
+msgid "discount %%"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:37
+msgid "discount $"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:38
+msgid "expiry date"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:39
+msgid "expired"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:40
+msgid "usages"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:89
+#: .\templates\dashboard\products_list.html:145
+#: .\templates\dashboard\sales_list.html:190
+msgid "Attention!"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:96
+msgid "Delete Coupon ?"
+msgstr ""
+
+#: .\templates\dashboard\coupons.html:100
+#: .\templates\dashboard\products_list.html:156
+#: .\templates\dashboard\sales_list.html:201
+msgid "Cancel"
 msgstr ""
 
 #: .\templates\dashboard\create_category.html:8
 msgid "Create new Category"
 msgstr ""
 
-#: .\templates\dashboard\create_category.html:51
-#: .\templates\dashboard\create_product.html:61
-#: .\templates\dashboard\create_user.html:8
-#: .\templates\dashboard\create_user.html:50
-msgid "Close"
+#: .\templates\dashboard\create_category.html:52
+#: .\templates\dashboard\create_company.html:95
+#: .\templates\dashboard\create_coupon.html:52
+#: .\templates\dashboard\create_delivery_guy.html:52
+#: .\templates\dashboard\create_partner.html:55
+#: .\templates\dashboard\create_product.html:102
+#: .\templates\dashboard\create_quick_links.html:55
+#: .\templates\dashboard\create_sub_category.html:52
+#: .\templates\dashboard\create_user.html:52
+#: .\templates\dashboard\update_delivery_guy.html:52
+msgid "Create"
 msgstr ""
 
-#: .\templates\dashboard\create_category.html:52
-#: .\templates\dashboard\create_product.html:62
-#: .\templates\dashboard\create_user.html:51
-msgid "Create"
+#: .\templates\dashboard\create_company.html:11
+msgid "Create New Company"
+msgstr ""
+
+#: .\templates\dashboard\create_coupon.html:8
+msgid "Create new Coupon"
+msgstr ""
+
+#: .\templates\dashboard\create_delivery_guy.html:8
+#: .\templates\dashboard\update_delivery_guy.html:8
+msgid "Create New Delivery Agent"
+msgstr ""
+
+#: .\templates\dashboard\create_partner.html:11
+msgid "Create Partner"
 msgstr ""
 
 #: .\templates\dashboard\create_product.html:7
@@ -763,12 +1202,25 @@ msgstr ""
 msgid "Other Pictures"
 msgstr ""
 
-#: .\templates\dashboard\create_user.html:7
+#: .\templates\dashboard\create_product.html:110
+#: .\templates\dashboard\update_order.html:115
+msgid "Add"
+msgstr ""
+
+#: .\templates\dashboard\create_quick_links.html:11
+msgid "Create Quick Link"
+msgstr ""
+
+#: .\templates\dashboard\create_sub_category.html:8
+msgid "Create new  Sub-Category"
+msgstr ""
+
+#: .\templates\dashboard\create_user.html:8
 msgid "Create New User"
 msgstr ""
 
 #: .\templates\dashboard\dashboard.html:9
-msgid "Overview"
+msgid "Overall Time Overview"
 msgstr ""
 
 #: .\templates\dashboard\dashboard.html:23
@@ -780,6 +1232,7 @@ msgid "Items Sold"
 msgstr ""
 
 #: .\templates\dashboard\dashboard.html:59
+#: .\templates\dashboard\dashboard.html:164
 msgid "This Week"
 msgstr ""
 
@@ -787,20 +1240,159 @@ msgstr ""
 msgid "Total Earnings"
 msgstr ""
 
-#: .\templates\dashboard\dashboard.html:95
+#: .\templates\dashboard\dashboard.html:97
+#: .\templates\dashboard\dashboard.html:178
+#: .\templates\dashboard\dashboard.html:259
+msgid "Total Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:115
+msgid "Total Delivered Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:133
+msgid "Total Canceled Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:151
+msgid "Total On Delivery Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:196
+#: .\templates\dashboard\dashboard.html:277
+msgid "Delivered Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:214
+#: .\templates\dashboard\dashboard.html:295
+msgid "Pending Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:232
+#: .\templates\dashboard\dashboard.html:313
+msgid "On Delivery Orders"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:325
+msgid "Earnings By Items"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:331
 msgid "orders"
 msgstr ""
 
-#: .\templates\dashboard\dashboard.html:96
+#: .\templates\dashboard\dashboard.html:332
+#: .\templates\dashboard\delivery_man_recap.html:9
+#: .\templates\dashboard\delivery_man_recap_print.html:48
+#: .\templates\dashboard\product_recap.html:9
 msgid "quantity"
 msgstr ""
 
-#: .\templates\dashboard\dashboard.html:98
+#: .\templates\dashboard\dashboard.html:334
 msgid "available"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:348
+#: .\templates\dashboard\dashboard.html:369
+#: .\templates\dashboard\dashboard.html:394
+#: .\templates\dashboard\dashboard.html:417
+msgid "No Stats"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:356
+msgid "Top states"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:381
+msgid "Top Callers"
+msgstr ""
+
+#: .\templates\dashboard\dashboard.html:404
+msgid "Top Delivery Guys"
+msgstr ""
+
+#: .\templates\dashboard\deliveries.html:8
+msgid "number"
+msgstr ""
+
+#: .\templates\dashboard\delivery_companies.html:14
+msgid "add company"
+msgstr ""
+
+#: .\templates\dashboard\delivery_companies.html:23
+msgid "company name"
+msgstr ""
+
+#: .\templates\dashboard\delivery_companies.html:25
+msgid "weight threshold"
+msgstr ""
+
+#: .\templates\dashboard\delivery_companies.html:26
+msgid "Delivery Guys Count"
+msgstr ""
+
+#: .\templates\dashboard\delivery_companies.html:27
+msgid "Fees"
+msgstr ""
+
+#: .\templates\dashboard\delivery_guys.html:14
+msgid "add delivery guy"
+msgstr ""
+
+#: .\templates\dashboard\delivery_guys.html:23
+msgid "company"
+msgstr ""
+
+#: .\templates\dashboard\delivery_man_recap.html:8
+#: .\templates\dashboard\delivery_man_recap_print.html:47
+#: .\templates\dashboard\product_recap.html:8
+msgid "produit"
+msgstr ""
+
+#: .\templates\dashboard\delivery_man_recap_print.html:41
+msgid "Inventory of: "
+msgstr ""
+
+#: .\templates\dashboard\delivery_map_pdf_template.html:51
+#: .\templates\dashboard\delivery_map_pdf_template.html:52
+#: .\templates\dashboard\delivery_map_pdf_template.html:53
+#: .\templates\dashboard\order_pdf_template.html:14
+#: .\templates\dashboard\order_pdf_template.html:15
+#: .\templates\dashboard\order_pdf_template.html:16
+msgid "test"
 msgstr ""
 
 #: .\templates\dashboard\exportation_layout.html:13
 msgid "export"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:22
+msgid "Header Card Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:24
+msgid "Section 1 Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:26
+msgid "Section 2 Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:28
+msgid "Section 3 Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:30
+msgid "Section 4 Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:32
+msgid "Section 5 Attributes"
+msgstr ""
+
+#: .\templates\dashboard\index_content_form.html:50
+#: .\templates\dashboard\settings_form.html:35
+msgid "Save"
 msgstr ""
 
 #: .\templates\dashboard\order_change_history_list.html:32
@@ -815,87 +1407,143 @@ msgstr ""
 msgid "from"
 msgstr ""
 
+#: .\templates\dashboard\order_change_history_list.html:53
+#: .\templates\dashboard\products_list.html:120
+#: .\templates\pagination_layout.html:8
+msgid "first"
+msgstr ""
+
+#: .\templates\dashboard\order_change_history_list.html:54
+#: .\templates\dashboard\products_list.html:121
+#: .\templates\pagination_layout.html:10
+msgid "previous"
+msgstr ""
+
+#: .\templates\dashboard\order_change_history_list.html:58
+#: .\templates\dashboard\products_list.html:125
+#: .\templates\pagination_layout.html:14
+msgid "Page"
+msgstr ""
+
+#: .\templates\dashboard\order_change_history_list.html:58
+#: .\templates\dashboard\products_list.html:125
+#: .\templates\pagination_layout.html:14
+msgid "of"
+msgstr ""
+
+#: .\templates\dashboard\order_change_history_list.html:62
+#: .\templates\dashboard\products_list.html:129
+#: .\templates\pagination_layout.html:18
+msgid "next"
+msgstr ""
+
+#: .\templates\dashboard\order_change_history_list.html:63
+#: .\templates\dashboard\products_list.html:130
+#: .\templates\pagination_layout.html:20
+msgid "last"
+msgstr ""
+
 #: .\templates\dashboard\orders_list.html:16
-#: .\templates\dashboard\sales_list.html:17 .\views.py:192 .\views.py:464
+#: .\templates\dashboard\sales_list.html:17 .\views.py:324 .\views.py:755
 msgid "Status"
 msgstr ""
 
+#: .\templates\dashboard\orders_list.html:18
+msgid "Recall"
+msgstr ""
+
+#: .\templates\dashboard\orders_list.html:52
+msgid "Call Agent"
+msgstr ""
+
+#: .\templates\dashboard\orders_list.html:60
+#: .\templates\dashboard\sales_list.html:63
+msgid "Assign to"
+msgstr ""
+
+#: .\templates\dashboard\orders_list.html:187
+#: .\templates\dashboard\products_list.html:186
+msgid "Great"
+msgstr ""
+
+#: .\templates\dashboard\product_recap.html:11
+msgid "Order Date"
+msgstr ""
+
 #: .\templates\dashboard\products_list.html:22
-msgid "add category"
+msgid "category"
 msgstr ""
 
-#: .\templates\dashboard\products_list.html:34
-msgid "add sub-category"
+#: .\templates\dashboard\products_list.html:43
+msgid "product"
 msgstr ""
 
-#: .\templates\dashboard\products_list.html:42
-msgid "add product"
-msgstr ""
-
-#: .\templates\dashboard\products_list.html:135
-#: .\templates\dashboard\sales_list.html:100
-#: .\templates\dashboard\users.html:135
-msgid "Attention!"
-msgstr ""
-
-#: .\templates\dashboard\products_list.html:142
+#: .\templates\dashboard\products_list.html:152
 msgid "Delete Product ?"
 msgstr ""
 
-#: .\templates\dashboard\products_list.html:146
-#: .\templates\dashboard\sales_list.html:111
-#: .\templates\dashboard\users.html:146
-msgid "Cancel"
-msgstr ""
-
-#: .\templates\dashboard\products_list.html:148
-#: .\templates\dashboard\sales_list.html:113
-#: .\templates\dashboard\users.html:148
-msgid "Delete"
-msgstr ""
-
-#: .\templates\dashboard\products_list.html:187
+#: .\templates\dashboard\products_list.html:233
 msgid "Success: Product was created."
 msgstr ""
 
-#: .\templates\dashboard\products_list.html:242
+#: .\templates\dashboard\products_list.html:288
 msgid "Success: Product was updated."
 msgstr ""
 
-#: .\templates\dashboard\sales_list.html:107
+#: .\templates\dashboard\sales_list.html:67
+msgid "print"
+msgstr ""
+
+#: .\templates\dashboard\sales_list.html:197
 msgid "Delete Order ?"
 msgstr ""
 
-#: .\templates\dashboard\users.html:13
-msgid "Groups"
+#: .\templates\dashboard\update_order.html:8
+msgid "Update Order"
 msgstr ""
 
-#: .\templates\dashboard\users.html:26
-msgid "add user"
+#: .\templates\dashboard\update_order.html:107
+msgid "Update"
 msgstr ""
 
-#: .\templates\dashboard\users.html:142
-msgid "Delete User ?"
+#: .\templates\index.html:249
+msgid "Fast Delivery"
 msgstr ""
 
-#: .\templates\dashboard\users.html:192
-msgid "Success: User was created."
+#: .\templates\index.html:250
+msgid "Delivery on all orders"
 msgstr ""
 
-#: .\templates\index.html:22 .\templates\index.html:151
-msgid "Discover More"
+#: .\templates\index.html:260
+msgid "Secure Payment"
 msgstr ""
 
-#: .\templates\index.html:40
-msgid "Popular products"
+#: .\templates\index.html:261
+msgid "Either hand to hand or e-payment, it's always secure"
 msgstr ""
 
-#: .\templates\index.html:124
-msgid "Products you may like"
+#: .\templates\index.html:271
+msgid "Money Back Guarantee"
 msgstr ""
 
-#: .\templates\index.html:201
-msgid "Top Pick"
+#: .\templates\index.html:272
+msgid "Either satisfied or paid back"
+msgstr ""
+
+#: .\templates\index.html:282
+msgid "Full Time Support"
+msgstr ""
+
+#: .\templates\index.html:283
+msgid "We are always available on phone"
+msgstr ""
+
+#: .\templates\index.html:335
+msgid "Quick links"
+msgstr ""
+
+#: .\templates\index.html:382
+msgid "Go to Top"
 msgstr ""
 
 #: .\templates\order_confirmed.html:36
@@ -906,89 +1554,106 @@ msgstr ""
 msgid "Order: #"
 msgstr ""
 
+#: .\templates\pagination_layout.html:24
+msgid "Elements"
+msgstr ""
+
 #: .\templates\product_details.html:15 .\templates\product_details.html:21
 msgid "Product details"
 msgstr ""
 
-#: .\templates\product_details.html:62
+#: .\templates\product_details.html:65
 msgid "Availibility"
 msgstr ""
 
-#: .\templates\product_details.html:63
+#: .\templates\product_details.html:66
 msgid "In Stock"
 msgstr ""
 
-#: .\templates\product_details.html:63
+#: .\templates\product_details.html:66
 msgid "Out of Stock"
 msgstr ""
 
-#: .\templates\product_details.html:76
+#: .\templates\product_details.html:98
 msgid "add to cart"
 msgstr ""
 
-#: .\templates\product_details.html:97
-msgid "Specification"
+#: .\templates\product_details.html:105
+msgid "Similar Products"
 msgstr ""
 
-#: .\templates\product_details.html:102 .\templates\product_details.html:192
-#: .\templates\product_details.html:197
+#: .\templates\product_details.html:147 .\templates\product_details.html:236
 msgid "Reviews"
 msgstr ""
 
-#: .\templates\product_details.html:190
+#: .\templates\product_details.html:234
 msgid "Overall"
 msgstr ""
 
-#: .\templates\product_details.html:197
-msgid "Based on"
-msgstr ""
-
-#: .\templates\product_details.html:200 .\templates\product_details.html:209
-#: .\templates\product_details.html:218 .\templates\product_details.html:227
-#: .\templates\product_details.html:236
-msgid "Star"
-msgstr ""
-
-#: .\templates\product_details.html:317
+#: .\templates\product_details.html:323
 msgid "Add a Review"
 msgstr ""
 
-#: .\templates\product_details.html:318
-msgid "Your Rating"
-msgstr ""
-
-#: .\templates\product_details.html:326
-msgid "Outstanding"
-msgstr ""
-
-#: .\templates\product_details.html:333
+#: .\templates\product_details.html:342
 msgid "Review"
 msgstr ""
 
-#: .\templates\product_details.html:338
+#: .\templates\product_details.html:347
 msgid "Submit Now"
 msgstr ""
 
-#: .\templates\product_details.html:344
+#: .\templates\product_details.html:353
 msgid "Login"
+msgstr ""
+
+#: .\templates\product_details.html:383
+msgid "The product has been added to your cart for a home delivery."
+msgstr ""
+
+#: .\templates\product_details.html:388
+msgid "Continue shopping"
+msgstr ""
+
+#: .\templates\product_details.html:391
+msgid "Go to cart"
+msgstr ""
+
+#: .\templates\product_details.html:394
+msgid "Your purchases will be home delivered."
 msgstr ""
 
 #: .\templates\products.html:38
 msgid "All Products"
 msgstr ""
 
-#: .\views.py:107 .\views.py:129
+#: .\views.py:194 .\views.py:216
 msgid "Name Ar"
 msgstr ""
 
-#: .\views.py:107 .\views.py:129
+#: .\views.py:194 .\views.py:216
 msgid "Name Fr"
 msgstr ""
 
-#: .\views.py:191 .\views.py:463
+#: .\views.py:323 .\views.py:754
 msgid "Phone"
 msgstr ""
 
-#: .\views.py:272
+#: .\views.py:415
 msgid "Product Created Successfully"
+msgstr ""
+
+#: .\views.py:861
+msgid "Update Error"
+msgstr ""
+
+#: .\views.py:1083
+msgid "Category created successfully"
+msgstr ""
+
+#: .\views.py:1087
+msgid "Failed to create a new category."
+msgstr ""
+
+#: .\views.py:1590
+msgid "Coupon Expired"
 msgstr ""

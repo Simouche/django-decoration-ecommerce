@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 15:17+0100\n"
+"POT-Creation-Date: 2021-10-16 17:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,11 @@ msgstr "Annulé"
 #: .\forms.py:20 .\templates\dashboard\_orders_table.html:9
 #: .\templates\dashboard\_sales_table.html:9
 #: .\templates\dashboard\orders_list.html:89
-#: .\templates\dashboard\sales_list.html:93 .\views.py:321 .\views.py:752
+#: .\templates\dashboard\sales_list.html:93 .\views.py:323 .\views.py:754
 msgid "Number"
 msgstr "Numéro"
 
-#: .\forms.py:28 .\forms.py:260 .\models.py:201 .\models.py:580
+#: .\forms.py:28 .\forms.py:261 .\models.py:201 .\models.py:580
 #: .\templates\dashboard\product_recap.html:13
 #, fuzzy
 #| msgid "Delivery Fee"
@@ -53,19 +53,19 @@ msgid "Delivery Date"
 msgstr "Frais de Livraison"
 
 #: .\forms.py:66 .\forms.py:68 .\models.py:18 .\models.py:32 .\models.py:523
-#: .\models.py:564 .\models.py:658 .\models.py:671 .\views.py:192
-#: .\views.py:214
+#: .\models.py:564 .\models.py:658 .\models.py:671 .\views.py:194
+#: .\views.py:216
 msgid "Name"
 msgstr "Nom"
 
 #: .\forms.py:72 .\forms.py:75 .\models.py:48
-#: .\templates\product_details.html:135
+#: .\templates\product_details.html:136
 msgid "Description"
 msgstr "Description"
 
 #: .\forms.py:79 .\forms.py:81 .\models.py:49 .\models.py:119 .\models.py:292
-#: .\templates\_cart_area.html:11 .\templates\cart.html:46 .\views.py:192
-#: .\views.py:214
+#: .\templates\_cart_area.html:11 .\templates\cart.html:46 .\views.py:194
+#: .\views.py:216
 msgid "Price"
 msgstr "Prix"
 
@@ -77,7 +77,7 @@ msgstr "Image Principale"
 msgid "Discount Price"
 msgstr "Prix Remise"
 
-#: .\forms.py:96 .\forms.py:98 .\views.py:192 .\views.py:214
+#: .\forms.py:96 .\forms.py:98 .\views.py:194 .\views.py:216
 msgid "Stock"
 msgstr "Stock"
 
@@ -107,78 +107,110 @@ msgstr "Utilisateur"
 msgid "Order"
 msgstr "Commande"
 
-#: .\forms.py:238 .\models.py:200
+#: .\forms.py:232
+#, fuzzy
+#| msgid "French Name"
+msgid "First Name"
+msgstr "Nom en Français"
+
+#: .\forms.py:233
+#, fuzzy
+#| msgid "Name"
+msgid "Last Name"
+msgstr "Nom"
+
+#: .\forms.py:234
+#, fuzzy
+#| msgid "Order Number"
+msgid "Phone Number"
+msgstr "Numéro de Commande"
+
+#: .\forms.py:235 .\templates\contact.html:75
+#, fuzzy
+#| msgid "email"
+msgid "Email"
+msgstr "email"
+
+#: .\forms.py:236
+msgid "City"
+msgstr ""
+
+#: .\forms.py:237 .\forms.py:238 .\models.py:708
+msgid "Address"
+msgstr "Adresse"
+
+#: .\forms.py:239 .\models.py:200
 msgid "Note"
 msgstr "Note"
 
-#: .\forms.py:255
+#: .\forms.py:256
 msgid "Numero"
 msgstr "Numéro"
 
-#: .\forms.py:256 .\models.py:689 .\templates\dashboard\_orders_table.html:10
+#: .\forms.py:257 .\models.py:689 .\templates\dashboard\_orders_table.html:10
 #: .\templates\dashboard\_sales_table.html:10
 #: .\templates\dashboard\orders_list.html:90
-#: .\templates\dashboard\sales_list.html:94 .\views.py:321 .\views.py:752
+#: .\templates\dashboard\sales_list.html:94 .\views.py:323 .\views.py:754
 msgid "Client"
 msgstr "Client"
 
-#: .\forms.py:258 .\templates\dashboard\product_recap.html:12
+#: .\forms.py:259 .\templates\dashboard\product_recap.html:12
 #, fuzzy
 #| msgid "Delivery"
 msgid "Delivery Man"
 msgstr "Livraison"
 
-#: .\forms.py:262
+#: .\forms.py:263
 msgid "Caller"
 msgstr "Agent des Appels"
 
-#: .\forms.py:264
+#: .\forms.py:265
 msgid "From"
 msgstr "De"
 
-#: .\forms.py:266
+#: .\forms.py:267
 msgid "To"
 msgstr "à"
 
-#: .\forms.py:272
+#: .\forms.py:273
 msgid "Any"
 msgstr "N'importe"
 
-#: .\forms.py:273 .\templates\dashboard\dashboard.html:245
+#: .\forms.py:274 .\templates\dashboard\dashboard.html:245
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: .\forms.py:274
+#: .\forms.py:275
 #, fuzzy
 #| msgid "Last 2 days"
 msgid "Last 2 Days"
 msgstr "2 Derniers Jours"
 
-#: .\forms.py:275
+#: .\forms.py:276
 #, fuzzy
 #| msgid "Last 5 days"
 msgid "Last 5 Days"
 msgstr "5 Derniers Jours"
 
-#: .\forms.py:276
+#: .\forms.py:277
 #, fuzzy
 #| msgid "Last 10 days"
 msgid "Last 10 Days"
 msgstr "10 Derniers Jours"
 
-#: .\forms.py:277
+#: .\forms.py:278
 #, fuzzy
 #| msgid "Last 15 days"
 msgid "Last 15 Days"
 msgstr "15 Derniers Jours"
 
-#: .\forms.py:283 .\models.py:27 .\models.py:33 .\models.py:59
+#: .\forms.py:284 .\models.py:27 .\models.py:33 .\models.py:59
 #: .\templates\index.html:347 .\templates\product_details.html:62
-#: .\views.py:192 .\views.py:215
+#: .\views.py:194 .\views.py:217
 msgid "Category"
 msgstr "Catégorie"
 
-#: .\forms.py:286 .\models.py:42
+#: .\forms.py:287 .\models.py:42
 msgid "Sub-Category"
 msgstr "Sous-Catégorie"
 
@@ -191,7 +223,8 @@ msgstr "Catégories"
 msgid "Sub-Categories"
 msgstr "Sous-Catégories"
 
-#: .\models.py:47 .\templates\dashboard\_products_table.html:11
+#: .\models.py:47 .\templates\contact.html:65
+#: .\templates\dashboard\_products_table.html:11
 #: .\templates\dashboard\dashboard.html:330
 #: .\templates\dashboard\delivery_guys.html:22
 #: .\templates\dashboard\products_list.html:57
@@ -658,10 +691,6 @@ msgstr "NIF"
 msgid "AI"
 msgstr "AI"
 
-#: .\models.py:708
-msgid "Address"
-msgstr "Adresse"
-
 #: .\models.py:710
 msgid "Assistance Email"
 msgstr "Email d'assistance"
@@ -686,8 +715,8 @@ msgstr "Email d'assistance"
 #: .\templates\index.html:143 .\templates\index.html:221
 #: .\templates\order_confirmed.html:53 .\templates\order_confirmed.html:61
 #: .\templates\order_confirmed.html:73 .\templates\product_details.html:56
-#: .\templates\product_details.html:57 .\templates\product_details.html:118
-#: .\templates\product_details.html:436 .\templates\products.html:63
+#: .\templates\product_details.html:57 .\templates\product_details.html:119
+#: .\templates\product_details.html:437 .\templates\products.html:63
 #: .\templates\products.html:67
 msgid "DZD"
 msgstr "DZD"
@@ -704,7 +733,7 @@ msgstr "Sous-Totale"
 
 #: .\templates\_cart_area.html:92 .\templates\cart.html:133
 msgid "Continue Shopping"
-msgstr "Continuer vos Achats"
+msgstr "Continuez vos Achats"
 
 #: .\templates\_cart_area.html:93 .\templates\cart.html:136
 msgid "Proceed to checkout"
@@ -724,26 +753,6 @@ msgstr "Accueil"
 #: .\templates\about.html:35
 msgid "WHO ARE WE ?"
 msgstr "QUI SOMME NOUS ?"
-
-#: .\templates\about.html:36
-msgid ""
-"We are an online store for bedding and linens.</br>"
-"                                Auconfort is a brand managed by a passionate "
-"team that ensures that the demands of its\n"
-"                                customers are met, a team attentive to the "
-"desires and needs of its customers.\n"
-"                                Your suggestions are always welcome, they "
-"are the key to hope that encourages imagining\n"
-"                                and exploring new ideas.\n"
-"                                Our goal is to place values such as know-"
-"how, quality and comfort at the center of the\n"
-"                                concerns of our dear customers."
-msgstr ""
-"Nous somme une boutique en ligne de literie et de linge de maison.\n"
-"Auconfort est une marque dirigée par une équipe passionnée qui assure que les demandes de ses clients sont satisfaites,"
-"une équipe attentive aux  envies et les besoins de ses clients.\n"
-"Vos suggestions sont toujours les bienvenues , elle sont la clef d'espoir qui encourage à imaginer et à explorer de nouvelles idées.\n"
-"Notre but est de placer des valeurs telles que le savoir-faire , la qualité et le  confort au centre des préoccupations de nos chers clients"
 
 #: .\templates\cart.html:15 .\templates\cart.html:20
 msgid "Cart List"
@@ -846,6 +855,34 @@ msgstr "Contact"
 #: .\templates\contact.html:48
 msgid "Get in Touch"
 msgstr "Restez en contact"
+
+#: .\templates\contact.html:57
+#, fuzzy
+#| msgid "usages"
+msgid "message"
+msgstr "utilisations"
+
+#: .\templates\contact.html:60
+msgid "Enter Message"
+msgstr "Message"
+
+#: .\templates\contact.html:68
+#, fuzzy
+#| msgid "Enter coupon code"
+msgid "Enter your name"
+msgstr "Entrez votre nom"
+
+#: .\templates\contact.html:73
+msgid "email"
+msgstr "email"
+
+#: .\templates\contact.html:80
+msgid "subject"
+msgstr ""
+
+#: .\templates\contact.html:82
+msgid "Enter Subject"
+msgstr "Sujet"
 
 #: .\templates\contact.html:88
 msgid "Send"
@@ -957,7 +994,7 @@ msgstr "ville"
 #: .\templates\dashboard\_sales_table.html:13
 #: .\templates\dashboard\deliveries.html:11
 #: .\templates\dashboard\orders_list.html:93
-#: .\templates\dashboard\sales_list.html:97 .\views.py:321 .\views.py:752
+#: .\templates\dashboard\sales_list.html:97 .\views.py:323 .\views.py:754
 msgid "Items Count"
 msgstr "Nombre d'articles"
 
@@ -1543,7 +1580,7 @@ msgid "last"
 msgstr "dernier"
 
 #: .\templates\dashboard\orders_list.html:16
-#: .\templates\dashboard\sales_list.html:17 .\views.py:322 .\views.py:753
+#: .\templates\dashboard\sales_list.html:17 .\views.py:324 .\views.py:755
 msgid "Status"
 msgstr "Statut"
 
@@ -1631,7 +1668,7 @@ msgstr "Livraison pour toutes les commandes"
 
 #: .\templates\index.html:260
 msgid "Secure Payment"
-msgstr "Payment Securisé"
+msgstr "Paiement Securisé"
 
 #: .\templates\index.html:261
 msgid "Either hand to hand or e-payment, it's always secure"
@@ -1701,47 +1738,47 @@ msgstr "ajouter au panier"
 msgid "Similar Products"
 msgstr "Produits Similaires"
 
-#: .\templates\product_details.html:146 .\templates\product_details.html:235
+#: .\templates\product_details.html:147 .\templates\product_details.html:236
 msgid "Reviews"
 msgstr "Commentaires"
 
-#: .\templates\product_details.html:233
+#: .\templates\product_details.html:234
 msgid "Overall"
 msgstr "Globale"
 
-#: .\templates\product_details.html:322
+#: .\templates\product_details.html:323
 msgid "Add a Review"
 msgstr "Ajouter un Commentaire"
 
-#: .\templates\product_details.html:341
+#: .\templates\product_details.html:342
 msgid "Review"
 msgstr "Commentaire"
 
-#: .\templates\product_details.html:346
+#: .\templates\product_details.html:347
 msgid "Submit Now"
 msgstr "Soumettre Maintenant"
 
-#: .\templates\product_details.html:352
+#: .\templates\product_details.html:353
 msgid "Login"
 msgstr "S'identifier"
 
-#: .\templates\product_details.html:382
+#: .\templates\product_details.html:383
 msgid "The product has been added to your cart for a home delivery."
 msgstr "Le produit a été ajouté à votre panier pour une livraison à domicile."
 
-#: .\templates\product_details.html:387
+#: .\templates\product_details.html:388
 #, fuzzy
 #| msgid "Continue Shopping"
 msgid "Continue shopping"
-msgstr "Continuer vos Achats"
+msgstr "Continuez vos Achats"
 
-#: .\templates\product_details.html:390
+#: .\templates\product_details.html:391
 #, fuzzy
 #| msgid "add to cart"
 msgid "Go to cart"
 msgstr "Aller au panier"
 
-#: .\templates\product_details.html:393
+#: .\templates\product_details.html:394
 msgid "Your purchases will be home delivered."
 msgstr "Vos achats seront livrés à domicile."
 
@@ -1749,51 +1786,70 @@ msgstr "Vos achats seront livrés à domicile."
 msgid "All Products"
 msgstr "Tous les Produits"
 
-#: .\views.py:192 .\views.py:214
+#: .\views.py:194 .\views.py:216
 msgid "Name Ar"
 msgstr "Nom en Arabe"
 
-#: .\views.py:192 .\views.py:214
+#: .\views.py:194 .\views.py:216
 msgid "Name Fr"
 msgstr "Nom en Français"
 
-#: .\views.py:321 .\views.py:752
+#: .\views.py:323 .\views.py:754
 msgid "Phone"
 msgstr "Téléphone"
 
-#: .\views.py:413
+#: .\views.py:415
 msgid "Product Created Successfully"
 msgstr "Produit Créé Avec Succès"
 
-#: .\views.py:859
+#: .\views.py:861
 #, fuzzy
 #| msgid "Update Cart"
 msgid "Update Error"
 msgstr "Mise à jour Panier"
 
-#: .\views.py:1081
+#: .\views.py:1083
 #, fuzzy
 #| msgid "Product Created Successfully"
 msgid "Category created successfully"
 msgstr "Produit Créé Avec Succès"
 
-#: .\views.py:1085
+#: .\views.py:1087
 #, fuzzy
 #| msgid "Create new Category"
 msgid "Failed to create a new category."
 msgstr "Créer une nouvelle catégorie"
 
-#: .\views.py:1588
+#: .\views.py:1590
 msgid "Coupon Expired"
 msgstr "Coupon expiré"
+
+#~ msgid ""
+#~ "We are an online store for bedding and linens.</"
+#~ "br>                                Auconfort is a brand managed by a "
+#~ "passionate team that ensures that the demands of its\n"
+#~ "                                customers are met, a team attentive to "
+#~ "the desires and needs of its customers.\n"
+#~ "                                Your suggestions are always welcome, they "
+#~ "are the key to hope that encourages imagining\n"
+#~ "                                and exploring new ideas.\n"
+#~ "                                Our goal is to place values such as know-"
+#~ "how, quality and comfort at the center of the\n"
+#~ "                                concerns of our dear customers."
+#~ msgstr ""
+#~ "Nous somme une boutique en ligne de literie et de linge de maison.\n"
+#~ "Auconfort est une marque dirigée par une équipe passionnée qui assure que "
+#~ "les demandes de ses clients sont satisfaites,une équipe attentive aux  "
+#~ "envies et les besoins de ses clients.\n"
+#~ "Vos suggestions sont toujours les bienvenues , elle sont la clef d'espoir "
+#~ "qui encourage à imaginer et à explorer de nouvelles idées.\n"
+#~ "Notre but est de placer des valeurs telles que le savoir-faire , la "
+#~ "qualité et le  confort au centre des préoccupations de nos chers clients"
 
 #, fuzzy
 #~| msgid "Category"
 #~ msgid "Shop Category"
 #~ msgstr "Catégorie"
-
-#~ msgid "French Name"
-#~ msgstr "Nom en Français"
 
 #~ msgid "French Description"
 #~ msgstr "Description en Français"
@@ -1827,9 +1883,6 @@ msgstr "Coupon expiré"
 
 #~ msgid "full name"
 #~ msgstr "nom complet"
-
-#~ msgid "email"
-#~ msgstr "email"
 
 #~ msgid "date joined"
 #~ msgstr "date d'adhésion"
