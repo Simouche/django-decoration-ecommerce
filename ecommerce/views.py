@@ -114,6 +114,7 @@ class Dashboard(TemplateView):
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
+                                .filter(visible=True)\
                                 .filter(free_product=False) \
                                 .values('price', 'stock', product_name=F('name'),
                                         order_count=Count('orders_lines__order'),
@@ -389,7 +390,10 @@ class ViewProductDetailsView(DetailView):
 
     def get_cart(self) -> Cart:
         if self.request.user.is_authenticated:
-            return self.request.user.profile.cart
+            try:
+                return self.request.user.profile.cart
+            except Exception:
+                cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
         else:
             cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
             return cart
