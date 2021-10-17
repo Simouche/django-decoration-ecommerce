@@ -394,6 +394,7 @@ class ViewProductDetailsView(DetailView):
                 return self.request.user.profile.cart
             except Exception:
                 cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
+                return cart
         else:
             cart, created = Cart.objects.get_or_create(identifier=self.request.session.get('cart_id'))
             return cart
