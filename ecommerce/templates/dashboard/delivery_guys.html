@@ -32,13 +32,16 @@
                     <td>
                         <div class="table-data-feature row m-0">
                             {% if guy.visible %}
-                                <div class="col-3 pl-1">
-                                    <button id="update-company{{ guy.id }}" class="item" data-toggle="tooltip"
-                                            data-placement="top" onclick="editAgent({{ guy.id }})"
-                                            title="Edit">
-                                        <i class="zmdi zmdi-edit"></i>
-                                    </button>
-                                </div>
+                                {% if user.user_type in 'AS' %}
+                                    <div class="col-3 pl-1">
+                                        <button id="update-company{{ guy.id }}" class="item" data-toggle="tooltip"
+                                                data-placement="top" onclick="editAgent({{ guy.id }})"
+                                                title="Edit">
+                                            <i class="zmdi zmdi-edit"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
+
                                 <div class="col-3">
                                     <button onclick="showRecap('{% url 'ecommerce:delivery-man-recap' %}?pk={{ guy.pk }}')"
                                             class="item" data-toggle="tooltip" data-placement="top" title="Recap">

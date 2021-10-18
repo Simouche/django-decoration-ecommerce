@@ -136,10 +136,13 @@
                                     class="item" data-toggle="tooltip" data-placement="top" title="Info">
                                 <i class="fa fa-info"></i>
                             </button>
-                            <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i class="zmdi zmdi-edit"
-                                   onclick="updateOrder({{ sale.pk }})"></i>
-                            </button>
+                            {% if user.user_type in 'AS' %}
+                                <button class="item" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="zmdi zmdi-edit"
+                                       onclick="updateOrder({{ sale.pk }})"></i>
+                                </button>
+                            {% endif %}
+
                             <a href="{% url 'ecommerce:print_order' sale.pk %}" target="_blank"
                                class="item" data-toggle="tooltip" data-placement="top" title="Print">
                                 <i class="fas fa-print"></i>
@@ -212,13 +215,13 @@
     <script src="{% static 'js/decorationjs/order.js' %}"></script>
     <script type="text/javascript">
         $('#deletemodal').on('show.bs.modal', function (event) {
-                const button = $(event.relatedTarget)
-                const id = button.data('id')
-                document.getElementById("delete-sale-button").onclick = function () {
-                    deleteUser(`/orders/${id}/delete/`, '#sales-table', "{{ csrf_token }}")
-                    $('#deletemodal').modal("hide")
-                }
-            })
+            const button = $(event.relatedTarget)
+            const id = button.data('id')
+            document.getElementById("delete-sale-button").onclick = function () {
+                deleteUser(`/orders/${id}/delete/`, '#sales-table', "{{ csrf_token }}")
+                $('#deletemodal').modal("hide")
+            }
+        })
 
         loadByStatusSales({
             selectId: "#status-select",

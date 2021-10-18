@@ -23,7 +23,7 @@
         <div class="table-data__tool-right">
             {% if  user.user_type == 'A' %}
                 <button id="create-user" type="button" name="button"
-                        class="au-btn au-btn-icon au-btn--green au-btn--small">
+                        class="au-btn au-btn-icon au-btn--green au-btn--small" onclick="createUserForm()">
                     <i class="zmdi zmdi-plus"></i>{% trans "add user" %}
                 </button>
                 {% url 'accounts:users-list-export' as url %}
@@ -265,24 +265,20 @@
 
 
         function createUserForm() {
-            $(function () {
-                $("#create-user").modalForm({
-                    modalID: "#create-user-modal",
-                    formURL: "{% url 'accounts:profile-create' %}",
-                    asyncUpdate: true,
-                    asyncSettings: {
-                        successMessage: asyncSuccessMessage,
-                        closeOnSubmit: true,
-                        dataUrl: "{% url "accounts:users-list" %}",
-                        dataElementId: '#users-table',
-                        dataKey: "users",
-                        addModalFormFunction: createUserForm
-                    }
-                })
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'accounts:profile-create' %}",
+                dataType: 'json',
+                success: (response) => {
+                    const modal = $("#create-user-modal")
+                    modal.find(".modal-content").html(response)
+                    modal.modal()
+                },
+                error: (jqXHR, textStatus, errorThrown) => console.log(errorThrown)
             })
         }
 
-        createUserForm()
+        {#createUserForm()#}
 
         $("#group-select").on('change', function (object) {
             filterUserByGroup({

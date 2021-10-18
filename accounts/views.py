@@ -1,5 +1,4 @@
 import xlwt
-from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
@@ -12,7 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext
 from django.views import View
-from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView, TemplateView
+from django.views.generic import FormView, DetailView, UpdateView, ListView, RedirectView, TemplateView, CreateView
 
 from accounts.forms import LoginForm, RegistrationForm, CreateStaffForm
 from accounts.models import Profile, User, State, City
@@ -228,7 +227,7 @@ def export_users_excel(request):
 
 
 @method_decorator(super_user_required, name='dispatch')
-class CreateUser(BSModalCreateView):
+class CreateUser(CreateView):
     model = User
     context_object_name = 'user'
     success_url = reverse_lazy("accounts:users-list")
@@ -236,6 +235,16 @@ class CreateUser(BSModalCreateView):
     success_message = _('User Created Success')
     form_class = CreateStaffForm
     initial = {'user_type': 'S'}
+
+    def get(self, request, *args, **kwargs):
+        if is_ajax(request):
+            self.object = None
+            context = self.get_context_data()
+            html = render_to_string(self.template_name,
+                                    context=context,
+                                    request=request)
+            return JsonResponse(html, safe=False)
+        return super(CreateUser, self).get(request, *args, **kwargs)
 
 
 @staff_member_required()

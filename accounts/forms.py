@@ -157,7 +157,7 @@ class ProfileForm(forms.ModelForm):
         fields = ['user', 'photo', 'address', 'city', 'birth_date', 'gender']
 
 
-class CreateStaffForm(BSModalModelForm):
+class CreateStaffForm(forms.ModelForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -213,7 +213,7 @@ class CreateStaffForm(BSModalModelForm):
 
     class Meta:
         model = User
-        fields = ['username', "first_name", "last_name", 'user_type', 'phones', 'email']
+        fields = ('username', "first_name", "last_name", 'user_type', 'phones', 'email')
 
     def clean(self):
         super(CreateStaffForm, self).clean()

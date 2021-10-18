@@ -50,7 +50,7 @@ msgstr "Numéro"
 #, fuzzy
 #| msgid "Delivery Fee"
 msgid "Delivery Date"
-msgstr "Frais de Livraison"
+msgstr "Date de Livraison"
 
 #: .\forms.py:66 .\forms.py:68 .\models.py:18 .\models.py:32 .\models.py:523
 #: .\models.py:564 .\models.py:658 .\models.py:671 .\views.py:194
@@ -158,7 +158,7 @@ msgstr "Client"
 #, fuzzy
 #| msgid "Delivery"
 msgid "Delivery Man"
-msgstr "Livraison"
+msgstr "Agent de Livraison"
 
 #: .\forms.py:263
 msgid "Caller"
@@ -364,7 +364,7 @@ msgstr "Assigner a"
 #, fuzzy
 #| msgid "Apply Coupon"
 msgid "Applied Coupon"
-msgstr "Appliquer le Coupon"
+msgstr "Coupon Appliqué"
 
 #: .\models.py:263 .\templates\dashboard\base_dashboard.html:98
 #: .\templates\dashboard\base_dashboard.html:174
@@ -456,14 +456,14 @@ msgstr "Utilisations maximale"
 #, fuzzy
 #| msgid "Apply Coupon"
 msgid "Coupon"
-msgstr "Appliquer le Coupon"
+msgstr "Coupon"
 
 #: .\models.py:516 .\templates\dashboard\base_dashboard.html:182
 #: .\templates\dashboard\coupons.html:12
 #, fuzzy
 #| msgid "Apply Coupon"
 msgid "Coupons"
-msgstr "Appliquer le Coupon"
+msgstr "Coupons"
 
 #: .\models.py:524
 msgid "Arabic Name"
@@ -523,13 +523,13 @@ msgstr "Livraison"
 #, fuzzy
 #| msgid "Delivery Fees"
 msgid "Delivery Companies"
-msgstr "Frais de Livraison"
+msgstr "Company de Livraison"
 
 #: .\models.py:572 .\models.py:578 .\templates\dashboard\sales_list.html:55
 #, fuzzy
 #| msgid "Delivery"
 msgid "Delivery Guy"
-msgstr "Livraison"
+msgstr "Agent de Livraison"
 
 #: .\models.py:573 .\templates\dashboard\base_dashboard.html:113
 #: .\templates\dashboard\base_dashboard.html:193
@@ -537,7 +537,7 @@ msgstr "Livraison"
 #, fuzzy
 #| msgid "Delivery Fees"
 msgid "Delivery Guys"
-msgstr "Frais de Livraison"
+msgstr "Agents de Livraison"
 
 #: .\models.py:590 .\templates\_cart_area.html:72 .\templates\checkout.html:123
 #: .\templates\dashboard\base_dashboard.html:105
@@ -1461,7 +1461,7 @@ msgstr "Seuil de Poids"
 #, fuzzy
 #| msgid "Delivery Fees"
 msgid "Delivery Guys Count"
-msgstr "Frais de Livraison"
+msgstr "Nombre de Livereur"
 
 #: .\templates\dashboard\delivery_companies.html:27
 msgid "Fees"

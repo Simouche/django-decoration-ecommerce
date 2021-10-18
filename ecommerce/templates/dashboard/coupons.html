@@ -61,10 +61,12 @@
                     <td>{{ coupon.usages }}</td>
                     <td>
                         <div class="table-data-feature">
-                            <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                    title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
-                                <i class="zmdi zmdi-delete"></i>
-                            </button>
+                            {% if user.user_type in 'AS' %}
+                                <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                        title="Delete" data-target="#deletemodal" data-id="{{ sale.id }}">
+                                    <i class="zmdi zmdi-delete"></i>
+                                </button>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

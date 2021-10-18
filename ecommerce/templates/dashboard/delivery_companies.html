@@ -46,22 +46,26 @@
                     </td>
                     <td>
                         <div class="table-data-feature row m-0">
-                            {% if company.visible %}
-                                <div class="col-3 pl-1">
-                                    <button {% comment %}data-id="{% url 'ecommerce:products-product-update' company.id %}"{% endcomment %}
-                                            id="update-company{{ company.id }}" class="item" data-toggle="tooltip"
-                                            data-placement="top" onclick="updateCompany({{ company.id }})"
-                                            title="Edit">
-                                        <i class="zmdi zmdi-edit"></i>
-                                    </button>
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="item" data-toggle="modal" data-placement="top"
-                                            title="Delete" data-target="#deletemodal" data-id="{{ company.id }}">
-                                        <i class="zmdi zmdi-delete"></i>
-                                    </button>
-                                </div>
+
+                            {% if user.user_type in 'AS' %}
+                                {% if company.visible %}
+                                    <div class="col-3 pl-1">
+                                        <button {% comment %}data-id="{% url 'ecommerce:products-product-update' company.id %}"{% endcomment %}
+                                                id="update-company{{ company.id }}" class="item" data-toggle="tooltip"
+                                                data-placement="top" onclick="updateCompany({{ company.id }})"
+                                                title="Edit">
+                                            <i class="zmdi zmdi-edit"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button type="button" class="item" data-toggle="modal" data-placement="top"
+                                                title="Delete" data-target="#deletemodal" data-id="{{ company.id }}">
+                                            <i class="zmdi zmdi-delete"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
                             {% endif %}
+
                         </div>
                     </td>
                 </tr>
