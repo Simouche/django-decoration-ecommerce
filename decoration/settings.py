@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ecommerce.middleware.CartIdentifierMiddleWare',
     'axes.middleware.AxesMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'decoration.urls'
@@ -118,11 +120,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': None,
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': None,
+#     }
+# }
 
 AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesBackend',
@@ -143,7 +145,7 @@ LANGUAGES = [
 
 LOCALE_PATHS = [
     BASE_DIR / "locale",
-    BASE_DIR/"templates/locale"
+    BASE_DIR / "templates/locale"
 ]
 
 TIME_ZONE = 'Africa/Algiers'
@@ -191,3 +193,7 @@ AXES_COOLOFF_TIME = 1
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 AXES_LOCKOUT_TEMPLATE = None  # lockout template
 AXES_RESET_ON_SUCCESS = True
+
+# CACHE_MIDDLEWARE_ALIAS = "SITE_CACHE"
+CACHE_MIDDLEWARE_SECONDS = 86400
+

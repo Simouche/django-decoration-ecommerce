@@ -19,6 +19,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext
+from django.views.decorators.http import require_GET
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView, FormView, TemplateView, \
     RedirectView
 
@@ -114,7 +115,7 @@ class Dashboard(TemplateView):
         m_kwargs["states"] = Order.objects.filter(order_lookup).values(state_name=F('profile__city__state__name')) \
                                  .annotate(s_count=Count('profile__city__state__name')).order_by('-s_count')[:10]
         m_kwargs["items"] = Product.objects \
-                                .filter(visible=True)\
+                                .filter(visible=True) \
                                 .filter(free_product=False) \
                                 .values('price', 'stock', product_name=F('name'),
                                         order_count=Count('orders_lines__order'),
@@ -1656,3 +1657,18 @@ def handle403(request, exception, **kwargs):
 def handle500(request, *args, **kwargs):
     template_name = "500.html"
     return render(kwargs.get('request'), template_name, status=500)
+
+
+@require_GET
+def robots_txt(request):
+    lines = [
+        "User-Agent: MJ12bot",
+        "Disallow: /",
+        "User-agent: SemrushBot",
+        "Disallow: /",
+        "User-agent: PetalBot",
+        "Disallow: /",
+        "User-agent: Zoominfobot",
+        "Disallow: /",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")

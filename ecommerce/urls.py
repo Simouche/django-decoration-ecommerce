@@ -96,6 +96,7 @@ urlpatterns = [
 
     path('login-required/', views.LoginRequired.as_view(), name='login-required'),
 
-    path('get-product-sizes/', views.get_product_sizes, name='get-product-sizes')
+    path('get-product-sizes/', views.get_product_sizes, name='get-product-sizes'),
+    path("robots.txt", views.robots_txt),
 
 ]

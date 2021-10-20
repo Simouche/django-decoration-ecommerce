@@ -13,7 +13,7 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
             cart = Cart.objects.create()
             request.session['cart_id'] = cart.identifier.__str__()
         else:
-            print(request.session.get('cart_id', None))
+            pass
 
         if request.user.is_authenticated:
             try:
