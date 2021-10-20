@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ecommerce.context_processors.add_is_mobile',
             ],
         },
     },
@@ -196,4 +197,3 @@ AXES_RESET_ON_SUCCESS = True
 
 # CACHE_MIDDLEWARE_ALIAS = "SITE_CACHE"
 CACHE_MIDDLEWARE_SECONDS = 86400
-
