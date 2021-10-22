@@ -1670,5 +1670,7 @@ def robots_txt(request):
         "Disallow: /",
         "User-agent: Zoominfobot",
         "Disallow: /",
+        "User-Agent: *",
+        "Disallow: /dashboard/"
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")

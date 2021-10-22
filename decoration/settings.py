@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     'accounts',
     'ecommerce',
@@ -195,5 +197,6 @@ AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 AXES_LOCKOUT_TEMPLATE = None  # lockout template
 AXES_RESET_ON_SUCCESS = True
 
-# CACHE_MIDDLEWARE_ALIAS = "SITE_CACHE"
 CACHE_MIDDLEWARE_SECONDS = 86400
+
+SITE_ID = 1

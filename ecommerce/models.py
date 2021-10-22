@@ -4,6 +4,7 @@ import uuid
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
 from django.db.models import Model, Sum, Avg, F
+from django.urls import reverse
 from django.utils import timezone
 
 from accounts.models import State
@@ -107,6 +108,9 @@ class Product(DeletableModel):
     @property
     def has_sizes(self):
         return self.sizes.all().count() != 0
+
+    def get_absolute_url(self):
+        return reverse("ecommerce:products-product-details", kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ('name',)
