@@ -252,7 +252,7 @@ class Order(DeletableModel):
 
     @property
     def full_name(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.get_first_name} {self.get_last_name}'
 
     @property
     def discounted(self) -> bool:
