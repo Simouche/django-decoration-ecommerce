@@ -9,11 +9,13 @@ from ecommerce.models import Cart
 class CartIdentifierMiddleWare(MiddlewareMixin):
 
     def process_request(self, request: HttpRequest):
-        if not request.session.get('cart_id', None):
+        if not request.session.get('cart_id', None) and not request.user.is_authenticated:
             cart = Cart.objects.create()
             request.session['cart_id'] = cart.identifier.__str__()
         else:
-            pass
+            if not Cart.objects.filter(identifier=request.session['cart_id']).exists():
+                cart = Cart.objects.create()
+                request.session['cart_id'] = cart.identifier.__str__()
 
         if request.user.is_authenticated:
             try:
@@ -26,4 +28,7 @@ class CartIdentifierMiddleWare(MiddlewareMixin):
                 profile = request.user.profile
                 cart = Cart.objects.filter(identifier=request.session.get('cart_id')).first()
                 profile.cart = cart
+                cart.profile = profile
+                cart.save()
                 profile.save()
+                request.session['cart_id'] = None

@@ -1543,7 +1543,7 @@ def calculate_delivery_fee(request):
     city_id = request.GET.get('city_id')
     city = get_object_or_404(City, pk=city_id)
     base_fee = None
-    if city.name in ['Alger', 'Blida', 'Boumerdes']:
+    if city.state.name in ['Alger', 'Blida', 'Boumerdes']:
         settings = Settings.objects.all().first()
         if settings:
             base_fee = settings.standard_delivery_fee

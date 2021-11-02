@@ -12,6 +12,7 @@ from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
 from base_backend import _
 
 # Create your models here.
+from base_backend.validators import phone_validator
 from ecommerce.managers import CustomCategoryManager
 
 
@@ -194,7 +195,7 @@ class Order(DeletableModel):
         ('NA', _('No Answer')),
     )
 
-    profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing)
+    profile = models.ForeignKey('accounts.Profile', related_name='orders', on_delete=do_nothing, null=True, blank=True)
     number = models.CharField(max_length=16, unique=True, verbose_name=_('Order Number'))
     status = models.CharField(max_length=2, choices=status_choices, verbose_name=_('Order Status'), default='P')
     shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Shipping Fee'), default=0)
@@ -205,6 +206,53 @@ class Order(DeletableModel):
     delivery_date = models.DateField(_("Delivery Date"), null=True, blank=True, )
     coupon = models.ForeignKey('Coupon', verbose_name=_('Applied Coupon'), on_delete=models.SET_NULL,
                                related_name="orders", null=True, blank=True)
+
+    address = models.CharField(_("Address"), max_length=255, null=True, blank=True)
+    city = models.ForeignKey('accounts.City', on_delete=do_nothing, null=True, blank=True, related_name='orders',
+                             verbose_name=_('City'))
+    phone = models.CharField(
+        _("Phone Number"),
+        max_length=50,
+        validators=[phone_validator],
+        unique=True,
+        null=True, blank=True,
+    )
+    first_name = models.CharField(verbose_name=_('First Name'), null=True, blank=True,max_length=255)
+    last_name = models.CharField(verbose_name=_('Last Name'), null=True, blank=True,max_length=255)
+
+    @property
+    def get_phone(self):
+        if self.profile:
+            return self.profile.user.phones[0]
+        return self.phone
+
+    @property
+    def get_first_name(self):
+        if self.profile:
+            return self.profile.user.first_name
+        return self.first_name
+
+    @property
+    def get_last_name(self):
+        if self.profile:
+            return self.profile.user.last_name
+        return self.last_name
+
+    @property
+    def get_address(self):
+        if self.profile:
+            return self.profile.address
+        return self.address
+
+    @property
+    def get_city(self):
+        if self.profile:
+            return self.profile.city
+        return self.city
+
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     @property
     def discounted(self) -> bool:
@@ -603,6 +651,9 @@ class DeliveryFee(DeletableModel):
     class Meta:
         verbose_name = _('Delivery Fee')
         verbose_name_plural = _('Delivery Fees')
+
+    def __str__(self):
+        return f'{self.company} - {self.state}: {self.fee}'
 
 
 class IndexContent(BaseModel):
