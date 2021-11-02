@@ -31,10 +31,9 @@
                     <span class="email {% if user.confirmed_email %} status--process {% else %} status--denied {% endif %}"> {{ user.email }}</span>
                 </td>
 
-                <td><span
-                        class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phones.first|default:'+213799136332' }}</span>
-                </td>
-
+               <td><span
+                            class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phone }}</span>
+                    </td>
                 <td>{{ user.date_joined }}</td>
 
                 <td><span class="{% if user.user_type == 'C' %}

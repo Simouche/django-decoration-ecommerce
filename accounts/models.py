@@ -55,6 +55,10 @@ class User(AbstractUser):
     def confirmed_email(self) -> bool:
         return False
 
+    @property
+    def phone(self):
+        return self.phones[0]
+
     def delete(self, using=None, keep_parents=False):
         self.visible = False
         self.is_active = False

@@ -32,12 +32,12 @@
                         </div>
                     </td>
                     <td>{{ sale.number }}</td>
-                    <td>{{ sale.profile.user.full_name }}</td>
+                    <td>{{ sale.full_name }}</td>
                     <td><span
                             class="{% if sale.profile.user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">
-                        {{ sale.profile.user.phones.first|default:'+213799136332' }}</span>
+                        {{ sale.get_phone }}</span>
                     </td>
-                    <td>{{ sale.profile.city }}</td>
+                    <td>{{ sale.get_city }}</td>
                     <td>{{ sale.products_count }}</td>
                     <td>{{ sale.total_sum }} {% trans 'DZD' %}</td>
                     <td>{{ sale.delivery_date|default:"_" }}</td>

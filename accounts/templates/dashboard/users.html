@@ -62,7 +62,7 @@
                     </td>
 
                     <td><span
-                            class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phones.first|default:'+213799136332' }}</span>
+                            class="{% if user.confirmed_phone %} status--process {% else %} status--denied {% endif %}">{{ user.phone }}</span>
                     </td>
 
                     <td>{{ user.date_joined }}</td>
