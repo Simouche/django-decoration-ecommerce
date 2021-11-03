@@ -36,6 +36,7 @@ from ecommerce.forms import CreateOrderLineForm, CreateProductForm, CreateCatego
 from ecommerce.models import Product, Order, OrderLine, Favorite, Cart, CartLine, Category, SubCategory, \
     OrderStatusChange, IndexContent, DeliveryGuy, DeliveryCompany, Deliveries, Rate, Complaint, Settings, DeliveryFee, \
     Partner, QuickLink, Coupon
+from ecommerce.utils import calculate_delivery_fee_util
 
 
 class Index(TemplateView):
@@ -612,47 +613,67 @@ class CartRemoveView(DeleteView):
     context_object_name = "cart_line"
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class CartCashOutToOrder(TemplateView):
     template_name = "checkout.html"
 
     def get_context_data(self, **kwargs):
         form = CheckoutForm(initial=self.get_initial())
-        return super(CartCashOutToOrder, self).get_context_data(form=form, **kwargs)
+        return super(CartCashOutToOrder, self).get_context_data(form=form, cart=self.get_cart(), **kwargs)
+
+    def get_cart(self):
+        if self.request.user.is_authenticated:
+            return self.request.user.profile.cart
+        return Cart.objects.get(identifier=self.request.session.get('cart_id'))
 
     def get_initial(self) -> dict:
-        first_name = self.request.user.first_name
-        last_name = self.request.user.last_name
-        phone_number = self.request.user.phones[0]
-        email_address = self.request.user.email
-        city = self.request.user.profile.city
-        address = self.request.user.profile.address
-        initials = dict(
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            email_address=email_address,
-            city=city,
-            address=address,
-        )
-        return initials
+        if self.request.user.is_authenticated:
+            first_name = self.request.user.first_name
+            last_name = self.request.user.last_name
+            phone_number = self.request.user.phones[0]
+            email_address = self.request.user.email
+            city = self.request.user.profile.city
+            address = self.request.user.profile.address
+            initials = dict(
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,
+                email_address=email_address,
+                city=city,
+                address=address,
+            )
+            return initials
+        return {}
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class CartCheckOutConfirm(RedirectView):
     pattern_name = "ecommerce:order-check-out"
     permanent = True
 
     def get_redirect_url(self, *args, **kwargs):
         form = CheckoutForm(self.request.POST)
+        print("****************", form.data)
+        fee = None
         if form.is_valid():
-            form.save(self.request.user)
-            order = self.request.user.profile.cart.confirm(note=form.cleaned_data.get('note'),
-                                                           coupon_id=form.cleaned_data.get('coupon_id'))
+            if self.request.user.is_authenticated:
+                form.save(self.request.user)
+            else:
+                fee = calculate_delivery_fee_util(form.cleaned_data.get('city'), self.get_cart().get_lines)
+            order = self.get_cart().confirm(
+                fee=fee,
+                **form.cleaned_data,
+            )
             url = reverse(self.pattern_name, kwargs={'pk': order.id})
             return url
+        messages.warning(self.request, "Vous devez fournir vos informations.")
         url = reverse("ecommerce:cart-check-out")
         return url
+
+    def get_cart(self):
+        if self.request.user.is_authenticated:
+            return self.request.user.profile.cart
+        return Cart.objects.get(identifier=self.request.session.get('cart_id'))
 
 
 # orders and order lines
@@ -931,7 +952,7 @@ class OrderDetails(DetailView, OrdersMixin):
         return super(OrderDetails, self).get(request=request, *args, **kwargs)
 
 
-@method_decorator(login_required, name='dispatch')
+# @method_decorator(login_required, name='dispatch')
 class OrderCheckOut(DetailView):
     model = Order
     context_object_name = 'order'
@@ -1538,37 +1559,16 @@ class DeliveryManRecapView(TemplateView):
         return JsonResponse(data)
 
 
-@login_required
 def calculate_delivery_fee(request):
     city_id = request.GET.get('city_id')
     city = get_object_or_404(City, pk=city_id)
-    base_fee = None
-    if city.state.name in ['Alger', 'Blida', 'Boumerdes']:
-        settings = Settings.objects.all().first()
-        if settings:
-            base_fee = settings.standard_delivery_fee
 
     if request.user.is_authenticated:
         cart = request.user.profile.cart
     else:
         cart = Cart.objects.get(identifier=request.session.get('cart_id'))
 
-    total_weight = 0
-    for line in cart.get_lines:
-        total_weight += line.product.weight
-
-    delivery_company = DeliveryCompany.objects.get(default=True)
-    try:
-        state_fee = DeliveryFee.objects.get(state=city.state_id, company=delivery_company)
-    except Exception:
-        state_fee = None
-    if not base_fee:
-        base_fee = state_fee.fee if state_fee else 500
-    extra_weight = total_weight - delivery_company.weight_threshold
-    if extra_weight > 0:
-        fee = base_fee + (extra_weight * delivery_company.base_fee)
-    else:
-        fee = base_fee
+    fee = calculate_delivery_fee_util(city, cart.get_lines)
 
     return JsonResponse({"fee": fee, "total": cart.total_sum_client_ajax(fee=fee)})
 

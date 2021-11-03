@@ -57,6 +57,9 @@
                                                     <h3>
                                                         <a href="{% url 'ecommerce:products-product-details' product.pk %}">{{ product.name }}</a>
                                                     </h3>
+                                                    {% if product.sizes %}
+                                                        <span style="color: black">A partir de: </span>
+                                                    {% endif %}
                                                     {% if product.on_discount %}
                                                         <span>
                                                             <del>
@@ -64,7 +67,7 @@
                                                         </del>
                                                         </span>
                                                     {% endif %}
-                                                    <span>{{ product.get_discounted_price }} {% trans 'DZD' %}</span>
+                                                    <span>{{ product.get_discounted_price }} {% trans 'DZD' %} </span>
                                                 </div>
                                             </div>
                                         </div>

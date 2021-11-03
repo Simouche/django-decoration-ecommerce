@@ -3,14 +3,13 @@ import uuid
 
 from django.contrib.postgres.fields import ArrayField, DateRangeField
 from django.db import models
-from django.db.models import Model, Sum, Avg, F
+from django.db.models import Sum, Avg, F
 from django.urls import reverse
 from django.utils import timezone
 
 from accounts.models import State
-from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
 from base_backend import _
-
+from base_backend.models import DeletableModel, do_nothing, BaseModel, cascade
 # Create your models here.
 from base_backend.validators import phone_validator
 from ecommerce.managers import CustomCategoryManager
@@ -217,8 +216,9 @@ class Order(DeletableModel):
         unique=True,
         null=True, blank=True,
     )
-    first_name = models.CharField(verbose_name=_('First Name'), null=True, blank=True,max_length=255)
-    last_name = models.CharField(verbose_name=_('Last Name'), null=True, blank=True,max_length=255)
+    email = models.EmailField(verbose_name=_('Email'),null=True, blank=True)
+    first_name = models.CharField(verbose_name=_('First Name'), null=True, blank=True, max_length=255)
+    last_name = models.CharField(verbose_name=_('Last Name'), null=True, blank=True, max_length=255)
 
     @property
     def get_phone(self):
@@ -363,46 +363,6 @@ class OrderStatusChange(BaseModel):
     user = models.ForeignKey('accounts.User', on_delete=do_nothing, related_name='status_changes', )
 
 
-class Favorite(DeletableModel):
-    profile = models.ForeignKey('accounts.Profile', related_name='favorites', on_delete=do_nothing)
-    product = models.ForeignKey('Product', related_name='favorites', on_delete=do_nothing)
-
-    class Meta:
-        verbose_name = _('Favorite')
-        verbose_name_plural = _('Favorites')
-
-
-class Rate(DeletableModel):
-    stars = models.DecimalField(max_digits=2, decimal_places=1, verbose_name=_('Stars'))
-    comment = models.CharField(max_length=255, null=True, verbose_name=_('Comment'))
-    profile = models.ForeignKey('accounts.Profile', related_name='ratings', on_delete=do_nothing)
-    product = models.ForeignKey('Product', related_name='ratings', on_delete=do_nothing)
-
-    class Meta:
-        verbose_name = _('Rating')
-        verbose_name_plural = _('Ratings')
-
-    @property
-    def checked_stars_range(self):
-        return range(0, int(self.stars))
-
-    @property
-    def un_checked_stars_range(self):
-        return range(0, 5 - int(self.stars))
-
-    def __str__(self):
-        return f'{self.comment}'
-
-
-class Like(DeletableModel):
-    profile = models.ForeignKey('accounts.Profile', related_name='likes', on_delete=do_nothing)
-    product = models.ForeignKey('Product', related_name='likes', on_delete=do_nothing)
-
-    class Meta:
-        verbose_name = _('Like')
-        verbose_name_plural = _('Likes')
-
-
 class CartLine(BaseModel):
     product = models.ForeignKey('Product', related_name='cart_lines', on_delete=do_nothing)
     cart = models.ForeignKey('Cart', related_name='lines', on_delete=do_nothing)
@@ -510,13 +470,14 @@ class Cart(DeletableModel):
         else:
             return -1
 
-    def confirm(self, note=None, coupon_id=None):
+    def confirm(self, note=None, coupon_id=None, **kwargs):
         coupon = None
+        fee = kwargs.pop('fee', self.delivery_fee)
         if coupon_id:
             coupons = Coupon.objects.filter(id=coupon_id)
             coupon = coupons.first() if coupons.exists() else None
-        order = Order.objects.create(profile=self.profile, note=note, shipping_fee=self.delivery_fee,
-                                     free_delivery=self.is_free_delivery, coupon=coupon)
+        order = Order.objects.create(profile=self.profile, note=note, shipping_fee=fee,
+                                     free_delivery=self.is_free_delivery, coupon=coupon, **kwargs)
         for line in self.get_lines:
             line.to_order_line(order=order)
         self.clear_lines()
@@ -763,3 +724,43 @@ class Settings(BaseModel):
     address = models.CharField(max_length=255, verbose_name=_('Address'), blank=True)
     assistance_number = models.CharField(max_length=255, verbose_name=_('Assistance Number'), blank=True)
     assistance_email = models.CharField(max_length=255, verbose_name=_('Assistance Email'), blank=True)
+
+
+class Favorite(DeletableModel):
+    profile = models.ForeignKey('accounts.Profile', related_name='favorites', on_delete=do_nothing)
+    product = models.ForeignKey('Product', related_name='favorites', on_delete=do_nothing)
+
+    class Meta:
+        verbose_name = _('Favorite')
+        verbose_name_plural = _('Favorites')
+
+
+class Rate(DeletableModel):
+    stars = models.DecimalField(max_digits=2, decimal_places=1, verbose_name=_('Stars'))
+    comment = models.CharField(max_length=255, null=True, verbose_name=_('Comment'))
+    profile = models.ForeignKey('accounts.Profile', related_name='ratings', on_delete=do_nothing)
+    product = models.ForeignKey('Product', related_name='ratings', on_delete=do_nothing)
+
+    class Meta:
+        verbose_name = _('Rating')
+        verbose_name_plural = _('Ratings')
+
+    @property
+    def checked_stars_range(self):
+        return range(0, int(self.stars))
+
+    @property
+    def un_checked_stars_range(self):
+        return range(0, 5 - int(self.stars))
+
+    def __str__(self):
+        return f'{self.comment}'
+
+
+class Like(DeletableModel):
+    profile = models.ForeignKey('accounts.Profile', related_name='likes', on_delete=do_nothing)
+    product = models.ForeignKey('Product', related_name='likes', on_delete=do_nothing)
+
+    class Meta:
+        verbose_name = _('Like')
+        verbose_name_plural = _('Likes')

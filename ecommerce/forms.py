@@ -229,12 +229,12 @@ class AssignOrdersToCallerForm(forms.Form):
 
 
 class CheckoutForm(forms.Form):
-    first_name = forms.CharField(required=False, label=_("First Name"))
-    last_name = forms.CharField(required=False, label=_('Last Name'))
-    phone_number = forms.CharField(required=False, label=_('Phone Number'))
-    email_address = forms.EmailField(required=False, label=_('Email'))
-    city = forms.ModelChoiceField(queryset=City.objects.all(), required=False, label=_('City'))
-    address = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _('Address')}), required=False,
+    first_name = forms.CharField(required=True, label=_("First Name"))
+    last_name = forms.CharField(required=True, label=_('Last Name'))
+    phone = forms.CharField(required=True, label=_('Phone Number'))
+    email = forms.EmailField(required=False, label=_('Email'))
+    city = forms.ModelChoiceField(queryset=City.objects.all(), required=True, label=_('City'))
+    address = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _('Address')}), required=True,
                               label=_('Address'))
     note = forms.CharField(widget=forms.Textarea(attrs={"placeholder": _("Note")}), required=False, label=_('Note'))
     coupon_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
@@ -243,7 +243,7 @@ class CheckoutForm(forms.Form):
         cd = self.cleaned_data
         user.first_name = cd.get('first_name', user.first_name)
         user.last_name = cd.get('last_name', user.last_name)
-        user.phones.append(cd.get('phone_number'))
+        user.phones.append(cd.get('phone'))
         user.profile.city = cd.get('city', user.profile.city)
         user.profile.address = cd.get('address', user.profile.address)
         user.profile.save()
